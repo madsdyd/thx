@@ -12,7 +12,6 @@
 #include "tank.hh"
 #include "inventory.hh"
 
-#include "render.hh"
 #include "console.hh"
 #include "framerate.hh"
 #include "server.hh"

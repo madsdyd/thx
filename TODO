@@ -9,8 +9,8 @@ of playable game in version 0.3.0 that could actually be enjoyed.
   - play test
   - convert to c++ finally
     framerate.hh
-    game_cmds.hh
-    keyboard.hh
+    game_cmds.hh (DONE - removed)
+    keyboard.hh (DONE - sortof)
     render.hh
     sound.hh (DONE - sortof)
     textures.hh
@@ -44,11 +44,12 @@ of playable game in version 0.3.0 that could actually be enjoyed.
 * Design
   - all references from display to the current map, should go through the 
     current game. Or should they? What about the display lists?
-  - check that we are still on track wrt a dedicated server.
+  - check that we are on track wrt a dedicated server.
   - what about "going into orbit" type of events?
   - make all types of entities capable of damaging eachoter?
   - should the display have the role of the client class, with respect to the
     rendering of menus?
+  - Input handling should be more intelligent then it is now
 
 * Bugs
   - visual bugs sometimes - underside drawn? Related to texturing or culling?
@@ -63,6 +64,7 @@ of playable game in version 0.3.0 that could actually be enjoyed.
   - there are some color issues when rendering lines with lighting
   - checkout if the ostrstream.str operator has memory leaking problems (the
     way it is used, that is).
+  - A vertical projectile never seem to hit anything.
 
 * Research
   - 3d collision detection

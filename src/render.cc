@@ -1,8 +1,7 @@
 #include <stdio.h>
 #include "render.hh"
-#include "textures.hh"
 
-/* This is how we render */
+/* This is how we render the map */
 render_type_t render_type = render_type_lines;
 
 /* This is how we shade */

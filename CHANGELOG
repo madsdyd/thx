@@ -4,6 +4,8 @@
   - Fixed conversion warnings
   - Fixed warnings from sound.cc
   - Upgraded the glTexFont files, removed most of the warnings.a
+  - remove the game_cmds file
+  - cleaned up render.hh and removed it from some #includes.
 
 20000724
   - Cleaned up a bit

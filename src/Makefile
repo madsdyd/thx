@@ -8,7 +8,7 @@ CFLAGS=-Wall -D_REENTRANT -g -DSOUND_ON # -pg -pedantic
 SOURCES=console.cc \
 	types.cc game.cc keyboard.cc sound.cc display.cc tank.cc map.cc \
 	main.cc player.cc render.cc viewpoint.cc framerate.cc server.cc \
-	entities.cc projectile.cc explosion.cc game_cmds.cc textures.cc \
+	entities.cc projectile.cc explosion.cc textures.cc \
 	marker.cc menu.cc menuitem.cc color.cc text.cc vector.cc \
 	menu_game.cc client.cc menu_round.cc inventory.cc menu_buy.cc \
 	menu_score.cc \

@@ -59,6 +59,18 @@ TDisplay::TDisplay(int argc, char** argv) {
   glutInitWindowSize(640,480);
   glutInitWindowPosition(0,0);
   glutCreateWindow("Tank Hill eXtreme");
+  
+
+  /* Testing game mode stuff */
+  /*  glutGameModeString("1280x1024");
+  // enter full screen
+  if (glutGameModeGet(GLUT_GAME_MODE_POSSIBLE)) 
+    glutEnterGameMode();
+  else {
+    printf("The selected mode is not available\n");
+    exit(1);        
+    } */
+	
 
   /* Light colors, placements etc */
   GLfloat mat_specular[] = { 0.0, 0.0, 0.0, 1.0 };

@@ -37,7 +37,8 @@
 #include "collision.hh"
 
 /* **********************************************************************
-   Configuration stuff that is changable from the outside */
+ * Configuration stuff that is changable from the outside
+ * *********************************************************************/
 float map_max_steepness = 2.0;
 
 /* This is to avoid the map sinking into total void */
@@ -58,8 +59,9 @@ typedef  vector<TVectorVector> TVectorMap;
  * **********************************************************************
  * *********************************************************************/
 
-/* ************************************************************
-   Initialize map. Set size, etc */
+/* **********************************************************************
+ * Initialize map. Set size, etc
+ * *********************************************************************/
 TMap::TMap(int w, int l, float nmapsteepness) {
   // cout << "TMap::TMap entering" << endl;
   width         = w;
@@ -86,29 +88,31 @@ TMap::TMap(int w, int l, float nmapsteepness) {
   lsGenerate();
 
 #else
-  int x, y;
-  for(x = 0; x <= width; x++) {
-    for(y = 0; y <= length; y++) {
-      PointAt(x, y)->x = x;
-      PointAt(x, y)->y = y;
-      
-      // A function that sets it to part of some "waves". Uses some constants.
-      
-      /*PointAt(x, y)->z
-	= +1 - (3 * (1.5*sin(((double) x)/(float) 64 * 3.5 * M_PI) 
-		     - 2* cos(((double) y)/(float) 64 * 4* M_PI)));
-      */
-      // Simpler function;
-      // map[x][y].height = (GLint) 2 * sin((double) x);
-      // Everything at sealevel
-      // PointAt(x, y)->z = 0;
-      
-      // Raising 
-      PointAt(x, y)->z = (x+y) / 2.0;
-      // printf("xyz : %i, %i %f\n", x, y, map->data[x*map->length+y].height);
+  {
+    int x, y;
+    for(x = 0; x <= width; x++) {
+      for(y = 0; y <= length; y++) {
+	PointAt(x, y)->x = x;
+	PointAt(x, y)->y = y;
+	
+	// A function that sets it to part of some "waves". Uses some constants.
+	
+	PointAt(x, y)->z
+	  = +1 - (3 * (1.5*sin(((double) x)/(float) 64 * 3.5 * M_PI) 
+		       - 2* cos(((double) y)/(float) 64 * 4* M_PI)));
+	
+	// Simpler function;
+	// map[x][y].height = (GLint) 2 * sin((double) x);
+	// Everything at sealevel
+	// PointAt(x, y)->z = 0;
+	
+	// Raising 
+	// PointAt(x, y)->z = (x+y) / 2.0;
+	// printf("xyz : %i, %i %f\n", x, y, map->data[x*map->length+y].height);
+      }
     }
+    // cout << "TMap::TMap map created" << endl;
   }
-  // cout << "TMap::TMap map created" << endl;
 #endif
 
   /* Set up all the normal */
@@ -120,7 +124,8 @@ TMap::TMap(int w, int l, float nmapsteepness) {
 }
 
 /* **********************************************************************
-   Map destructor */
+ * Map destructor
+ * *********************************************************************/
 TMap::~TMap() {
   if (display_list != 0xFFFFFFFF) {
     glDeleteLists(display_list, 1);
@@ -135,7 +140,8 @@ TMap::~TMap() {
  * *********************************************************************/
 
 /* **********************************************************************
-   lsRand - sawtooth random function */
+ * lsRand - sawtooth random function
+ * *********************************************************************/
 GLfloat TMap::lsRand(int step) {
   GLfloat i, factor = mapsteepness * bumpiness * LS_SCALE * (GLfloat) width/32.0 / pow(2,step);
   i = (GLfloat) rand()/(GLfloat)RAND_MAX;
@@ -145,7 +151,8 @@ GLfloat TMap::lsRand(int step) {
 }
 
 /* **********************************************************************
-   lsLowerPoint - fracture and bend the line from a to b */
+ * lsLowerPoint - fracture and bend the line from a to b
+ * *********************************************************************/
 void TMap::lsLowerPoint(TMappoint * dest, TMappoint * a, TMappoint * b, int step) {
   /* Find the centerpoint */
   dest->x = (a->x+b->x) / 2;
@@ -157,8 +164,9 @@ void TMap::lsLowerPoint(TMappoint * dest, TMappoint * a, TMappoint * b, int step
   }
 }
 /* **********************************************************************
-   lsSplitTriangle - splits a triangle in four and recurse.
-   Also sets normals */
+ * lsSplitTriangle - splits a triangle in four and recurse
+ * Alsp sets normals
+ * *********************************************************************/
 void TMap::lsSplitTriangle(TMappoint * a, TMappoint * b,TMappoint * c, 
 			   int step, int max_steps) {
   TMappoint d, e, f;
@@ -178,8 +186,9 @@ void TMap::lsSplitTriangle(TMappoint * a, TMappoint * b,TMappoint * c,
 }
 
 /* **********************************************************************
-   lsGenerate - Starts the landscape generation 
-   NOTE: Only handles width == length*/
+ * lsGenerate - Starts the landscape generation
+ * NOTE: Only handles width == length
+ * *********************************************************************/
 void TMap::lsGenerate() {
   int i,j;
 
@@ -256,7 +265,8 @@ void TMap::lsGenerate() {
 
 
 /* **********************************************************************
-   lsNormals - set up normals for ths points within the area */
+ * lsNormals - set up normals for ths points within the area
+ * *********************************************************************/
 void TMap::lsNormals(int xlow, int xhigh, int ylow, int yhigh) {
   /* TODO: Does not handle border very well - if at all */
   // cout << "lsNormals(" << xlow << ", " << xhigh << ", " 
@@ -340,20 +350,21 @@ void TMap::lsNormals(int xlow, int xhigh, int ylow, int yhigh) {
  * **********************************************************************
  * *********************************************************************/
 
-/* ************************************************************
-   Return a random spot within the map, at least border from 
-   the edge  */
+/* **********************************************************************
+ * Return a random spot within the map, at least border from the edge 
+ * *********************************************************************/
 TVector TMap::RandomSpot(int border) {
   TVector tmp;
   tmp.x      = rint(border + ((double) width-(2*border))*rand()/(RAND_MAX+1.0));
   tmp.y      = rint(border + ((double) length-(2*border))*rand()/(RAND_MAX+1.0));
-  tmp.z      = PointAt(tmp.x, tmp.y)->z;
+  tmp.z      = PointAt(tmp.x, tmp.y)->z; 
   return tmp;
 }
 
 /* **********************************************************************
-   Return a list of random points that are no closer then border 
-   (gives up after 10 tries), and accept close points */
+ * Return a list of random points that are no closer then border
+ * (gives up after 10 tries), and accept close points
+ * *********************************************************************/
 void TMap::DoRandomSpots(TVectors * spots, int remaining, int border) {
   if (0 >= remaining) {
     return;
@@ -396,7 +407,8 @@ void TMap::DoRandomSpots(TVectors * spots, int remaining, int border) {
 }
 
 /* **********************************************************************
-   Start DoRandomSpots */
+ * Start DoRandomSpots
+ * *********************************************************************/
 TVectors * TMap::RandomSpots(int n, int border) {
   TVectors * res = new TVectors;
   DoRandomSpots(res, n, border);
@@ -405,17 +417,65 @@ TVectors * TMap::RandomSpots(int n, int border) {
 
 /* **********************************************************************
  * **********************************************************************
+ * Info about map height and such
+ * **********************************************************************
+ * *********************************************************************/
+/* **********************************************************************
+ * Return point at center of map. 
+ * *********************************************************************/
+TMappoint TMap::CenterPoint() {
+  return *(PointAt(width/2, length/2));
+}
+
+/* **********************************************************************
+ * Return a pointer to a given point on the map. 
+ * *********************************************************************/
+TMappoint * TMap::PointAt(int x, int y) {
+  return &(data[x*(length+1)+y]);
+};
+
+/* **********************************************************************
+ * Return the height at a given point - within a triangle
+ * This is ugly, and will go away.
+ * *********************************************************************/
+// TODO: Does this work as expected?
+float TMap::HeightAt(float x, float y) {
+  /* Convert to relativ within a triangle */
+  // double tmp; 
+  float x1 = x-floor(x);
+  float y1 = y-floor(y);
+  float z, xz, yz;
+  cout << "x1 " << x1 << ", yz " << y1 << endl;
+  /* We draw triangles in a certain way, diagonal is where x+y == 1 */
+  if (x+y > 1.0) {
+    /* Upper right triangle */
+    z  = PointAt(floor(x+1), floor(y+1))->z;
+    xz = PointAt(floor(x), floor(y)+1)->z - z;
+    yz = PointAt(floor(x)+1, floor(y))->z - z;
+    return xz*(1.0-x1)+yz*(1.0-y1)+z;
+  } else {
+    /* Lower left triangle */
+    z  = PointAt(floor(x), floor(y))->z;
+    xz = PointAt(floor(x)+1, floor(y))->z - z;
+    yz = PointAt(floor(x), floor(y)+1)->z - z;
+    return xz*x1+yz*y1+z;
+  }
+}
+
+/* **********************************************************************
+ * **********************************************************************
  * Impact checking and taking stuff.
  * **********************************************************************
  * *********************************************************************/
 
-/* ************************************************************ 
-   This function lowers x,y 1.
-   It then checks if any of the neighbours are too high, and if 
-   they are, call recursivly */
+/* **********************************************************************
+ * This function lowers x,y 1.
+ * It then checks if any of the neighbours
+ * are too high, and if they are, call recursivly
+ * *********************************************************************/
 void TMap::Slide(int x, int y) {
   int i, j;
-  //  printf("map_slide called, adjusting %i, %i from %f\n",
+  // cout << "TMap::Slide, adjusting " << x << ", " << y << endl;
   // x, y, PointAt(x, y).height);
   PointAt(x, y)->z = PointAt(x, y)->z - 1;
   //  printf("map_slide called, adjusting %i, %i to %f\n",
@@ -439,7 +499,8 @@ void TMap::Slide(int x, int y) {
 }
 
 /* **********************************************************************
-   Lowers z at this point, so that it has the radius distance to "loc" */
+ * Lowers z at this point, so that it has the radius distance to "loc"
+ * *********************************************************************/
 void TMap::LowerPoint(int x, int y, TVector * location, float radius) {
   /* First, figure out if x,y is to far away from the location to be 
      touched */

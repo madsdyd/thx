@@ -1,3 +1,7 @@
+20010404
+  - Made the map fall down code more smooth
+  - Edited README slightly
+
 20010329
   - Tagging version_0_3_1
   - Removed keyboard.hh and keyboard.cc

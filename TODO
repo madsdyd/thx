@@ -4,10 +4,10 @@ This is an overview of what features go where. This is subject to change.
 
 - Fix the public interface in a lot of classes.
 
+
 ** 0.3.2 (Moving on with input)
   - Clean away old keyboard handling code.
   - Probably convert all angle, force, etc. stuff to doubles.
-  - Make the map fall down be more smooth
   - Do some mouse stuff?
   - joystick - time?
   - The inputmappings need to be aware of the mode (not?)
@@ -95,10 +95,10 @@ This is an overview of what features go where. This is subject to change.
   - there are some color issues when rendering lines with lighting
   - checkout if the ostrstream.str operator has memory leaking problems (the
     way it is used, that is).
-  - A vertical projectile never seem to hit anything.
+  - A vertical projectile sometimes never seem to hit anything!!!!
+  - Projectiles hit to low on the landscape!!!
   - The top 4 lines seems to have a wrong color?
   - The tanks are rather "dusty" - the lighting is probably fucked.
-  - Arrow keys do not work in the buy menu.
   - There are quite a bit of dead code.
 
 * Research

@@ -145,11 +145,11 @@ void TTank::Explosion(TMap * map, TExplosion * Explosion) {
   
   /* Move tank to land level take damage from falling */
   dist = location.z 
-    - map->PointAt(location.x, location.y)->z;
+    - map->HeightAt(location.x, location.y);
   taken_damage = dist * dist; /* In lack of proper acceleration */
   health -= taken_damage;
   location.z 
-    = map->PointAt(location.x, location.y)->z;
+    = map->HeightAt(location.x, location.y);
   // printf("Took %f in damage from faling\n", taken_damage);
 
   /* Never go below 0 */

@@ -79,9 +79,7 @@ public:
      and other spots */
   TVectors * RandomSpots(int n, int border);
   /* Return the center point */
-  TMappoint CenterPoint() {
-    return *(PointAt(width/2, length/2));
-  }
+  TMappoint CenterPoint();
   /* Check for collision with the map. Returns true if a collision would happen 
      between old and new, and returns the coordinates of the collision in 
      new (if collision).
@@ -96,9 +94,9 @@ public:
      more then map_max_steepness steep */
   void Explosion(TExplosion * Explosion);
   //#define mappoint_at(map,x,y) (&(((map)->data[(int) (((x)*((map)->length)+(y)))])))
-  TMappoint * PointAt(int x, int y) {
-    return &(data[x*(length+1)+y]);
-  };
+  TMappoint * PointAt(int x, int y);
+  /* Return the height at a given point - within a triangle */
+  float HeightAt(float x, float y);
   /* Init the renderer */
   void InitRender();
   /* Render the map */

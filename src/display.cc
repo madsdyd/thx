@@ -311,16 +311,16 @@ void TDisplay::Render(void) {
     if (!flymode) {
       /* if "walking" on the landscape, dump us on it */
       viewpoint->translation.z = ZOFFSET
-	+ Game->GetMap()->PointAt(rint(viewpoint->translation.x), 
-				  rint(viewpoint->translation.y))->z;
+	+ Game->GetMap()->HeightAt(viewpoint->translation.x, 
+				   viewpoint->translation.y);
     } else {
       /* if flying, never go below */
       if (viewpoint->translation.z < ZOFFSET 
-	  + Game->GetMap()->PointAt(rint(viewpoint->translation.x), 
-				    rint(viewpoint->translation.y))->z) {
+	  + Game->GetMap()->HeightAt(viewpoint->translation.x, 
+				     viewpoint->translation.y)) {
 	viewpoint->translation.z = ZOFFSET
-	  + Game->GetMap()->PointAt(rint(viewpoint->translation.x), 
-				    rint(viewpoint->translation.y))->z;
+	  + Game->GetMap()->HeightAt(viewpoint->translation.x, 
+				    viewpoint->translation.y);
       }
     }
   }
@@ -330,7 +330,6 @@ void TDisplay::Render(void) {
   glTranslatef(-viewpoint->translation.x, 
 	       -viewpoint->translation.y, 
 	       -viewpoint->translation.z);
-
 
   /* Draw map */
   Game->GetMap()->Render(viewpoint);

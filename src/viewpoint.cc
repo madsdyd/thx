@@ -28,7 +28,7 @@ void TViewpoint::Reset(TMap * map) {
   /* Center at map */
   translation.x = map->CenterPoint().x;
   translation.y = map->CenterPoint().y;
-  translation.z = map->PointAt(translation.x, translation.y)->z+3.0;
+  translation.z = map->HeightAt(translation.x, translation.y)+3.0;
   
   /* Set the rotation apropiate */
   rotation.x = 0.0;

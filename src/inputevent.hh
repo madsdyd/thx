@@ -38,7 +38,8 @@ typedef enum {inputevent_type_keyboard,   /* Keyboard, obviously */
 class TInputEvent { 
 public:
   system_time_t timestamp;
-  inputevent_type_t type;
+  inputevent_type_t eventtype;
+  TInputEvent(inputevent_type_t neventtype);
 };
 
 /* This is a definition of the input queue */

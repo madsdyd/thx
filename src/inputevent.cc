@@ -20,4 +20,15 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 #include "inputevent.hh"
+/* **********************************************************************
+ * The Input queue 
+ * *********************************************************************/
 TInputs Inputs;
+
+/* **********************************************************************
+ * Constructor for TInputEvent - stamps with time
+ * *********************************************************************/
+TInputEvent::TInputEvent(inputevent_type_t neventtype) {
+  timestamp = system_gettime();
+  eventtype = neventtype;
+}

@@ -1,3 +1,7 @@
+20010313
+  - More command structure. 
+  - Added conditional to Makefile
+
 20010310
   - Added some conversions between input events and commands.
 

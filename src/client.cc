@@ -39,6 +39,7 @@
 /* Testing input events */
 #include "inputkeyboard.hh"
 #include "inputconsumer.hh"
+#include "commandconsumer.hh"
 
 #include <strstream>
 
@@ -63,7 +64,7 @@ static int selfcount = 0;
 
 /* **********************************************************************
  * Callback function - need to be global or static.
- * All fiddle with the Client object.
+ * All fiddle with the Client objexct.
  * *********************************************************************/
 
 /* **********************************************************************
@@ -80,8 +81,10 @@ void Client_Idle() {
   system_time_t delta_time = time_now - last_time;
   last_time                = time_now;
   /* Empty the command chain */
-  // InputToCommand.Consume();
-
+#ifdef INPUTCMD
+  InputToCommand.Consume();
+  CommandDispatcher.Dispatch();
+#endif
   /* The display should always be updated */
   Display->Update(delta_time);
   /* Main switch on wheter or not a game is running */
@@ -723,8 +726,9 @@ void TClient::Run() {
   glutReshapeFunc(Client_Reshape);
 
   /* Testing the input event functions */
-  // inputkeyboard_init();
-
+#ifdef INPUTCMD
+  inputkeyboard_init();
+#endif
   //  glutMouseFunc(Client_Mouse);
   //  glutPassiveMotionFunc(Client_PassiveMotion);
   

@@ -22,10 +22,10 @@
 /* The commands */
 #include <iostream>
 #include "inputconsumer.hh"
+#include "command.hh"
+
 /* The mappings from inputs to commands */
 TKeyboardCommandMap KeyboardCommandMap;
-/* The command queue */
-TInputCommands InputCommands;
 /* The InputToCommand object */
 TInputToCommand InputToCommand;
 
@@ -37,7 +37,8 @@ TInputToCommand InputToCommand;
  * The TInputToCommand constructor - sets up default mappings
  * *********************************************************************/
 
-/* First some nice default mappings */
+/* First some nice default mappings 
+   TODO: Something is rotten here? */
 struct keymap_t {
   keyboard_inputevent_event_t kev;
   char * cmd;
@@ -85,25 +86,33 @@ int TInputToCommand::Consume() {
 	= KeyboardCommandMap.find(KeyEvent->keyboard_inputevent_event);
       if (loc != KeyboardCommandMap.end()) {
 	/* Found a "real" mapping */
-	// TODO: Actually dispatch a command
 	cout << "TInputToCommand::Consume, key "
 	     << KeyEvent->keyboard_inputevent_event.key
 	     << " maps to " << (*loc).second << endl;
+	CommandQueue.push(new TCommand(KeyEvent->timestamp,
+				       (*loc).second));	       
       } else {
 	/* No mapping found -
 	   Keyboard events for "down" that are not mapped, 
-	   generate a command that has the name of the key */
+	   generate a command that has the name of the key 
+	   if the key is within a certain range. */
 	if (keyboard_inputevent_type_down 
 	    == KeyEvent->keyboard_inputevent_event.type) {
 	  // TODO: Actually distpatch a command 
+	  cout << "TODO: Actually dispatch a command (automapped)" << endl;
 	  cout << "TInputToCommand::Consume, key (down)"
 	       << KeyEvent->keyboard_inputevent_event.key
-	       << " automaps to " << (*loc).second << endl;
+	       << " automaps to " << "keydown " 
+	       << KeyEvent->keyboard_inputevent_event.key << endl;
+	  CommandQueue.push(new TCommand(KeyEvent->timestamp,
+					 "keydown"));
+	  // TODO: Fix argument.
+	  //					 string(KeyEvent->keyboard_inputevent_event.key)));	
 	} else {
 	  cout << "TInputToCommand::Consume, no mapping found for key "
 	       << ((TKeyboardInputEvent *) 
 		   InputEvent)->keyboard_inputevent_event.key 
-	       << " and this type (up/down)" << endl;
+	       << " and this type (up)" << endl;
 	}
       }
       break;

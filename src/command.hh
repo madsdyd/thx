@@ -19,32 +19,29 @@
     along with this program; if not, write to the Free Software
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
-#ifndef __INPUTCONSUMER_HH__
-#define __INPUTCONSUMER_HH__
-/* This unit declares a consumer of input events. Events are mapped to 
-   commands, that are stuffed into the command chain. */
+#ifndef __COMMAND_HH__
+#define __COMMAND_HH__
+
 #include <string>
-#include <map>
-#include "inputkeyboard.hh"
+#include <queue>
+#include "types.hh"
 
-
-/* This map contains the mappings between keyboard input events and
-   command names */
-// TODO: Should keyboard events be able to map arguments? 
-typedef map <keyboard_inputevent_event_t, string, lt_kiet> TKeyboardCommandMap;
-typedef TKeyboardCommandMap::iterator TKeyboardCommandMapIterator;
-/* TODO: There need to be more than a single keyboardmap */
-extern TKeyboardCommandMap KeyboardCommandMap;
-
-/* This class can consume input events and fill the command queue */
-class TInputToCommand {
-public: 
-  /* The constructor sets up the initial mappings */
-  TInputToCommand();
-  /* Returns the number of commands added to the command queue */
-  int Consume();
+/* This is the definition of a command. 
+   Typically, commands are issued from user input - that is, 
+   user input is translated into a command. 
+   Commands then live in the command queue, until dispatched by the 
+   command consumer, and then freed.
+*/
+class TCommand {
+public:
+  system_time_t timestamp; /* The time when the command was created 
+                              or, if originated in input, the time of input */
+  string name;             /* The name of the command - used for dispatching */
+  string args;             /* Optional args to the command */
+  TCommand(system_time_t ntimestamp, string nname, string nargs = "");
 };
-
-/* The input consumer */
-extern TInputToCommand InputToCommand;
+/* This is the type of the command queue */
+typedef queue <TCommand *> TCommands;
+/* This is the command queue */
+extern TCommands CommandQueue;
 #endif

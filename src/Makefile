@@ -2,10 +2,11 @@
 SOUNDDIR=
 CC=g++
 LFLAGS=-L/usr/X11R6/lib -lm -lglut -lGLU -lGL -lpthread
-CFLAGS=-Wall -D_REENTRANT -g -DSOUND_ON # -pg -pedantic 
+CFLAGS=-Wall -D_REENTRANT -g -DSOUND_ON #-DINPUTCMD# -pg -pedantic 
 # -DSOUNDDIR=$(SOUNDDIR)
 
-SOURCES=inputconsumer.cc inputkeyboard.cc inputevent.cc console.cc \
+SOURCES=command.cc commandconsumer.cc \
+	inputconsumer.cc inputkeyboard.cc inputevent.cc console.cc \
 	types.cc game.cc keyboard.cc sound.cc display.cc tank.cc map.cc \
 	main.cc player.cc render.cc viewpoint.cc framerate.cc server.cc \
 	entities.cc projectile.cc explosion.cc textures.cc \

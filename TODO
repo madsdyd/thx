@@ -1,8 +1,11 @@
-qVersion schedule. 
+Version schedule. 
 
 This is an overview of what features go where. This is subject to change.
 
 - Finish command structure.
+- The inputmappings need to be aware of the mode (not?)
+- Test run commands. 
+- Fix arguments to TCommand class.
 
 ** 0.3.1 (Input control)
   - Define input pipeline

@@ -31,7 +31,11 @@
  * *********************************************************************/
 TPlayer::TPlayer(string nname) { 
   name  = nname;
+#ifdef INPUTCMD
+  money = 5000;
+#else
   money = 500;
+#endif
   score = 0;
   inventory = new TInventory(this);
 }

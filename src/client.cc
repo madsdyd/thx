@@ -106,8 +106,16 @@ void Client_Idle() {
       case roundstate_done:
 	if (Game->IsGameOver()) {
 	  Client->has |= CLIENT_HAS_GAMEOVERMENU;
+	  if (!GameMode.SetMode(gamemode_menu)) {
+	    cerr << "TClient_Idle - unable to change mode!" << endl;
+	  }
+	  GameOverMenu->Show();
 	} else {
 	  Client->has |= CLIENT_HAS_ROUNDOVERMENU;
+	  if (!GameMode.SetMode(gamemode_menu)) {
+	    cerr << "TClient_Idle - unable to change mode!" << endl;
+	  }
+	  RoundOverMenu->Show();
 	}
 	/* in any case, do not update the game now */
 	Client->has &= ~CLIENT_HAS_GAME;
@@ -328,9 +336,9 @@ void GameMenu_StartFunc() {
   }
   // TODO: Somehow this does not seem to fit here....
   inputkeyboard_disablerepeat();
-  /* cout << "Hiding GameMenu - this may not work at all..." << endl;
-  GameMenu->Hide(); 
-  cout << "TODO: Somewhere, show it again" << endl; */
+  cout << "Hiding GameMenu - this may not work at all..." << endl;
+  GameMenu->GetCurrentMenu()->Hide();
+  cout << "TODO: Somewhere, show it again" << endl; 
   if (Client->game_running || Client->has) {
     cerr << "GameMenu_StartFunc() called with wrong state!" << endl;
   }
@@ -524,6 +532,9 @@ void BuyMenu_Continue() {
     Game->RoundStart();
     Client->has |= CLIENT_HAS_GAME;  
     Client->has &= ~CLIENT_HAS_BUYMENU;
+    if (!GameMode.SetMode(gamemode_game)) {
+      cerr << "BuyMenu_Continue - unable to change gamemode!" << endl;
+    }
   }
 } 
 
@@ -551,6 +562,7 @@ void ScoreMenuFunc() {
     ScoreMenu = NULL;
   }
   delete Game;
+  GameMenu->Show();
 }
 
 /* This sets up a score menu */
@@ -572,6 +584,7 @@ void ScoreMenu_Go() {
 /* This gets called, when the client continues after a round is over */ 
 void RoundOverMenuFunc() {
   Client->has &= ~CLIENT_HAS_ROUNDOVERMENU;
+  RoundOverMenu->Hide();
   /* Need to set up stuff to iterating through players in the buying section */
   BuyMenu_Go();
 }
@@ -585,6 +598,7 @@ void RoundOverMenuFunc() {
 void GameOverMenuFunc() {
   // cout << "GameOverMenuFunc - displaying game menu" << endl;
   Client->has &= ~CLIENT_HAS_GAMEOVERMENU;
+  GameOverMenu->Hide();
   /* Set up the score board menu */
   ScoreMenu_Go();
 }
@@ -597,20 +611,28 @@ void GameOverMenuFunc() {
 void InGameMenu_AbortRoundFunc() {
   Game->AbortRound();
   Client->has &= ~CLIENT_HAS_INGAMEMENU;
+  InGameMenu->Hide();
 }
 
 /* Abort a game - remove the client, then stop the game */
 void InGameMenu_AbortGameFunc() {
   /* TODO: Should the score board be displayed? */
+  Game->AbortRound();
   Client->game_running = false;
   Client->has          = CLIENT_HAS_NOTHING;
+  InGameMenu->Hide();
   delete Game;
+  GameMenu->Show();
   glutPostRedisplay();
 }
 
 /* Cancel simply removes the menu */
 void InGameMenu_CancelFunc() {
   Client->has &= ~CLIENT_HAS_INGAMEMENU;
+  InGameMenu->Hide();
+  if (!GameMode.SetMode(gamemode_game)) {
+    cerr << "InGameMenu_CancelFunc - unable to change gamemode!" << endl;
+  }
 }
 
 
@@ -666,28 +688,30 @@ TClient::TClient(int argc, char ** argv) {
   GameMenu = new TGameMenu("Tank Hill eXtreme", 
 			   GameMenu_StartFunc, 
 			   GameMenu_EndFunc);
-  
+
+  // TODO: This needs fixing wrt to menus
   /* The Menus are always visible, but will not always be rendered */
   GameMenu->Show();
 
   /* The round over menu */
   RoundOverMenu = new TContinueMenu("Round over", RoundOverMenuFunc);
-  RoundOverMenu->Show();
+  // RoundOverMenu->Show();
 
   /* The Game over menu */
   GameOverMenu = new TContinueMenu("Game over", GameOverMenuFunc);
-  GameOverMenu->Show();
+  // GameOverMenu->Show();
 
   /* The in game menu */
   InGameMenu = new TInGameMenu("Options", InGameMenu_AbortGameFunc, 
 			       InGameMenu_AbortRoundFunc, 
 			       InGameMenu_CancelFunc);
-  InGameMenu->Show();
+  // InGameMenu->Show();
 
   /* The BuyMenu and ScoreMenu is not constructed here */
 
-  /* Register a command we handle */
+  /* Register the commands we handle */
   CommandDispatcher.RegisterConsumer("quit", this);
+  CommandDispatcher.RegisterConsumer("in-game-menu-show", this);
 }
 
 /* **********************************************************************
@@ -768,12 +792,21 @@ void TClient::Run() {
 bool TClient::CommandConsume(TCommand * Command) {
   cout  << "TClient::CommandConsumer called for command (" 
 	<< Command->name << "," << Command->args << ")" << endl;
-  if ("quit" != Command->name) {
+  if ("quit" == Command->name) {
+    cout << "TODO: Clean up stuff - restore keyrepeat, etc." << endl;
+    exit(0);
+  } else if ("in-game-menu-show" == Command->name) {
+    if (GameMode.SetMode(gamemode_menu)) {
+      // TODO: Maintaining 2 status fields?? This is needed pt. for rendering
+      has |= CLIENT_HAS_INGAMEMENU;
+      InGameMenu->Show();
+      return true;
+    }
+    cerr << "TClient::CommandConsume - error setting gamemode!" << endl;
+    return false;
+  } else {
     cerr << "TClient::CommandConsume non registered command! " 
 	 << Command->name << endl;
     return false;
-  } else {
-    cout << "TODO: Clean up stuff" << endl;
-    exit(0);
-  }
+  } 
 } 

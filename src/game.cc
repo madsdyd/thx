@@ -92,6 +92,7 @@ TGame::TGame(int nwidth, int nlenght, int nnum_rounds, float nmapsteepness) {
 }
 
 TGame::~TGame() {
+  CommandDispatcher.UnregisterConsumer("fire");
   cout << "~TGame needs to clean up a lot of stuff" << endl;
 }
 
@@ -468,6 +469,7 @@ int TGame::UpdateActivePlayers() {
    Aborts the current round, by updating the state */
 void TGame::AbortRound() {
   roundstate = roundstate_done;
+  current_player->EndTurn();
   gamestate = gamestate_round_done;
   /* Check roundnumber here for game over */
   if (num_rounds <= num_this_round) {

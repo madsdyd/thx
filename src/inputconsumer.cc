@@ -86,7 +86,7 @@ keymap_t key_map_std_keys_down[] =
 
   /* GAME */
   {gamemode_game, {' ',           keyboard_inputevent_type_down}, "fire", ""},
-  {gamemode_game, {KEY_ESCAPE,    keyboard_inputevent_type_down}, "escape", ""},
+  {gamemode_game, {KEY_ESCAPE,    keyboard_inputevent_type_down}, "in-game-menu-show", ""},
   /* Viewpoint-move manipulation commands */
   {gamemode_game, {'r',           keyboard_inputevent_type_down}, "viewpoint-move", "+forward"},
   {gamemode_game, {'r',           keyboard_inputevent_type_up},   "viewpoint-move", "-forward"},

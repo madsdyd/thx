@@ -32,7 +32,7 @@ TBuyMenu * BuyMenu = NULL;
 /* **********************************************************************
    TBuyMenu uses a speciel menuitem class that is almost like a 
    TActionMenuItem */
-class TBuyMenuItem : public TMenuItem {
+class TBuyMenuItem : public TSimpleActionMenuItem {
 private:
   TInventoryElement * element;
   TAction function;
@@ -49,7 +49,7 @@ public:
   };
   TBuyMenuItem(TMenu * owner, string desc, int * nmoney,
 	       TAction nbuyaction, TInventoryElement * nelement) 
-    : TMenuItem(owner, "", desc) {
+    : TSimpleActionMenuItem(owner, "", desc) {
     money    = nmoney;
     element  = nelement;
     function = nbuyaction;
@@ -73,9 +73,13 @@ public:
       return false;
     } 
   }
-  virtual bool CommandConsume(TCommand * Command) {
-    cout << "TBuyMenuItem::ConsumeCommand called" << endl;
-    return false;
+  virtual void DoAction() {
+    if (function && element) {
+      /* But it */
+      element->Buy(money);
+      /* Force an update */
+      function();
+    }
   }
   /* Budget adjust the state of the menu item */
   void Budget() {

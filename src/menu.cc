@@ -27,6 +27,7 @@
 
 #include "display.hh"
 TTextRender MenuTextRender;
+TMenu * TMenu::CurrentMenu;
 
 /* **********************************************************************
    Create the menu with appropiate init of variables. */
@@ -43,8 +44,13 @@ TMenu::TMenu(string nTitle) {
 /* **********************************************************************
    Destroy the menu. Deallocate dynamic data */
 TMenu::~TMenu() {
+  /* First thing to do is to hide - as this unregisters our commands */
+  Hide();
   for (unsigned int i = 0; i < menuitems.size(); i++) {
     delete menuitems[i];
+  }
+  if (CurrentMenu == this) {
+    CurrentMenu = NULL;
   }
 }
 
@@ -66,6 +72,7 @@ void TMenu::Show() {
     }
   }
   visible = true;
+  CurrentMenu = this;
   /* Force possible old focuseditem to focus. */
   menuitems[focuseditem]->Focus();
   /* This is a kind of testing of the command structure. */
@@ -83,6 +90,7 @@ void TMenu::Show(TMenu * nParent) {
 /* **********************************************************************
    Hide this menu */
 void TMenu::Hide() {
+  if (!visible) { return; };
   if (focuseditem >= 0) {
     /* Force possible focused item to blur */
     if (!menuitems[focuseditem]->Blur()) {

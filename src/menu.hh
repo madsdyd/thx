@@ -49,6 +49,8 @@ protected:
   TMenu * Child;
   /* If we have a "return" or "cancel" menu item, then esc may go to this */
   int cancelitem;
+  /* This is a hack, because the way I do menus are borken */
+  static TMenu * CurrentMenu;
 public:
   /* Construct and destruct the menu */
   TMenu(string nTitle);
@@ -94,6 +96,15 @@ public:
       Parent->HideChild(this);
     }
   }
+  /* This is to get the current menu 
+     Which is a hack */
+  TMenu * GetCurrentMenu() {
+    if (!CurrentMenu) {
+      CurrentMenu = this;
+    }
+    return CurrentMenu;
+  }
+
   /* Add a TMenuItem to the menu */
   void AddMenuItem(TMenuItem * item);
   /* Add "the" TCancelMenuItem to the menu */

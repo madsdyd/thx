@@ -2,16 +2,11 @@ Version schedule.
 
 This is an overview of what features go where. This is subject to change.
 
-
+- Make tab work
+- Make the render selection, etc. work
 - Probably convert all angle, force, etc. stuff to doubles.
 - The keyrepeat is not enabled, when quitting.
-
-- The buymenuitems does not work with the command structure thingy
-- Key repeat need to be a gamemode only thing
-- We need to be able to show the in game menus
-- Need to be able to leave game mode, buy, etc.
-- Fix the menu items to get focus. Figure out why 4 menus try to register 
-  a consumer...
+- Make the map fall down be more smooth
 - Fix the rest of the commands.
 - Finish command structure.
 - The inputmappings need to be aware of the mode (not?)

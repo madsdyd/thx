@@ -3,14 +3,12 @@ Version schedule.
 This is an overview of what features go where. The idea is to have a kind 
 of playable game in version 0.3.0 that could actually be enjoyed.
 
-** 0.2.9 (Clean up)
-
 ** 0.3.0 (Beta/Sourceforge)
-  - Write some documentation
   - rename project to thx (DONE)
-  - make GPL aware
+  - make GPL aware (DONE)
 
 ** 0.3.1
+  - Write some documentation
   - move data to consistent structure
   - implement destructors
   - tighten includes
@@ -60,6 +58,7 @@ of playable game in version 0.3.0 that could actually be enjoyed.
   - A vertical projectile never seem to hit anything.
   - The top 4 lines seems to have a wrong color?
   - The tanks are rather "dusty" - the lighting is probably fucked.
+  - Arrow keys do not work in the buy menu.
 
 * Research
   - 3d collision detection

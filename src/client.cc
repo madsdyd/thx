@@ -36,6 +36,10 @@
 #include "menu_buy.hh"
 #include "menu_score.hh"
 
+/* Testing input events */
+#include "inputkeyboard.hh"
+#include "inputconsumer.hh"
+
 #include <strstream>
 
 #ifdef SOUND_ON
@@ -75,6 +79,9 @@ void Client_Idle() {
   system_time_t time_now   = system_gettime();
   system_time_t delta_time = time_now - last_time;
   last_time                = time_now;
+  /* Empty the command chain */
+  InputToCommand.Consume();
+
   /* The display should always be updated */
   Display->Update(delta_time);
   /* Main switch on wheter or not a game is running */
@@ -714,6 +721,10 @@ void TClient::Run() {
   glutSpecialFunc(Client_Special);
   glutIdleFunc(Client_Idle);
   glutReshapeFunc(Client_Reshape);
+
+  /* Testing the input event functions */
+  inputkeyboard_init();
+
   //  glutMouseFunc(Client_Mouse);
   //  glutPassiveMotionFunc(Client_PassiveMotion);
   

@@ -23,7 +23,7 @@
 #define __INPUTEVENT_HH__
 /* A queue of input events are defined here. Later these are meant to
    be converted into commands, that are to be interprented by the game
-   engine This may or may not be a good design - I have no clue */
+   engine. This may or may not be a good design - I have no clue */
 #include <queue>
 #include "types.hh"
 

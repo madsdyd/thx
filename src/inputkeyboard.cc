@@ -29,8 +29,8 @@
 TKeyboardInputEvent::TKeyboardInputEvent(keyboard_inputevent_type_t nkeyboard_inputevent,
 					 unsigned char nkey) 
   : TInputEvent(inputevent_type_keyboard) {
-  keyboard_inputevent = nkeyboard_inputevent;
-  key                 = nkey;
+  keyboard_inputevent_event.key = nkey;
+  keyboard_inputevent_event.type = nkeyboard_inputevent;
 }
 /* **********************************************************************
  * Definition of glut callback functions

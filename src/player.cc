@@ -135,7 +135,8 @@ void TPlayer::PerformCommandUpdate(system_time_t timenow) {
      should be OK to use for timenow.
      All this is subject to change, of course...
 */
-  
+  // cout << "TPlayer::PerformCommandUpdate(" << timenow << ")" << endl;
+
   /* Iterate over all commands, do any action required */
   TActiveCommandsIterator end = active_commands.end();
   TActiveCommandsIterator i;

@@ -77,6 +77,7 @@ bool TCommandDispatcher::UnregisterConsumer(string commandname) {
  * Dispatch - travers queue, call consumers. 
  * *********************************************************************/
 int TCommandDispatcher::Dispatch() {
+  // cout << "TCommandDispatcher::Dispatch" << endl;
   int count = 0;
   TCommand * Command;
   TCommandConsumersIterator loc;

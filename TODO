@@ -2,8 +2,8 @@ Version schedule.
 
 This is an overview of what features go where. This is subject to change.
 
+- Mouse stuff mappings
 - Fix it, so that we can have many menu items on a screen
-- Why can't I map ESC?
 - Loosen up on registering and unregistering commands - should not keep 
   a command, if failing to release another. (Maybe registering and release should
   always work?)
@@ -96,7 +96,6 @@ This is an overview of what features go where. This is subject to change.
     rendering of menus?
 
 * Bugs
-  - is the mousemovement erratic - or is it just to quick?
   - Sometimes, someone can not register a command. This may have something
     to do with the order the global objects are being created in. 
     Need to fix this - Singleton pattern?

@@ -63,8 +63,8 @@ and solve them, instead of iterating, but who cares to write the maths?
 
 */
 
-float max_deltatime = 0.05;  /* 20 Hz */
-float min_deltatime = 0.025; /* 40 Hz */
+float max_deltatime = 1.0/20.0; /* 20 Hz */
+float min_deltatime = 1.0/100.0; /* 100 Hz */
 
 /* **********************************************************************
  * **********************************************************************
@@ -218,6 +218,7 @@ void TGame::UpdateGameDone(system_time_t updatetime) {
    the game. */
 
 void TGame::Update(system_time_t updatetime) {
+  // cout << "TGame::Update(" << updatetime << ")" << endl;
   switch(gamestate) {
   case gamestate_round_running:
     UpdateRoundRunning(updatetime);

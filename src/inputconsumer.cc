@@ -246,6 +246,7 @@ int TInputToCommand::Consume() {
      figure out what command string is associated with the event.
      First the current gamemode mappings is checked, then the anymode
      If a mappings is found, it is added to the command queue */
+  // cout << "TInputToCommand::Consume" << endl;
   TInputEvent * InputEvent;
   int count = Inputs.Events.size();
   // cout << "The number of input events are " << count << endl;

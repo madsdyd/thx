@@ -86,8 +86,6 @@ void Client_Idle() {
   /* Empty the command chain */
   InputToCommand.Consume();
   CommandDispatcher.Dispatch();
-  /* Always post a redisplay - either the menu or game needs to update */
-  glutPostRedisplay();
 
   /* The display should always be updated */
   Display->Update(delta_time);
@@ -127,6 +125,8 @@ void Client_Idle() {
     /* Make frames count. TODO: Should go else where? */
     framerate_add(time_now, Display->GetNumFrames());
   } 
+  /* Always post a redisplay - either the menu or game needs to update */
+  glutPostRedisplay();
 }
   
 

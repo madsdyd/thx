@@ -425,6 +425,12 @@ void TDisplay::Render(void) {
 	       << ends; 
     textrender->Pos(0, 2*textrender->size);
     textrender->Print(tmp.str());
+    fcount++;
+    cout << fcount << " : " 
+	 << viewpoint->translation.x << " " 
+	 << viewpoint->translation.y << " " 
+	 << viewpoint->translation.z << " " 
+	 << endl;
   }
 #endif  
 

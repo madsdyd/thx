@@ -1,3 +1,7 @@
+20010419
+  - Fixed erratic moves - turns out, that update Hz in TGame was too low.
+  - It seems mapping ESC does indeed work.
+
 20010418
   - Added a return item to the controls menu
   - Made it possible to access the controls menu from the in game menu

@@ -1,5 +1,6 @@
 20010305
   - Added the steepness options to the map
+  - Made moves a bit more fluent. (Not the right way though).
 
 20010304
   - Minor changes to make THX compile under Mandrake 7.2

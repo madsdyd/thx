@@ -4,26 +4,19 @@ This is an overview of what features go where. The idea is to have a kind
 of playable game in version 0.3.0 that could actually be enjoyed.
 
 ** 0.2.9 (Clean up)
-  - move data to consistent structure
-  - fix remaining showstopper bugs
-  - play test
-  - convert to c++ finally
-    framerate.hh
-    game_cmds.hh (DONE - removed)
-    keyboard.hh (DONE - sortof)
-    render.hh (DONE - sortof)
-    sound.hh (DONE - sortof)
-    textures.hh 
-    types.hh (DONE)
-  - implement destructors
-  - tighten includes
-  - memory check code
-  - tidy code
 
 ** 0.3.0 (Beta/Sourceforge)
   - Write some documentation
   - rename project to thx (DONE)
   - make GPL aware
+
+** 0.3.1
+  - move data to consistent structure
+  - implement destructors
+  - tighten includes
+  - memory check code
+  - tidy code
+ 
 
 -------------------------------------------------------------------------------
 
@@ -65,6 +58,8 @@ of playable game in version 0.3.0 that could actually be enjoyed.
   - checkout if the ostrstream.str operator has memory leaking problems (the
     way it is used, that is).
   - A vertical projectile never seem to hit anything.
+  - The top 4 lines seems to have a wrong color?
+  - The tanks are rather "dusty" - the lighting is probably fucked.
 
 * Research
   - 3d collision detection

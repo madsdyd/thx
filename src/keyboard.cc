@@ -23,6 +23,9 @@ void keyboard_handler(unsigned char key, int x, int y) {
   }
 
   int canon_adjust = 1; /* Used for changing the canon) */
+  /* Scale our move */
+  double scale_move = 0.6;
+
   switch (key) {
     /*
      * q/Q: Quit
@@ -37,34 +40,34 @@ void keyboard_handler(unsigned char key, int x, int y) {
   case 'r': case 'R':
     /* +forward */
     Display->viewpoint->translation.x 
-      += sin(Display->viewpoint->rotation.z * M_PI / 180.0);
+      += scale_move * sin(Display->viewpoint->rotation.z * M_PI / 180.0);
     Display->viewpoint->translation.y 
-      += cos(Display->viewpoint->rotation.z * M_PI / 180.0);
+      += scale_move * cos(Display->viewpoint->rotation.z * M_PI / 180.0);
     Display->viewpoint->translation.z 
-      -= sin(Display->viewpoint->rotation.x * M_PI / 180.0);
+      -= scale_move * sin(Display->viewpoint->rotation.x * M_PI / 180.0);
     break;
   case 'f': case 'F':
     /* +backward */
     Display->viewpoint->translation.x 
-      -= sin(Display->viewpoint->rotation.z * M_PI / 180.0);
+      -= scale_move * sin(Display->viewpoint->rotation.z * M_PI / 180.0);
     Display->viewpoint->translation.y 
-      -= cos(Display->viewpoint->rotation.z * M_PI / 180.0);
+      -= scale_move * cos(Display->viewpoint->rotation.z * M_PI / 180.0);
     Display->viewpoint->translation.z 
-      += sin(Display->viewpoint->rotation.x * M_PI / 180.0);
+      += scale_move * sin(Display->viewpoint->rotation.x * M_PI / 180.0);
     break;
   case 'd': case 'D':
     /* +move_left */
     Display->viewpoint->translation.x 
-      -= cos(Display->viewpoint->rotation.z * M_PI / 180.0);
+      -= scale_move * cos(Display->viewpoint->rotation.z * M_PI / 180.0);
     Display->viewpoint->translation.y 
-      += sin(Display->viewpoint->rotation.z * M_PI / 180.0);
+      += scale_move * sin(Display->viewpoint->rotation.z * M_PI / 180.0);
     break;
   case 'g': case 'G':
     /* +move_rigth */
     Display->viewpoint->translation.x 
-      += cos(Display->viewpoint->rotation.z * M_PI / 180.0);
+      += scale_move * cos(Display->viewpoint->rotation.z * M_PI / 180.0);
     Display->viewpoint->translation.y 
-      -= sin(Display->viewpoint->rotation.z * M_PI / 180.0);
+      -= scale_move * sin(Display->viewpoint->rotation.z * M_PI / 180.0);
     break;
   case 't': case 'T':
     /* +up */

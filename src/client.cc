@@ -39,6 +39,7 @@
 /* Testing input events */
 #include "inputkeyboard.hh"
 #include "inputconsumer.hh"
+#include "command.hh"
 #include "commandconsumer.hh"
 
 #include <strstream>
@@ -83,7 +84,9 @@ void Client_Idle() {
   /* Empty the command chain */
 #ifdef INPUTCMD
   InputToCommand.Consume();
-  CommandDispatcher.Dispatch();
+  if (0 < CommandDispatcher.Dispatch()) {
+    glutPostRedisplay();
+  }
 #endif
   /* The display should always be updated */
   Display->Update(delta_time);
@@ -117,8 +120,8 @@ void Client_Idle() {
     /* Always post a redisplay - we need it to get back here, etc. */
     glutPostRedisplay();
   } else {
-    /* Sleep 50 ms = 50000 usec */
-    usleep(50000);
+    /* Sleep 25 ms = 50000 usec */
+    usleep(25000);
     /* TODO: Update the GameMenu */
   }
 }
@@ -178,11 +181,12 @@ void Client_Display() {
 	Display->FlatMode();
       }
 
+      // TODO: Fix 100 offset dependencies
       if (Client->has & CLIENT_HAS_ROUNDOVERMENU) {
-	RoundOverMenu->Render(0, 640, 100, 380);
+	RoundOverMenu->Render(0, Display->width, 100, Display->height-100);
       } else {
 	if (Client->has & CLIENT_HAS_GAMEOVERMENU) {
-	  GameOverMenu->Render(0, 640, 100, 380);
+	  GameOverMenu->Render(0, Display->width, 100, Display->height-100);
 	}
       }
       
@@ -310,10 +314,23 @@ void Client_PassiveMotion(int x, int y) {
 /* **********************************************************************
  * GameMenu Callback functions
  * *********************************************************************/
-
+// TODO: Convert this to command structure?
 void GameMenu_StartFunc() {
   /* We set our state accordingly */
   /* First a sanity check */
+  if (GameMode.GetMode() == gamemode_game) {
+    cerr << "GameMenu_StartFunc - already in game mode!" << endl;
+    return;
+  }
+  if (!GameMode.SetMode(gamemode_game)) {
+    cerr << "GameMenu_StartFunc - error changing gamemode!" << endl;
+    return;
+  }
+  // TODO: Somehow this does not seem to fit here....
+  inputkeyboard_disablerepeat();
+  /* cout << "Hiding GameMenu - this may not work at all..." << endl;
+  GameMenu->Hide(); 
+  cout << "TODO: Somewhere, show it again" << endl; */
   if (Client->game_running || Client->has) {
     cerr << "GameMenu_StartFunc() called with wrong state!" << endl;
   }
@@ -668,6 +685,9 @@ TClient::TClient(int argc, char ** argv) {
   InGameMenu->Show();
 
   /* The BuyMenu and ScoreMenu is not constructed here */
+
+  /* Register a command we handle */
+  CommandDispatcher.RegisterConsumer("quit", this);
 }
 
 /* **********************************************************************
@@ -739,3 +759,19 @@ void TClient::Run() {
   /* Start GLUT mainloop */
   glutMainLoop();
 }
+
+/* **********************************************************************
+ * The Client command handler
+ * *********************************************************************/
+bool TClient::CommandConsume(TCommand * Command) {
+  cout  << "TClient::CommandConsumer called for command (" 
+	<< Command->name << "," << Command->args << ")" << endl;
+  if ("quit" != Command->name) {
+    cerr << "TClient::CommandConsume non registered command! " 
+	 << Command->name << endl;
+    return false;
+  } else {
+    cout << "TODO: Clean up stuff" << endl;
+    exit(0);
+  }
+} 

@@ -32,7 +32,7 @@
 class TCommand;
 class TCommandConsumer {
 public:
-  void CommandConsume(TCommand * command);
+  virtual bool CommandConsume(TCommand * Command) = 0;
 };
 /* Define the mappings from command names to consumers */
 typedef map <string, TCommandConsumer *> TCommandConsumers;

@@ -26,23 +26,40 @@
 #include <string>
 #include <map>
 #include "inputkeyboard.hh"
-
+#include "gamemode.hh"
 
 /* This map contains the mappings between keyboard input events and
    command names */
-// TODO: Should keyboard events be able to map arguments? 
-typedef map <keyboard_inputevent_event_t, string, lt_kiet> TKeyboardCommandMap;
+class TCmdArg {
+public:
+  string cmd;
+  string arg;
+  TCmdArg() {
+    cmd = "ERROR";
+    arg = "42";
+  }
+  TCmdArg(string ncmd, string narg) {
+    cmd = ncmd; arg = narg;
+  }
+};
+
+typedef map <keyboard_inputevent_event_t, TCmdArg, lt_kiet> TKeyboardCommandMap;
 typedef TKeyboardCommandMap::iterator TKeyboardCommandMapIterator;
-/* TODO: There need to be more than a single keyboardmap */
-extern TKeyboardCommandMap KeyboardCommandMap;
 
 /* This class can consume input events and fill the command queue */
 class TInputToCommand {
+private:
+  /* There is a keyboard map for all modes */
+  TKeyboardCommandMap KeyboardCommandMap[gamemode_count];
 public: 
   /* The constructor sets up the initial mappings */
   TInputToCommand();
-  /* Returns the number of commands added to the command queue */
+  /* Consumes commands, and returns the number of commands added to
+     the command queue */
   int Consume();
+  /* Add a translation to the commandmap - true == added */
+  bool AddKeyboardMapping(gamemode_t mode, keyboard_inputevent_event_t event,
+			  string cmd, string arg);
 };
 
 /* The input consumer */

@@ -21,13 +21,14 @@
 */
 /* This is the implementation of the keyboard input to event handling */
 #include <GL/glut.h>
+#include <map>
 #include "inputkeyboard.hh"
 /* **********************************************************************
  * The TKeyboardInputEvent class (constructor) 
  * Creates an instance, sets attributes
  * *********************************************************************/
 TKeyboardInputEvent::TKeyboardInputEvent(keyboard_inputevent_type_t nkeyboard_inputevent,
-					 unsigned char nkey) 
+					 unsigned int nkey) 
   : TInputEvent(inputevent_type_keyboard) {
   keyboard_inputevent_event.key = nkey;
   keyboard_inputevent_event.type = nkeyboard_inputevent;
@@ -51,23 +52,114 @@ void KeyboardUpFunc(unsigned char key, int x, int y) {
 }
 
 /* **********************************************************************
+ * This table is used when mapping from GLUT key stuff to our format. 
+ * *********************************************************************/
+
+struct {
+  int glutkey;
+  int thxkey;
+} glutkey_to_thxkey[] = 
+{
+  {GLUT_KEY_F1, KEY_F1},
+  {GLUT_KEY_F2, KEY_F2},
+  {GLUT_KEY_F3, KEY_F3},
+  {GLUT_KEY_F4, KEY_F4},
+  {GLUT_KEY_F5, KEY_F5},
+  {GLUT_KEY_F6, KEY_F6},
+  {GLUT_KEY_F7, KEY_F7},
+  {GLUT_KEY_F8, KEY_F8},
+  {GLUT_KEY_F9, KEY_F9},
+  {GLUT_KEY_F10, KEY_F10},
+  {GLUT_KEY_F11, KEY_F11},
+  {GLUT_KEY_F12, KEY_F12},
+  {GLUT_KEY_UP, KEY_UP},
+  {GLUT_KEY_DOWN, KEY_DOWN},
+  {GLUT_KEY_LEFT, KEY_LEFT},
+  {GLUT_KEY_RIGHT, KEY_RIGHT},
+  {GLUT_KEY_HOME, KEY_HOME},
+  {GLUT_KEY_END, KEY_END},
+  {GLUT_KEY_PAGE_UP, KEY_PAGEUP},
+  {GLUT_KEY_PAGE_DOWN, KEY_PAGEDOWN},
+  {GLUT_KEY_INSERT, KEY_INSERT},
+  {0, 0}
+};
+
+/* This mapping is used between the two ways to specify keys */
+typedef map <int, int> TIntIntMap;
+typedef TIntIntMap::iterator TIntIntMapIterator;
+TIntIntMap glutkey_to_thxkeys;
+
+/* **********************************************************************
+ * Special{,Up}Func - called when a special key is pressed 
+ * Note that x,y is thrown away here. This may be stupid
+ * *********************************************************************/
+void SpecialFunc(int key, int x, int y) {
+  /* Map from glut to thx keys */
+  TIntIntMapIterator loc = glutkey_to_thxkeys.find(key);
+  if (loc != glutkey_to_thxkeys.end()) {
+    //    cout << "Sending " << (*loc).second << " down" << endl;
+    Inputs.Events.push(new TKeyboardInputEvent(keyboard_inputevent_type_down,
+					       (*loc).second));
+  } else {
+    cerr << "SpecialFunc - key " << key << " can not be mapped!" << endl;
+  }
+}
+
+void SpecialUpFunc(int key, int x, int y) {
+  /* Map from glut to thx keys */
+  TIntIntMapIterator loc = glutkey_to_thxkeys.find(key);
+  if (loc != glutkey_to_thxkeys.end()) {
+    // cout << "Sending " << (*loc).second << " up" << endl;
+    Inputs.Events.push(new TKeyboardInputEvent(keyboard_inputevent_type_up,
+					       (*loc).second));
+  } else {
+    cerr << "SpecialFunc - key " << key << " can not be mapped!" << endl;
+  }
+}
+
+/* **********************************************************************
  * Registering and deregistering keyboard handler functions in glut 
  * Registering also disables keyrepeat
  * *********************************************************************/
 void inputkeyboard_init() {
-  /* Disable global keyrepeat */
-  glutSetKeyRepeat(GLUT_KEY_REPEAT_OFF);
-  
+  /* Set up the keyboard mappings */
+  int i = 0;
+  glutkey_to_thxkeys.clear();
+  while(glutkey_to_thxkey[i].glutkey) {
+    glutkey_to_thxkeys[glutkey_to_thxkey[i].glutkey]
+      = glutkey_to_thxkey[i].thxkey;
+    i++;
+  }
+  /* Enable global keyrepeat - used in menus */
+  glutSetKeyRepeat(GLUT_KEY_REPEAT_ON);
   /* Set the keyboard functions */
   glutKeyboardFunc(KeyboardFunc);
   glutKeyboardUpFunc(KeyboardUpFunc);
+  glutSpecialFunc(SpecialFunc);
+  glutSpecialUpFunc(SpecialUpFunc);
 }
 
 void inputkeyboard_shutdown() {
   /* Reset the keyboard functions */
   glutKeyboardUpFunc(NULL);
   glutKeyboardFunc(NULL);
+  glutSpecialFunc(NULL);
+  glutSpecialUpFunc(NULL);
+  /* Reset global keyrepeat */
+  glutSetKeyRepeat(GLUT_KEY_REPEAT_DEFAULT);
+}
 
+void inputkeyboard_disablerepeat() {
+  /* Disable global keyrepeat */
+  glutSetKeyRepeat(GLUT_KEY_REPEAT_OFF);
+}
+
+void inputkeyboard_enablerepeat() {
+    /* Enable global keyrepeat */
+  glutSetKeyRepeat(GLUT_KEY_REPEAT_ON);
+}
+
+void inputkeyboard_restorerepeat() {
   /* Reset global keyrepeat */
   glutSetKeyRepeat(GLUT_KEY_REPEAT_DEFAULT);
 }

@@ -23,14 +23,30 @@
 #define __PLAYER_H__
 
 #include <string>
+#include <map>
 
 #include "color.hh"
 #include "viewpoint.hh"
-
+#include "commandconsumer.hh"
+#include "command.hh"
 /* A player is either a human or bot controlled participiant in the world */
+
+/* This type is used to control the active commands */
+typedef map <string, TCommand> TActiveCommands;
+typedef TActiveCommands::iterator TActiveCommandsIterator;
+typedef pair <string, TCommand> TActiveCommandsElement;
+
 class TInventory;
 class TTank;
-class TPlayer {
+class TPlayer : public TCommandConsumer {
+protected:
+  /* These are the commands that are active for the 
+     current client. The string is used to identify the 
+     command, mostly when removing and inserting commands */
+  map <string, TCommand> active_commands;
+  bool RegisterCommands();
+  bool UnregisterCommands();
+  void PerformCommandUpdate(system_time_t timenow);
 public:
   string name;            /* The players name */
   TInventory * inventory; /* Used to hold and create projectiles */
@@ -40,7 +56,13 @@ public:
   TColor color;           /* Used at all? */
   TViewpoint viewpoint;   /* The players viewpoint */
   TPlayer(string nname);
-  ~TPlayer();
+  virtual ~TPlayer();
   void PrepareRound(TVector * location);
+  void BeginTurn();       /* Called, when this players turn is about to start */
+  void EndTurn();         /* Called, when this players turn is about to end */
+  virtual bool CommandConsume(TCommand * Command);
+  /* The update command mostly handle the movement stuff */
+  void Update(system_time_t timenow
+);
 };
 #endif

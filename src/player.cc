@@ -25,8 +25,10 @@
 #include "inventory.hh"
 #include "tank.hh"
 
+#include "command.hh"
 /* **********************************************************************
-   The constructor */
+ * The constructor 
+ * *********************************************************************/
 TPlayer::TPlayer(string nname) { 
   name  = nname;
   money = 500;
@@ -55,4 +57,157 @@ void TPlayer::PrepareRound(TVector * location) {
   viewpoint.translation.y--;
   viewpoint.translation.y--;
   viewpoint.rotation.x = 45;
+}
+
+/* **********************************************************************
+ * Register and unregister the commands the player handle. 
+ * Currently, this is commands to control the viewpoint
+ * and the cannon (eventually)
+ * *********************************************************************/
+bool TPlayer::RegisterCommands() {
+  return CommandDispatcher.RegisterConsumer("viewpoint-move", this);
+}
+
+bool TPlayer::UnregisterCommands() {
+  return CommandDispatcher.UnregisterConsumer("viewpoint-move");
+}
+/* **********************************************************************
+ * Begin and end a turn. Mostly do command registering at the moment.
+ * *********************************************************************/
+void TPlayer::BeginTurn() {
+  RegisterCommands();
+}
+
+void TPlayer::EndTurn() {
+  UnregisterCommands();
+  /* Clear the commands */
+  active_commands.clear();
+}
+/* **********************************************************************
+ * PerformCommandUpdate
+ * The responsibility of this function is to perform the operation 
+ * stored in the "current" command.
+ * This is somewhat a test, as I am not sure this is the right way to 
+ * proceed.
+ * *********************************************************************/
+#include <stdio.h>
+void TPlayer::PerformCommandUpdate(system_time_t timenow) {
+  /* Perform action based on the stored_commands 
+     The map of commands is assumed to contain only commands that are 
+     valid - each of the actions associated with the commands are carried
+     out. 
+     The other methods may call this method freely. Since commands are
+     supposed to have monotomic timestamps, the timestamp from a command
+     should be OK to use for timenow.
+     All this is subject to change, of course...
+*/
+  
+  /* Iterate over all commands, do any action required */
+  TActiveCommandsIterator end = active_commands.end();
+  TActiveCommandsIterator i;
+  for (i = active_commands.begin(); i != end; i++) {
+    /* Do any action, scale after time, update the timestamp of the command */
+    TCommand Command = (*i).second;
+    /* TODO: This is probably some wrongly typecasting */
+    double scale_move = timenow - Command.timestamp;
+    if (scale_move < 0) {
+      printf("TPlayer::PerformCommandUpdate - time is %f\n", timenow);
+      /* This means that the command was entered after the last update, 
+	 which is not so weird. */
+      printf("TPlayer::PerformCommandUpdate scale_move is negative :%f\n", scale_move);
+    } else {
+      printf("TPlayer::PerformCommandUpdate scale_move is :%f\n", scale_move);
+      if ("viewpoint-move" == Command.name) {
+	// TODO: Actually use the +/- part of the args ... 
+	if ("+forward" == Command.args) {
+	  viewpoint.translation.x 
+	    += scale_move * sin(viewpoint.rotation.z * M_PI / 180.0);
+	  viewpoint.translation.y 
+	    += scale_move * cos(viewpoint.rotation.z * M_PI / 180.0);
+	  viewpoint.translation.z 
+	    -= scale_move * sin(viewpoint.rotation.x * M_PI / 180.0);
+	}
+	else if ("+backward" == Command.args) {
+	  viewpoint.translation.x 
+	    -= scale_move * sin(viewpoint.rotation.z * M_PI / 180.0);
+	  viewpoint.translation.y 
+	    -= scale_move * cos(viewpoint.rotation.z * M_PI / 180.0);
+	  viewpoint.translation.z 
+	    += scale_move * sin(viewpoint.rotation.x * M_PI / 180.0);
+	}
+	else if ("+left" == Command.args) {
+	  viewpoint.translation.x 
+	    -= scale_move * cos(viewpoint.rotation.z * M_PI / 180.0);
+	  viewpoint.translation.y 
+	    += scale_move * sin(viewpoint.rotation.z * M_PI / 180.0);
+	}
+	else if ("+right" == Command.args) {
+	  viewpoint.translation.x 
+	    += scale_move * cos(viewpoint.rotation.z * M_PI / 180.0);
+	  viewpoint.translation.y 
+	    -= scale_move * sin(viewpoint.rotation.z * M_PI / 180.0);
+	}
+	else if ("+up" == Command.args) {
+	  viewpoint.translation.z += scale_move;
+	}
+	else if ("+down" == Command.args) {
+	  viewpoint.translation.z -= scale_move;
+	}    
+	else {
+	  cerr << "TPlayer::PerformCommandUpdate, not handling ("
+	       << Command.name << "," << Command.args << ")" << endl;
+	  cout << "TPlayer::PerformCommandUpdate, need to remove command?"
+	       << endl;
+	}
+      } /* viewpoint-move */
+      Command.timestamp = timenow;
+    } /* time_scale < 0 */
+  } /* Iterate over all commands */
+}
+/* **********************************************************************
+ * Update - mostly to propagate the timenow to PerformCommandUpdate
+ * *********************************************************************/
+void TPlayer::Update(system_time_t timenow) {
+  PerformCommandUpdate(timenow);
+}
+  
+/* **********************************************************************
+ * Consume commands. Mostly viewpoint and cannon.
+ * It may not be the best thing to let the player handle this, but
+ * for now, that is how it is.
+ * *********************************************************************/
+bool TPlayer::CommandConsume(TCommand * Command) {
+  // TODO: Some state checking?
+
+  // Check if this is one we handle, check for +/-, 
+  // Remove/insert into active commands, PerformCommandUpdate
+  /* Check the first character in the args */
+  string plus_minus = Command->args.substr(0, 1);
+  string cmd_key    = Command->name + "%" + Command->args.substr(1,Command->args.size()-1);
+  if ("+" == plus_minus) {
+    /* This command needs to be added, unless it is a duplicate */
+    TActiveCommandsIterator i = active_commands.find(cmd_key);
+    if (i == active_commands.end()) {
+      /* No duplicates 
+	 This should use the copy constructor */
+      active_commands.insert(TActiveCommandsElement(cmd_key, Command));
+      cout << "CommandConsume - inserting " << cmd_key << " into active " << endl;
+    }
+    return true;
+  }
+  else if ("-" == plus_minus) {
+    /* Remove this command from the active map */
+    TActiveCommandsIterator i = active_commands.find(cmd_key);
+    if (i != active_commands.end()) {
+      /* Found one - remove it 
+	 First make sure that the time is current - that is, update all commands */
+      PerformCommandUpdate(Command->timestamp);
+      active_commands.erase(i);
+      cout << "CommandConsume - removing " << cmd_key << " from active " << endl;
+    }
+    return true;
+  }
+  cerr << "TPlayer::CommandConsumer, not handling ("
+       << Command->name << "," << Command->args << ")" << endl;
+  return false;
 }

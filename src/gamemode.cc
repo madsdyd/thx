@@ -19,25 +19,36 @@
     along with this program; if not, write to the Free Software
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
-#include "command.hh"
-/* The command queue */
-TCommands CommandQueue;
+#include "gamemode.hh"
+/* The Gamemode singleton */
+TGameMode GameMode;
+/* **********************************************************************
+ * TGameMode
+ * *********************************************************************/
 
 /* **********************************************************************
- * Constructors for TCommand 
+ * Constructor - default mode is menu
  * *********************************************************************/
-#include <stdio.h>
-TCommand::TCommand(system_time_t ntimestamp, string nname, string nargs = "") {
-  timestamp = ntimestamp;
-  name      = nname;
-  args      = nargs;
-  printf("TCommand::TCommand - time is %f\n", ntimestamp);
-  cout << "TCommand::TCommand(" << ntimestamp << ", " << nname 
-       << ", " << nargs << ")" << endl;
-};
+TGameMode::TGameMode() {
+  mode = gamemode_menu;
+}
 
-TCommand::TCommand(TCommand * cmd) {
-  timestamp = cmd->timestamp;
-  name      = cmd->name;
-  args      = cmd->args;
+/* **********************************************************************
+ * SetMode - eventually this may check some condition... for now, 
+ * just change.
+ * *********************************************************************/
+bool TGameMode::SetMode(gamemode_t newmode) {
+  if (newmode != gamemode_any) {
+    mode = newmode;
+    return true;
+  } else {
+    return false;
+  }
+}
+
+/* **********************************************************************
+ * GetMode
+ * *********************************************************************/
+gamemode_t TGameMode::GetMode() {
+  return mode;
 }

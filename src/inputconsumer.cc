@@ -24,8 +24,9 @@
 #include "inputconsumer.hh"
 #include "command.hh"
 
-/* The mappings from inputs to commands */
-TKeyboardCommandMap KeyboardCommandMap;
+/* Set to 1 to get mapping information */
+#define INPUT_DEBUG 0
+
 /* The InputToCommand object */
 TInputToCommand InputToCommand;
 
@@ -36,19 +37,73 @@ TInputToCommand InputToCommand;
 /* **********************************************************************
  * The TInputToCommand constructor - sets up default mappings
  * *********************************************************************/
-
-/* First some nice default mappings 
-   TODO: Something is rotten here? */
+/* First default mappings */
 struct keymap_t {
+  gamemode_t mode;
   keyboard_inputevent_event_t kev;
   char * cmd;
+  char * arg;
 };
 
 keymap_t key_map_std_keys_down[] =
 {
-  {{'a', keyboard_inputevent_type_down}, "a"},
+  /* GENERAL */
+  {gamemode_any,  {KEY_CTRLC,     keyboard_inputevent_type_down}, "quit", ""},
+  // TODO: Remove q?
+  {gamemode_any,  {'q',           keyboard_inputevent_type_down}, "quit", ""},
+  
+  /* MENU */
+  {gamemode_menu, {KEY_UP,        keyboard_inputevent_type_down}, "focus-change", "up"},
+  {gamemode_menu, {KEY_DOWN,      keyboard_inputevent_type_down}, "focus-change", "down"},
+  {gamemode_menu, {KEY_ESCAPE,    keyboard_inputevent_type_down}, "focus-change", "escape"},
+  {gamemode_menu, {KEY_ENTER,     keyboard_inputevent_type_down}, "menuitem", "select"},
+  {gamemode_menu, {' ',           keyboard_inputevent_type_down}, "menuitem", "select"},
+
+  /* EDIT */
+  /* itemedit - used to accept/cancel an editing operation */
+  {gamemode_edit, {KEY_ENTER,     keyboard_inputevent_type_down}, "itemedit", "accept"},
+  {gamemode_edit, {KEY_ESCAPE,    keyboard_inputevent_type_down}, "itemedit", "cancel"},
+  /* list is used to control a TListMenuItem */
+  {gamemode_edit, {KEY_UP,        keyboard_inputevent_type_down}, "list", "previous"},
+  {gamemode_edit, {KEY_DOWN,      keyboard_inputevent_type_down}, "list", "next"},
+  /* These are for TStringMenuItem */
+  /* 1=Ctrl+A, 2=Ctrl+B, 5=Ctrl+E, 6=Ctrl+F */
+  {gamemode_edit, {KEY_CTRLB,     keyboard_inputevent_type_down}, "point-move", "backward-char"},
+  {gamemode_edit, {KEY_LEFT,      keyboard_inputevent_type_down}, "point-move", "backward-char"},
+  {gamemode_edit, {KEY_CTRLF,     keyboard_inputevent_type_down}, "point-move", "forward-char"},
+  {gamemode_edit, {KEY_RIGHT,     keyboard_inputevent_type_down}, "point-move", "forward-char"},
+  {gamemode_edit, {KEY_CTRLA,     keyboard_inputevent_type_down}, "point-move", "beginning-of-line"},
+  {gamemode_edit, {KEY_HOME,      keyboard_inputevent_type_down}, "point-move", "beginning-of-line"},
+  {gamemode_edit, {KEY_CTRLE,     keyboard_inputevent_type_down}, "point-move", "end-of-line"},
+  {gamemode_edit, {KEY_END,       keyboard_inputevent_type_down}, "point-move", "end-of-line"},
+
+  {gamemode_edit, {KEY_BACKSPACE, keyboard_inputevent_type_down}, "edit", "delete-backward-char"},
+  {gamemode_edit, {KEY_CTRLD,     keyboard_inputevent_type_down}, "edit", "delete-char"},
+  {gamemode_edit, {KEY_DELETE,    keyboard_inputevent_type_down}, "edit", "delete-char"},
+  {gamemode_edit, {KEY_CTRLK,     keyboard_inputevent_type_down}, "edit", "kill-line"},
+  {gamemode_edit, {KEY_CTRLY,     keyboard_inputevent_type_down}, "edit", "yank"},
+  {gamemode_edit, {KEY_CTRLT,     keyboard_inputevent_type_down}, "edit", "transpose-chars"},
+
+  /* GAME */
+  {gamemode_game, {' ',           keyboard_inputevent_type_down}, "fire", ""},
+  {gamemode_game, {KEY_ESCAPE,    keyboard_inputevent_type_down}, "escape", ""},
+  /* Viewpoint manipulation commands */
+  {gamemode_game, {'r',           keyboard_inputevent_type_down}, "viewpoint-move", "+forward"},
+  {gamemode_game, {'r',           keyboard_inputevent_type_up},   "viewpoint-move", "-forward"},
+  {gamemode_game, {'f',           keyboard_inputevent_type_down}, "viewpoint-move", "+backward"},
+  {gamemode_game, {'f',           keyboard_inputevent_type_up},   "viewpoint-move", "-backward"},
+  {gamemode_game, {'d',           keyboard_inputevent_type_down}, "viewpoint-move", "+left"},
+  {gamemode_game, {'d',           keyboard_inputevent_type_up},   "viewpoint-move", "-left"},
+  {gamemode_game, {'g',           keyboard_inputevent_type_down}, "viewpoint-move", "+right"},
+  {gamemode_game, {'g',           keyboard_inputevent_type_up},   "viewpoint-move", "-right"},
+  {gamemode_game, {'t',           keyboard_inputevent_type_down}, "viewpoint-move", "+up"},
+  {gamemode_game, {'t',           keyboard_inputevent_type_up},   "viewpoint-move", "-up"},
+  {gamemode_game, {'b',           keyboard_inputevent_type_down}, "viewpoint-move", "+down"},
+  {gamemode_game, {'b',           keyboard_inputevent_type_up},   "viewpoint-move", "-down"},
+  
+
   /* FINAL */
-  {{'z', keyboard_inputevent_type_down}, ""}
+  {gamemode_any, {0, keyboard_inputevent_type_down}, "", ""}
 };
 
 TInputToCommand::TInputToCommand() {
@@ -56,13 +111,15 @@ TInputToCommand::TInputToCommand() {
   /* TODO: Nicer way to initialize - load and save, so on */
   /* Map the standard keys */
   i = 0;  
-  
   while(strcmp(key_map_std_keys_down[i].cmd, "")) {
-    cout << "i = " << i << endl;
-    KeyboardCommandMap[key_map_std_keys_down[i].kev] 
-      = key_map_std_keys_down[i].cmd;
+#if (INPUT_DEBUG)
+    cout << "Mapping key " << key_map_std_keys_down[i].kev.key << " to ("
+	 << key_map_std_keys_down[i].cmd << "," << key_map_std_keys_down[i].arg << ")" << endl;
+#endif
+    KeyboardCommandMap[key_map_std_keys_down[i].mode][key_map_std_keys_down[i].kev]
+      = TCmdArg(string(key_map_std_keys_down[i].cmd), string(key_map_std_keys_down[i].arg));
     i++;
-  }
+  }    
 }
 
 /* **********************************************************************
@@ -70,8 +127,9 @@ TInputToCommand::TInputToCommand() {
  * *********************************************************************/
 int TInputToCommand::Consume() {
   /* The consume method grabs input events from the inputevent queue and
-     figure out what command string is associated with the event. 
-     This is then added to the command queue */
+     figure out what command string is associated with the event.
+     First the current gamemode mappings is checked, then the anymode
+     If a mappings is found, it is added to the command queue */
   TInputEvent * InputEvent;
   int count = Inputs.Events.size();
   // cout << "The number of input events are " << count << endl;
@@ -82,43 +140,74 @@ int TInputToCommand::Consume() {
       /* Find the command in the keyboard map */
       TKeyboardInputEvent * KeyEvent 
 	= (TKeyboardInputEvent *) InputEvent;
+      /* Check the current mode */
       TKeyboardCommandMapIterator loc 
-	= KeyboardCommandMap.find(KeyEvent->keyboard_inputevent_event);
-      if (loc != KeyboardCommandMap.end()) {
+	= KeyboardCommandMap[GameMode.GetMode()].find(KeyEvent->keyboard_inputevent_event);
+      if (loc != KeyboardCommandMap[GameMode.GetMode()].end()) {
 	/* Found a "real" mapping */
-	cout << "TInputToCommand::Consume, key "
+#if (INPUT_DEBUG)
+	cout << "TInputToCommand::Consume, current mode, key "
 	     << KeyEvent->keyboard_inputevent_event.key
-	     << " maps to " << (*loc).second << endl;
+	     << " maps to \"" << (*loc).second.cmd << "\"" << endl;
+#endif
 	CommandQueue.push(new TCommand(KeyEvent->timestamp,
-				       (*loc).second));	       
+				       (*loc).second.cmd, (*loc).second.arg));
       } else {
-	/* No mapping found -
-	   Keyboard events for "down" that are not mapped, 
-	   generate a command that has the name of the key 
-	   if the key is within a certain range. */
-	if (keyboard_inputevent_type_down 
-	    == KeyEvent->keyboard_inputevent_event.type) {
-	  // TODO: Actually distpatch a command 
-	  cout << "TODO: Actually dispatch a command (automapped)" << endl;
-	  cout << "TInputToCommand::Consume, key (down)"
+	/* No mapping found for the current mode, check 
+	   for the any mode */
+	TKeyboardCommandMapIterator loc 
+	  = KeyboardCommandMap[gamemode_any].find(KeyEvent->keyboard_inputevent_event);
+	if (loc != KeyboardCommandMap[gamemode_any].end()) {
+	  /* Found a "real" mapping in the any mode<*/
+#if(INPUT_DEBUG)
+	  cout << "TInputToCommand::Consume, any mode, key "
 	       << KeyEvent->keyboard_inputevent_event.key
-	       << " automaps to " << "keydown " 
-	       << KeyEvent->keyboard_inputevent_event.key << endl;
+	       << " maps to \"" << (*loc).second.cmd << "\"" << endl;
+#endif
 	  CommandQueue.push(new TCommand(KeyEvent->timestamp,
-					 "keydown"));
-	  // TODO: Fix argument.
-	  //					 string(KeyEvent->keyboard_inputevent_event.key)));	
+					 (*loc).second.cmd, (*loc).second.arg));	       
 	} else {
-	  cout << "TInputToCommand::Consume, no mapping found for key "
-	       << ((TKeyboardInputEvent *) 
-		   InputEvent)->keyboard_inputevent_event.key 
-	       << " and this type (up)" << endl;
-	}
-      }
+	  /* No mapping found -
+	     Keyboard events for "down" that are not mapped,
+	     with key < 256 
+	     generate a command that has the name of the key 
+	     if the key is within a certain range. */
+	  if (keyboard_inputevent_type_down 
+	      == KeyEvent->keyboard_inputevent_event.type 
+	      && KeyEvent->keyboard_inputevent_event.key < 256) {
+#if(INPUT_DEBUG)
+	    cout << "TInputToCommand::Consume, key (down)"
+		 << KeyEvent->keyboard_inputevent_event.key
+		 << " automaps to " << "keydown " 
+		 << KeyEvent->keyboard_inputevent_event.key << endl;
+#endif
+	    /* I do not know how to do this properly... */
+	    char tmp[2];
+	    tmp[0] = KeyEvent->keyboard_inputevent_event.key;
+	    tmp[1] = 0;
+	    CommandQueue.push(new TCommand(KeyEvent->timestamp,
+					   "keydown", tmp));
+	  } 
+#if(INPUT_DEBUG)
+	  else {
+	    cout << "TInputToCommand::Consume, no mapping found for key "
+		 << ((TKeyboardInputEvent *) 
+		     InputEvent)->keyboard_inputevent_event.key;
+	    if (KeyEvent->keyboard_inputevent_event.type == 
+		keyboard_inputevent_type_down) {
+	      cout << " down";
+	    } else {
+	      cout << " up";
+	    }
+	    cout << endl;
+	  } /* Implicit mapping */
+#endif
+	} /* Any mode mapping */
+      } /* Current mode mapping */
       break;
-    }
+    } /* Keyboard */
     case inputevent_type_pointer:
-      cout << "TInputToCommand::Consume - no code to consume pointer events" << endl;
+      cerr << "TInputToCommand::Consume - no code to consume pointer events" << endl;
       break;
     default:
       cerr << "TInputToCommand::Consume - Unknown inputeventtype" << endl;
@@ -131,3 +220,22 @@ int TInputToCommand::Consume() {
   return count;
 }
 
+
+/* **********************************************************************
+ * The AddKeyboardMapping method.
+ * *********************************************************************/
+bool TInputToCommand::AddKeyboardMapping(gamemode_t mode, 
+					 keyboard_inputevent_event_t event,
+					 string cmd, string arg) {
+  /* Check if a mapping is already present */
+  TKeyboardCommandMapIterator loc 
+    = KeyboardCommandMap[mode].find(event);
+  if (loc != KeyboardCommandMap[GameMode.GetMode()].end()) {
+    /* A mapping alread exists. */
+    cerr << "TInputToCommand::AddKeyboardMapping - mapping for event already exists" << endl;
+    return false;
+  } else {
+    KeyboardCommandMap[mode][event] = TCmdArg(cmd, arg);
+    return true;
+  }
+}

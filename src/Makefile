@@ -2,10 +2,10 @@
 SOUNDDIR=
 CC=g++
 LFLAGS=-L/usr/X11R6/lib -lm -lglut -lGLU -lGL -lpthread
-CFLAGS=-Wall -D_REENTRANT -g -DSOUND_ON #-DINPUTCMD# -pg -pedantic 
+CFLAGS=-Wall -D_REENTRANT -g -DSOUND_ON -DINPUTCMD# -pg -pedantic 
 # -DSOUNDDIR=$(SOUNDDIR)
 
-SOURCES=command.cc commandconsumer.cc \
+SOURCES=gamemode.cc command.cc commandconsumer.cc \
 	inputconsumer.cc inputkeyboard.cc inputevent.cc console.cc \
 	types.cc game.cc keyboard.cc sound.cc display.cc tank.cc map.cc \
 	main.cc player.cc render.cc viewpoint.cc framerate.cc server.cc \
@@ -17,7 +17,10 @@ SOURCES=command.cc commandconsumer.cc \
 
 OBS=$(SOURCES:.cc=.o)
 TEXTOBS=$(addprefix glTexFont/,tga.o gltga.o text.o utility.o)
+#TEXTOBS=glTexFont/gltexfont.o
 all:	thx
+
+
 
 clean:	
 	rm -f ../core ../thx *~ *.o ../gmon.out *.d &&\

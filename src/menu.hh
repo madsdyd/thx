@@ -27,11 +27,12 @@
    Relations between the menus need to be set up at some later point. */
 
 #include "menuitem.hh"
+#include "commandconsumer.hh"
 
 #include "text.hh"
 extern TTextRender MenuTextRender;
 
-class TMenu {
+class TMenu : public TCommandConsumer{
 protected:
   string Title;
   /* The menuitems */
@@ -63,6 +64,8 @@ public:
   /* Hide this menu */
   void Hide();
 
+  /* Handle commands */
+  virtual bool CommandConsume(TCommand * Command);
   /* Handle the keyboard presses */
   bool KeyboardHandler(unsigned char key);
 

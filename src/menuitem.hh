@@ -24,7 +24,8 @@
 
 #include <string>
 #include <vector>
-
+#include "commandconsumer.hh"
+#include "gamemode.hh" 
 /* This declares items that can be part of a menu */
 typedef enum {menuitem_state_disabled, /* This menuitem wont accept focus */
 	      menuitem_state_blurred,  /* Is blurred, can take focus */
@@ -38,9 +39,7 @@ typedef enum {menuitem_state_disabled, /* This menuitem wont accept focus */
  This is a menuitem that serves as a basis for value and submenu menu
  items */
 class TMenu;
-
-class TMenuItem {
-
+class TMenuItem : public TCommandConsumer {
 protected:
   menuitem_state_t state;
   string caption;
@@ -48,14 +47,8 @@ protected:
   TMenu * Owner;
   /* Sets the render color based on the state */
   virtual void SetRenderColor();
-
 public:
-  TMenuItem(TMenu * owner, string cap, string desc) {
-    Owner       = owner;
-    state       = menuitem_state_blurred;
-    caption     = cap;
-    description = desc;
-  };
+  TMenuItem(TMenu * owner, string cap, string desc);
   virtual ~TMenuItem () {};
 
   /* Render will call SetRenderColor then render the caption */
@@ -65,49 +58,19 @@ public:
   string GetDescription() {
     return description;
   };
-
-  /* Disable, disables the menuitem */
-  virtual bool Disable() {
-    if (menuitem_state_blurred == state) {
-      state = menuitem_state_disabled;
-      return true;
-    } else {
-      return false;
-    }
-  }
-
-  /* Enable, enables the menuitem */
-  virtual bool Enable() {
-    if (menuitem_state_disabled == state) {
-      state = menuitem_state_blurred;
-      return true;
-    } else {
-      return false;
-    }
-  }
   
+  /* Enable and disable the menuitem */
+  virtual bool Enable();
+  virtual bool Disable();
+
+  /* Focus and Blur */
   /* Focus let the menu know that it has focus. It 
      will only handle keypresses and other events in 
      focused state. If it wont accept focus, false 
      will be returned, otherwise true */
-  virtual bool Focus() {
-    if (menuitem_state_blurred == state) {
-      state = menuitem_state_focused;
-      return true;
-    } else {
-      return false;
-    }
-  }
-
-  /* If we are in state editing, we wont allow disfocus */
-  virtual bool Blur() {
-    if (menuitem_state_selected == state 
-	|| menuitem_state_disabled) {
-      return false;
-    }
-    state = menuitem_state_blurred;
-    return true;
-  }
+  virtual bool Focus();
+  /* If the menu item is editing, it will not allow blur */
+  virtual bool Blur();
 
   /* Returns true if the key has been handled, false otherwise */
   virtual bool KeyboardHandler(unsigned char key) = 0;
@@ -130,6 +93,7 @@ public:
     Disable();
   };
   virtual bool KeyboardHandler(unsigned char key) { return true; };
+  virtual bool CommandConsume(TCommand * Command) { return false; };
   virtual void Render(int xlow, int xhigh);
 };
 
@@ -149,16 +113,31 @@ public:
 };
 
 /* **********************************************************************
+ * TSimpleActionMenuItem
+ * **********************************************************************
+ This menuitem is a base item for some very similar command handling
+ code. If it receives a select, it calls DoAction */
+class TSimpleActionMenuItem : public TMenuItem {
+protected:
+  virtual void DoAction() = 0;
+public:
+  TSimpleActionMenuItem(TMenu * owner, string cap, string desc) :
+    TMenuItem(owner, cap, desc) {};
+  virtual bool CommandConsume(TCommand * Command);
+};
+
+/* **********************************************************************
  * TSubMenuItem
  * **********************************************************************
-   This menuitem can show a sub menu */
-class TSubMenuItem : public TMenuItem {
+ This menuitem can show a sub menu */
+class TSubMenuItem : public TSimpleActionMenuItem {
 protected:
   TMenu * SubMenu;
+  virtual void DoAction();
 public:
   virtual bool KeyboardHandler(unsigned char key);
   TSubMenuItem(TMenu * owner, string cap, string desc, TMenu * subMenu) :
-    TMenuItem(owner, cap, desc) {
+    TSimpleActionMenuItem(owner, cap, desc) {
     SubMenu = subMenu;
   }
 };
@@ -167,10 +146,12 @@ public:
  * TReturnMenuItem
  * **********************************************************************
  This menuitem can return from a sub menu */
-class TReturnMenuItem : public TMenuItem {
+class TReturnMenuItem : public TSimpleActionMenuItem {
+protected:
+  virtual void DoAction();
 public:
   TReturnMenuItem(TMenu * owner, string cap, string desc) 
-    : TMenuItem(owner, cap, desc) {};
+    : TSimpleActionMenuItem(owner, cap, desc) {};
   virtual bool KeyboardHandler(unsigned char key);
 };
 
@@ -180,12 +161,14 @@ public:
    This menuitem performs an action and hides the menu */
 typedef void (*TAction)(void);
 
-class TActionMenuItem : public TMenuItem {
+class TActionMenuItem : public TSimpleActionMenuItem {
+protected:
+  virtual void DoAction();
 private:
   void (* function) (void);
 public:
   TActionMenuItem(TMenu * owner, string cap, string desc, TAction func) 
-    : TMenuItem(owner, cap, desc) {
+    : TSimpleActionMenuItem(owner, cap, desc) {
     function = func;
   };
   virtual bool KeyboardHandler(unsigned char key);
@@ -202,39 +185,35 @@ public:
 
 class TValueMenuItem : public TMenuItem {
 protected:
-  /* This is called when we leave focus state and go into editing state..
-     Returns true if we did enter the state, false otherwise */
-  virtual bool EnterEditState() {
-    /* In here, copying of the currentvalue to "new" should take place, 
-       then a state change */
-    state = menuitem_state_selected;
-    return true;
-  }
+  /* Used to store the mode in, when we go into editing. 
+     This will probably always be menu, but better safe than sorry */
+  gamemode_t StoredMode;
+  /* This is called when we leave focus state and go into editing
+     state..  Returns true if we did enter the state, false otherwise
+     Will also change the game mode, and call RegisterCommand */
+  virtual bool EnterEditState();
+  /* Leave edit state, will change the game mode, and
+     UnregisterCommand */
+  virtual bool LeaveEditState();
   /* During editing, validate can be called and will return accept or
      reject on the current user entered (new) value */
-  virtual bool ValidateNewValue(){
-    return true;
-  };
+  virtual bool ValidateNewValue();
   /* Will value the value, and possible accept it */
-  virtual bool AcceptNewValue() {
-    if (!ValidateNewValue()) {
-      return false;
-    }
-    /* In here, validation and copying back should take place */
-    state = menuitem_state_focused;
-    return true;
-  };
-  virtual void DiscardNewValue() {
-    /* In here, freeing temporary variables should take place. 
-       Then a state change */
-    state = menuitem_state_focused;
-  }
+  virtual bool AcceptNewValue();
+  virtual void DiscardNewValue();
+  /* This handles registering and unregistering commands that are
+     handled by this class.  Typically called when editing/selected
+     mode is entered/left. */
+  virtual bool RegisterCommands();
+  virtual bool UnregisterCommands();
+
 public:
   TValueMenuItem(TMenu * owner, string cap, string desc) 
     : TMenuItem(owner, cap, desc) {};
   
   /* Returns true if the key has been handled, false otherwise */
   virtual bool KeyboardHandler(unsigned char key);
+  virtual bool CommandConsume(TCommand * Command); 
 };
   
 /* **********************************************************************
@@ -246,6 +225,9 @@ private:
   std::vector<string> values;
   int selected_value;
   string * storage; /* the place where the value can be read */
+protected:
+  virtual bool RegisterCommands();
+  virtual bool UnregisterCommands();
 public:
   TListMenuItem(TMenu * owner, string cap, string desc, string * store) 
     : TValueMenuItem(owner, cap, desc) {
@@ -253,6 +235,8 @@ public:
     storage = store;
   };
   virtual bool KeyboardHandler(unsigned char key);
+  virtual bool CommandConsume(TCommand * Command);
+
   /* Add a value to be shown to the list */
   void AddValue(string nvalue);
   /* Renders both the menu entry and value */
@@ -265,6 +249,9 @@ public:
    This TMenuItem can edit a string.
    This could probably be done a lot smarter with templates, but... */
 class TStringMenuItem : public TValueMenuItem {
+protected:
+  virtual bool RegisterCommands();
+  virtual bool UnregisterCommands();
 private:
   unsigned int cursorpos;
   string new_value;
@@ -282,6 +269,6 @@ public:
   virtual void Render(int xlow, int xhigh);
   /* Returns true if the key has been handled, false otherwise */
   virtual bool KeyboardHandler(unsigned char key);
+  virtual bool CommandConsume(TCommand * Command);
 };
-
 #endif

@@ -65,9 +65,13 @@ TDisplay::TDisplay(int argc, char** argv) {
   textrender = new TTextRender;
 
   /* Default assumed */
+#ifdef INPUTCMD
+  width  = 320;
+  height = 240;
+#else  
   width  = 640;
   height = 480;
-  
+#endif
   flymode    = false; 
   clipmode   = false;
   num_frames = 0;
@@ -77,7 +81,7 @@ TDisplay::TDisplay(int argc, char** argv) {
   /* Let glut initialize a display and window */
   glutInit(&argc, argv);
   glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH);
-  glutInitWindowSize(640,480);
+  glutInitWindowSize(width,height);
   glutInitWindowPosition(0,0);
   glutCreateWindow("Tank Hill eXtreme");
   
@@ -177,6 +181,9 @@ void TDisplay::Reshape(int w, int h) {
   width  = w;
   height = h;
   
+  /* Set the textrender size */
+  textrender->size = h/40; /* 480/40 == 12 */
+
   /* Set the viewport - only needed on change */
   glViewport(0, 0, (GLsizei) w, (GLsizei) h);
 

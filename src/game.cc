@@ -33,6 +33,7 @@
 #include "explosion.hh"
 #include "tank.hh"
 #include "inventory.hh"
+#include "command.hh"
 
 /* The deltatime min and max are used like this:
 
@@ -131,6 +132,9 @@ void TGame::DoUpdateRoundRunning(system_time_t deltatime) {
     }
   }
   
+  /* Update the current player - to allow for smooth command handling, etc.  */
+  current_player->Update(last_update_time + deltatime);
+
   /* Remove or update entities */
   TEntitiesIterator End = entities.end();
   TEntitiesIterator tmp = NULL;
@@ -419,7 +423,9 @@ bool TGame::RoundStart() {
     /* Set next player - start with player 0 */
     current_num_player = 0;
     current_player     = playerInfos[0]->player;
-    
+    /* Tell this player it is its turn */
+    current_player->BeginTurn();
+
     /* This turn has number 1 */
     num_this_turn      = 1;
     num_stoppers       = 0; /* The number of entities that blocks rounds here */
@@ -429,12 +435,18 @@ bool TGame::RoundStart() {
     roundstate         = roundstate_can_fire;     /* Players may fire */
     /* Increase the round number */
     num_this_round++;
+    
+    /* Register the commands the game wants to consume */
+    CommandDispatcher.RegisterConsumer("fire", this);
+    // TODO: unregister this, when relevant! (Argh, where is that)
     return true;
   } else {
     cerr << "TGame::RoundStart() : Wrong state for starting" << endl;
     return false;
   }
 }
+
+
 
 /* **********************************************************************
    Update the active flag on players, according to their health.
@@ -477,6 +489,9 @@ void TGame::NextPlayer() {
     cerr << "ERROR: NextPlayer() with state == roundstate_not_ready" << endl;
   }
 
+  /* Tell the current player that his turn is done */
+  current_player->EndTurn();
+
   /* Check if the current round is over:
      only one active */
   if (UpdateActivePlayers() < 2) {
@@ -508,12 +523,14 @@ void TGame::NextPlayer() {
       }
     }
     // cout << "TGame::NextPlayer setting player to " << next_player << endl;
-
     /* Set the current and pointer to this player */
     current_num_player = next_player;
     current_player     = playerInfos[current_num_player]->player;
     /* And, can fire */
     roundstate = roundstate_can_fire;
+
+    /* And, let the player know that he can go ahead */
+    current_player->BeginTurn();
   }
 }
 
@@ -523,3 +540,14 @@ bool TGame::IsGameOver() {
   return (gamestate_done == gamestate);
 }
 
+/* **********************************************************************
+ * TGame::CommandConsume
+ * *********************************************************************/
+bool TGame::CommandConsume(TCommand * Command) {
+  // TODO: Maybe some more intelligent checking here. 
+  // For now, the fire checking is handled elsewhere
+  if ("fire" == Command->name) {
+    return FireProjectile();
+  }
+  return false;
+}

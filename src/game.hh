@@ -25,6 +25,7 @@
 
 /* Other includes */
 #include "entities.hh"
+#include "commandconsumer.hh"
 /* This module provides the actual game and gamestate
    and includes procedure that allow clients to connect to it, 
    create a game (create a map), let other clients connect to it, 
@@ -84,7 +85,8 @@ typedef TPlayerInfos::iterator TPlayerInfosIterator;
 
 class TMap;
 class TExplosion;
-class TGame {
+class TCommand;
+class TGame : public TCommandConsumer {
 private:
   /* GAME related stuff */
   /* These are for each time we wish to make a new map */
@@ -131,7 +133,7 @@ public:
   TPlayer * current_player;  /* Pointer to current player.
 				Accessed from keyboard.c :-/ */
   TGame(int nwidth, int nlenght, int nnum_rounds, float nmapsteepness);
-  ~TGame();
+  virtual ~TGame();
   TMap * GetMap();
   bool AddPlayer(TPlayer * player);
   /* Return a list of the playerinfos - used for menu manipulation */
@@ -159,5 +161,7 @@ public:
   /* Return true if the game is game over 
      Also updates the "active" on the players. */
   bool IsGameOver();
+  /* The command handler */
+  virtual bool CommandConsume(TCommand * Command);
 };
 #endif

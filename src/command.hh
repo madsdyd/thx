@@ -38,6 +38,7 @@ public:
                               or, if originated in input, the time of input */
   string name;             /* The name of the command - used for dispatching */
   string args;             /* Optional args to the command */
+  TCommand(TCommand * cmd);
   TCommand(system_time_t ntimestamp, string nname, string nargs = "");
 };
 /* This is the type of the command queue */

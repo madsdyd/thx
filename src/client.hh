@@ -40,8 +40,9 @@
    Oh, and of course it very little sense to put the client into a class, 
    but it makes it easier to refer to.
 */
-
-class TClient {
+#include "commandconsumer.hh"
+class TCommand;
+class TClient : public TCommandConsumer {
 public:
   bool game_running; /* If we do not have a game running, we show the 
 			game menu */
@@ -53,9 +54,11 @@ public:
      well. This includes the menu, sound and display system, but not the 
      (nonpresent) server */
   TClient(int argc, char ** argv);
-  ~TClient();
+  virtual ~TClient();
   /* Run the game - Used to dispatch the glut events, and so on... */
   void Run();
+  /* The Commands the client consume */
+  virtual bool CommandConsume(TCommand * Command); 
 };
  
 extern TClient * Client;

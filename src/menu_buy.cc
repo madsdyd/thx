@@ -73,6 +73,10 @@ public:
       return false;
     } 
   }
+  virtual bool CommandConsume(TCommand * Command) {
+    cout << "TBuyMenuItem::ConsumeCommand called" << endl;
+    return false;
+  }
   /* Budget adjust the state of the menu item */
   void Budget() {
     Blur();

@@ -13,14 +13,13 @@ of playable game in version 0.3.0 that could actually be enjoyed.
     game_cmds.hh
     keyboard.hh
     render.hh
-    sound.hh
+    sound.hh (DONE - sortof)
     textures.hh
     types.hh (DONE)
   - implement destructors
   - tighten includes
   - memory check code
   - tidy code
-  - Get control of the GL_LIGTH option. 
 
 ** 0.3.0 (Beta/Sourceforge)
   - Write some documentation

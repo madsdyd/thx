@@ -29,6 +29,7 @@ class TGameMenu : public TMenu {
 private:
   TMenu * NewGameMenu;
   TMenu * HelpMenu;
+  TMenu * AboutMenu;
   TMenu * ExitMenu;
 public:
   /* Storage for our variables that are set in the menus, but used in
@@ -47,6 +48,7 @@ public:
   ~TGameMenu() {
     delete NewGameMenu;
     delete HelpMenu;
+    delete AboutMenu;
     delete ExitMenu;
   }
 };

@@ -34,21 +34,25 @@ TGameMenu::TGameMenu(string title,
 		     TAction GameEndFunc) : TMenu(title) {
   NewGameMenu = new TMenu("New Game");
   HelpMenu    = new TMenu("Help");
+  AboutMenu   = new TMenu("About Tank Hill eXtreme");
   ExitMenu    = new TMenu("Really Exit?");
 
   /* ************************************************************
      The Main menu (this) */
   {
     // TMenuItem * tmpitem;
-    AddMenuItem(new TSubMenuItem(this, "Help", 
-				 "Hit enter for navigation help", 
-				 HelpMenu));
     AddMenuItem(new TSubMenuItem(this, "New Game", 
 				 "Starts a new game", 
 				 NewGameMenu));
     AddMenuItem(new TSubMenuItem(this, "Controls", 
 				 "Setup the controls", 
 				 ControlsMenu));
+    AddMenuItem(new TSubMenuItem(this, "Help", 
+				 "Help on Tank Hill eXtreme", 
+				 HelpMenu));
+    AddMenuItem(new TSubMenuItem(this, "About", 
+				 "Display info about Tank Hill eXtreme", 
+				 AboutMenu));
     /* Cancel/Exit */
     AddCancelMenuItem(new TSubMenuItem(this, "Exit", 
 				       "Exit the game", 
@@ -134,20 +138,44 @@ TGameMenu::TGameMenu(string title,
      The HelpMenu menu */
   {
     TInfoMenuItem * tmpinfo = new TInfoMenuItem(HelpMenu, "Info", 
-						"Use the arrow keys to select");
-    tmpinfo->AddLine("and change values in menus.");
-    tmpinfo->AddLine("In the game, default controls");
-    tmpinfo->AddLine("are d, g,f,r,t,b for moving");
-    tmpinfo->AddLine("your viewpoint, and h,j,k,u for");
-    tmpinfo->AddLine("rotating your viewpoint.");
-    tmpinfo->AddLine("The cannon is controlled with");
-    tmpinfo->AddLine("the arrow keys,+,-, and ENTER.");
+						"Welcome to Tank Hill eXtreme");
+    tmpinfo->AddLine("Tank Hill eXtreme is a 3D version");
+    tmpinfo->AddLine("of the mother of all games");
+    tmpinfo->AddLine("Scorched Earth");
+    tmpinfo->AddLine("The objective is to destroy your");
+    tmpinfo->AddLine("opponents tanks in any way possible");
+    tmpinfo->AddLine("");
+    tmpinfo->AddLine("Use the Controls menu");
+    tmpinfo->AddLine("to view and change controls.");
     tmpinfo->AddLine("Escape shows the in game menu.");
     tmpinfo->AddLine("q will quit the game at any point.");
     HelpMenu->AddMenuItem(tmpinfo);    
     HelpMenu->AddMenuItem(new TSpaceMenuItem(this));
     HelpMenu->AddCancelMenuItem(new TReturnMenuItem(HelpMenu, "Return", 
 					      "Return to previous menu"));
+  }
+  /* ************************************************************
+     The AboutMenu menu */
+  {
+    TInfoMenuItem * tmpinfo = new TInfoMenuItem(AboutMenu, "Info", 
+						"");
+    //tmpinfo->AddLine("");
+    tmpinfo->AddLine("Lead programmer");
+    tmpinfo->AddLine("Mads Bondo Dydensborg");
+    tmpinfo->AddLine("<mads@dydensborg.dk>");
+    tmpinfo->AddLine("");
+    tmpinfo->AddLine("OpenGL, models, and map coding");
+    tmpinfo->AddLine("Skjalm Arroe");
+    tmpinfo->AddLine("<skjalm@arroe.dk>");
+    tmpinfo->AddLine("");
+    tmpinfo->AddLine("THX is released under the GPL");
+    tmpinfo->AddLine("Visit the project homepage at");
+    tmpinfo->AddLine("sourceforge.net/projects/thx");
+    
+    AboutMenu->AddMenuItem(tmpinfo);    
+    AboutMenu->AddMenuItem(new TSpaceMenuItem(this));
+    AboutMenu->AddCancelMenuItem(new TReturnMenuItem(AboutMenu, "Return", 
+						     "Return to previous menu"));
   }
   /* ************************************************************
      The ExitMenu menu */

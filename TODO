@@ -6,9 +6,9 @@ This is an overview of what features go where. This is subject to change.
 - Loosen up on registering and unregistering commands - should not keep 
   a command, if failing to release another. (Maybe registering and release should
   always work?)
-- Make the init order more explicit (needed now?)
+- Is the grabbing of the mouse broken in windows?
 
-- Play with shadows
+- Play with fog (not shadows!)
 - Make a radar
 - Make a ceiling?
 
@@ -28,6 +28,7 @@ This is an overview of what features go where. This is subject to change.
   - Remove dead code.
   - Fix the public interface in a lot of classes.
   - a lot of files depends on vector.hh!
+  - make copy constructors explicit.
 
 ** 0.4.0 (AI)
   - Implement wind before going AI.
@@ -72,6 +73,8 @@ This is an overview of what features go where. This is subject to change.
   - tighten includes
   - memory check code
   - tidy code
+  - Make the init order more explicit (needed now?)
+  
  
 
 -------------------------------------------------------------------------------

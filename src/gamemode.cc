@@ -20,6 +20,9 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 #include "gamemode.hh"
+/* To change the way the mouse is working */
+#include "inputmouse.hh"
+
 /* The Gamemode singleton */
 TGameMode GameMode;
 /* **********************************************************************
@@ -38,8 +41,15 @@ TGameMode::TGameMode() {
  * just change.
  * *********************************************************************/
 bool TGameMode::SetMode(gamemode_t newmode) {
-  if (newmode != gamemode_any) {
+  if (newmode != gamemode_any && mode != newmode) {
     mode = newmode;
+    /* Changing the mode may influence the way the mouse works */
+    if (newmode == gamemode_game) {
+      inputmouse_centermode();
+    }
+    else {
+      inputmouse_normalmode();
+    }
     return true;
   } else {
     return false;

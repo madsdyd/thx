@@ -29,6 +29,8 @@
    retrieve it from glut, but this is easier */
 #include "display.hh"
 
+/* This is the centermode toggle */
+static bool centermode = false;
 
 /* **********************************************************************
  * The TMouseInputEvent class (constructor) 
@@ -87,14 +89,42 @@ void MouseFunc(int button, int state, int x, int y) {
 }
 
 /* **********************************************************************
+ * MouseFunc - called by both passive and motion func
+ * *********************************************************************/
+void MouseFunc(unsigned int x, unsigned int y, 
+	       mousebutton_button_t button) {
+  bool center = centermode && Display->GrabbingPointer;
+  int x2 = Display->GetWidth()/2;
+  int y2 = Display->GetHeight()/2;
+
+  /* This is a hack - if we are in centermode, and the source and
+     destination is the center of the screen, then ignore the event */
+  if (center
+      && x == oldx && y == oldy && x == x2 && y == y2) {
+    return;
+  }
+  /* If we are in centermode, push event that is relative to center,
+     otherwise push true event*/
+  /*  if (center) {
+      Inputs.Events.push(new TMouseInputEvent(mousemove, button, 
+      x, y, oldx, oldy));  
+      } else { */
+  Inputs.Events.push(new TMouseInputEvent(mousemove, button, 
+					  x, y, oldx, oldy));  
+  //  }
+  oldx = x;
+  oldy = y;
+  /* Make sure we warp back */
+  if (center) {
+    glutWarpPointer(x2, y2);
+  }
+}
+/* **********************************************************************
  * PassiveMotionFunc - called when the pointer is moved, with no
  * buttons pressed
  * *********************************************************************/
 void PassiveMotionFunc(int x, int y) {
-  Inputs.Events.push(new TMouseInputEvent(mousemove, mouse_none, 
-					  x, y, oldx, oldy));
-  oldx = x;
-  oldy = y;
+  MouseFunc((unsigned int) x, (unsigned int) y, mouse_none);
 }
 
 /* **********************************************************************
@@ -102,17 +132,14 @@ void PassiveMotionFunc(int x, int y) {
  * Note, this function will not work with multiple buttons pressed. 
  * *********************************************************************/
 void MotionFunc(int x, int y) {
-  Inputs.Events.push(new TMouseInputEvent(mousemove, last_button, 
-					  x, y, oldx, oldy));
-  oldx = x;
-  oldy = y;
+  MouseFunc((unsigned int) x, (unsigned int) y, last_button);
 }
 
 /* **********************************************************************
  * EntryFunc - called when the mouse enter/leaves our window
  * *********************************************************************/
 void EntryFunc(int state) {
-  /* If the mouse left us, quickly return it to the center. */
+  /* If the mouse left us, quickly return it to the last known state. */
   if (Display->GrabbingPointer() && GLUT_LEFT == state) {
     glutWarpPointer(oldx, oldy);
   }
@@ -141,4 +168,12 @@ void inputmouse_shutdown() {
   glutPassiveMotionFunc(NULL);
   glutMouseFunc(NULL);
 }
-
+/* **********************************************************************
+ * Center or normal mode
+ * *********************************************************************/
+void inputmouse_centermode() {
+  centermode = true;
+};
+void inputmouse_normalmode() {
+  centermode = false;
+};

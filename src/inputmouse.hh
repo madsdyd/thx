@@ -77,5 +77,9 @@ public:
    Will register OpenGL/GLUT callbacks (in this case). */
 void inputmouse_init();
 void inputmouse_shutdown();
+/* Centermode is used when we are playing the game, to make sure that 
+   the mouse is within the screen (warp) and that movements are registered */
+void inputmouse_centermode();
+void inputmouse_normalmode();
 #endif
 

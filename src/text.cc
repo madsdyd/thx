@@ -22,7 +22,8 @@
 #include "text.hh"
 #include "glTexFont/text.h"
 /* **********************************************************************
-   Create a TextRender */
+ * Create a TextRender
+ * *********************************************************************/
 TTextRender::TTextRender() {
   text_render = new text_t;
   shadow = false;
@@ -33,13 +34,15 @@ TTextRender::TTextRender() {
 }
 
 /* **********************************************************************
-   Destroy it */
+ * Destroy it
+ * *********************************************************************/
 TTextRender::~TTextRender() {
   delete text_render;
 }
 
 /* **********************************************************************
-   Load a font texture */
+ * Load a font texture
+ * *********************************************************************/
 GLint TTextRender::Load(const string filename) {
   GLint status = text_render->Load(filename.c_str());
   text_render->gap = 1.0/256.0;
@@ -50,19 +53,24 @@ GLint TTextRender::Load(const string filename) {
 }
 
 /* **********************************************************************
-   Pos - sets the position */
+ * Pos - sets the position
+ * *********************************************************************/
 void TTextRender::Pos(GLint xpos, GLint ypos) {
   x = xpos; y= ypos;
 } 
+GLint TTextRender::PosY() {
+  return y;
+}
 void TTextRender::PosY(GLint ypos) {
-  y= ypos;
+  y = ypos;
 } 
 void TTextRender::PosX(GLint xpos) {
   x = xpos;
 } 
 
 /* **********************************************************************
-   Draw - calls the renderer */
+ * Draw - calls the renderer
+ * *********************************************************************/
 void TTextRender::Draw(const string text) {
   if (shadow) {
     text_render->Shadow();
@@ -73,14 +81,16 @@ void TTextRender::Draw(const string text) {
 }
 
 /* **********************************************************************
-   Print */
+ * Print
+ * *********************************************************************/
 void TTextRender::Print(string text) {
   Draw(text);
   x += Metric(text);
 }
 
 /* **********************************************************************
-   Center */
+ * Center
+ * *********************************************************************/
 void TTextRender::Center(GLint min, GLint max, string text) {
   GLint metric = Metric(text);
   x = (max - min - metric)/2;
@@ -89,7 +99,8 @@ void TTextRender::Center(GLint min, GLint max, string text) {
 }
 
 /* **********************************************************************
-   Center on pivot character */
+ * Center on pivot character
+ * *********************************************************************/
 void TTextRender::Center(GLint min, GLint max, string text, string pivot) {
   int pivot_pos = text.find(pivot);
   string left   = text.substr(0, pivot_pos);
@@ -102,29 +113,33 @@ void TTextRender::Center(GLint min, GLint max, string text, string pivot) {
 }
 
 /* **********************************************************************
-   PrintLn */
+ * PrintLn
+ * *********************************************************************/
 void TTextRender::PrintLn(string text) {
   Draw(text);
   y -= size;
 }
 
 /* **********************************************************************
-   CenterLn */
+ * CenterLn
+ * *********************************************************************/
 void TTextRender::CenterLn(GLint min, GLint max, string text) {
   Center(min, max, text);
   y -= size;
 }
 
 /* **********************************************************************
-   CenterLn */
+ * CenterLn
+ * *********************************************************************/
 void TTextRender::CenterLn(GLint min, GLint max, string text, string pivot) {
   Center(min, max, text, pivot);
   y -= size;
 }
 
 /* **********************************************************************
-   Metric 
-   TODO: Fix this up. */
+ * Metric   
+ * TODO: Fix this up.
+ * *********************************************************************/
 GLint TTextRender::Metric(string text) {
   return size*text.size(); 
 }

@@ -42,6 +42,7 @@ public:
   GLint Load(const string filename);
   void Pos(GLint xpos, GLint ypos);
   void PosY(GLint ypos);
+  GLint PosY(); /* Returns the Y position */
   void PosX(GLint xpos);
   /* Draw line at current position, advances position */
   void Print(string text);

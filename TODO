@@ -6,14 +6,9 @@ This is an overview of what features go where. This is subject to change.
 - Loosen up on registering and unregistering commands - should not keep 
   a command, if failing to release another. (Maybe registering and release should
   always work?)
-- Is the grabbing of the mouse broken in windows?
 
-- Play with fog (not shadows!)
 - Make a radar
 - Make a ceiling?
-
-- Something needs to be done about the way arguments to commands are handled 
-  at the moment.
 
 
 ** 0.3.5 (Input customization)
@@ -36,25 +31,84 @@ This is an overview of what features go where. This is subject to change.
   - Connect to event pipelines
 
 ** 0.5.0 (Ressource management)
-  - Look below
+  - make flexible path support
+  - make texture ressource management
+  - make models ressource management
+  - make sound ressource management
 
 ** 0.6.0 (Models)
   - On disk model format
   - Loader
   - Renderer
+  - model for missiles
+  - model for tanks
 
 ** 0.7.0 (Map)
   - Change format to allow for LOD, culling, etc.
+  - Use fog?
+  - make nice map slide stuff/max steepness, wear out when distance to "changereason" 
+    increases
+  - support more map sizes
+  - slide on a map should be optional, as well as the max steepness.
+  - load landscape from file - with spawnpoints for tanks(?)
+  - LOD on landscape/only render stuff in front of viewer
 
 ** 0.8.0 (Physics and gameplay)
   - Look below for ideas and problems
+  - team support
+  - simultanous mode
+  - different tanks?
+  - direct hit should take out a tank
+  - support for moving the tank around
+  - better colision detection with tanks - projectiles should be checked against 
+    tanks as well as the ground
+  - separate physics engine from code? How?
+  - use bounding boxes for collision detection with tanks?
+  - landmines, that explodes when hit
+  - smoke trail from missiles
+  - smoke from damaged tanks
+  - napalm
+  - rolling bombs
+  - more projectiles
+  - burning areas of the map
+  - trees, stones, bushes
+  - lakes???
+
+** 0.8.5 (Customization)
+  - make real console
+  - support for storing a number of viewpoints for each player
+  - config/variable/alias/console system
+  - console
+  - controles
+  - configuration files
 
 ** 0.9.0 (Sound)
-  - Look below
+  - use OpenAL for sound
+  - how to get sound into the design at present
+  - missile fligth sound
+  - landscape slide sound
+  - damping on distance
+  - display sound for in game menu
+  - better sounds! (Really needed)
+
+** 0.9.5 (Graphics)
+  - find better textures
+  - blend textures when height changes. What does tuxracer do?
+  - better heigth related texturing
+  - shot animation (smoke?)
+  - nicer impact animation (smoke?)
+  - mipmapped textures (does this make a visible difference)
+  - change between different "stored" viewpoints.
+  - make nice dynamic HUD for multiple players.
+  - animate landscape slide/tanks falling?
+  - is it faster to minimize texture binds, or does it not matter when glList?
+  - experiment with field of view
+  - what about the textures - should they be mapped by steepnees, instead of height.
+  - world map sphere rendering? Skybox? Some kind of background picture
+  - burned ground texture where hits have happened
 
 ** 1.0.0 (User interface)
   - Title screen
-  - Credit screen
   - Intro?
   - Demo mode
   - rpm and deb files?
@@ -75,17 +129,7 @@ This is an overview of what features go where. This is subject to change.
   - tidy code
   - Make the init order more explicit (needed now?)
   
- 
-
--------------------------------------------------------------------------------
-
-* New structure
-
-* Ressource management
-  - make flexible path support
-  - make texture ressource management
-  - make models ressource management
-  - make sound ressource management
+ -------------------------------------------------------------------------------
 
 * Menu system
   - Make menuitem color
@@ -104,7 +148,8 @@ This is an overview of what features go where. This is subject to change.
   - should the display have the role of the client class, with respect to the
     rendering of menus?
 
-* Bugs
+* Bugs (Note, some of these may be fixed)
+  - Is the grabbing of the mouse broken in windows?
   - Sometimes, someone can not register a command. This may have something
     to do with the order the global objects are being created in. 
     Need to fix this - Singleton pattern?
@@ -139,77 +184,9 @@ This is an overview of what features go where. This is subject to change.
 
 * Gameplay/state
   - seperate gamestate from "client" side?
-  - help button - at least describe keys.
-  - config/variable/alias/console system
-  - team support
-  - computer players
-  - simultanous mode
-  - different tanks?
-  - direct hit should take out a tank
-  - support for moving the tank around
-
-* Map and Physics
-  - make nice map slide stuff/max steepness, wear out when distance to "changereason" 
-    increases
-  - better colision detection with tanks - projectiles should be checked against 
-    tanks as well as the ground
-  - separate physics engine from code? How?
-  - use bounding boxes for collision detection with tanks?
-  - support more map sizes
-  - slide on a map should be optional, as well as the max steepness.
-
-* Landscape
-  - load landscape from file? (Nah)
-
-* Display/rendering
-  - find better textures
-  - blend textures when height changes. What does tuxracer do?
-  - better heigth related texturing
-  - model for missiles
-  - model for tanks
-  - shot animation (smoke?)
-  - nicer impact animation (smoke?)
-  - LOD on landscape/only render stuff in front of viewer
-  - mipmapped textures (does this make a visible difference)
-  - change between different "stored" viewpoints.
-  - make nice dynamic HUD for multiple players.
-  - animate landscape slide/tanks falling?
-  - is it faster to minimize texture binds, or does it not matter when glList?
-  - experiment with field of view
-  - what about the textures, and more dynamic maps?
-  - world map sphere rendering?
-  - make real console
-  - support for storing a number of viewpoints for each player
-  - burned ground texture where hits have happened
-  - some kind of background picture
-
-* Entities to be implemented
-  - landmines, that explodes when hit
-  - smoke trail from missiles
-  - smoke from damaged tanks
-  - napalm
-  - rolling bombs
-  - more projectiles
-  - burning areas of the map
-  - trees, stones, bushes
-  - lakes???
-
-* Sound
-  - use OpenAL for sound
-  - how to get sound into the design at present
-  - missile fligth sound
-  - landscape slide sound
-  - damping on distance
-  - display sound for in game menu
-  - better sounds! (Really needed)
-
-* Control and configuration
-  - console
-  - controles
-  - configuration files
 
 * Clean up code
-  - encapsulate stuff in viewpoint
+  - encapsulate stuff in viewpoint(?)
 
 * Network
   - network support

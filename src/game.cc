@@ -100,7 +100,6 @@ TGame::TGame(int nwidth, int nlenght, int nnum_rounds,
 }
 
 TGame::~TGame() {
-  CommandDispatcher.UnregisterConsumer("fire");
   cout << "~TGame needs to clean up a lot of stuff" << endl;
 }
 
@@ -496,9 +495,6 @@ bool TGame::RoundStart() {
     /* Increase the round number */
     num_this_round++;
     
-    /* Register the commands the game wants to consume 
-       These are unregistered in the ~TGame function */
-    CommandDispatcher.RegisterConsumer("fire", this);
     return true;
   } else {
     cerr << "TGame::RoundStart() : Wrong state for starting" << endl;
@@ -609,11 +605,7 @@ bool TGame::IsGameOver() {
  * TGame::CommandConsume
  * *********************************************************************/
 bool TGame::CommandConsume(TCommand * Command) {
-  // TODO: Maybe some more intelligent checking here. 
-  // For now, the fire checking is handled elsewhere
-  if ("fire" == Command->name) {
-    return FireProjectile();
-  }
+  // TODO: The game handles no commands???
   return false;
 }
 

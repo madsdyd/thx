@@ -31,6 +31,9 @@
 /* We need to use this, if we use the mouse */
 #include "inputmouse.hh"
 
+/* We call some stuff from the TGame class */
+#include "game.hh"
+
 /* **********************************************************************
  * The constructor 
  * *********************************************************************/
@@ -78,6 +81,7 @@ void TPlayer::RegisterCommands() {
   CommandDispatcher.RegisterConsumer("viewpoint-rotate", this);
   CommandDispatcher.RegisterConsumer("cannon", this);
   CommandDispatcher.RegisterConsumer("inventory", this);
+  CommandDispatcher.RegisterConsumer("fire", this);
 }
 
 void TPlayer::UnregisterCommands() {
@@ -85,6 +89,7 @@ void TPlayer::UnregisterCommands() {
   CommandDispatcher.UnregisterConsumer("viewpoint-rotate");
   CommandDispatcher.UnregisterConsumer("cannon");
   CommandDispatcher.UnregisterConsumer("inventory");
+  CommandDispatcher.UnregisterConsumer("fire");
 }
 /* **********************************************************************
  * Begin and end a turn. Mostly do command registering at the moment.
@@ -281,6 +286,11 @@ bool TPlayer::CommandConsume(TCommand * Command) {
   // TODO: Some state checking?
   // cout << "TPlayer::CommandConsume" << endl;
   
+  /* The fire checking is handled by the game */
+  if ("fire" == Command->name) {
+    return game->FireProjectile();
+  }
+
   /* Handle inventory commands */
   if ("inventory" == Command->name) {
     if ("next-weapon" == Command->args) {

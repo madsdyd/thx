@@ -1,3 +1,8 @@
+20010725
+  - Moved the handling of the fire command from the TGame class to 
+    the player class - otherwise it was possible to fire when an IA player
+    was active (no good).
+
 20010716
   - Updated the basic AI to be slightly more interessting.
     Still nowhere fun enough to play with, but basic and in place..

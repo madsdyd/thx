@@ -2,12 +2,19 @@ Version schedule.
 
 This is an overview of what features go where. This is subject to change.
 
-** 0.3.3 (Mouseinput)
+** 0.3.4 (Gimmick)
+  - Animate the menu text? (Not mouse related, just fun).
+
+** 0.3.5 (Mouseinput continued)
   - XGrabPointer?
   - The mouse input mappings need to be aware of the mode (not?)
-  - Do some menu stuff with the mouse, maybe also animate the menu text?
 
-** 0.3.5 (Clean up)
+** 0.3.6 (Input customization)
+  - Make a controls menu, that allow for in game configuration of keys and 	
+    mouse actions.
+  - Save and load bindings.
+
+** 0.3.7 (Clean up)
   - Clean up dependencies between the different state variables
     especially the menu stuff and TGame stuff.
   - Remove dead code.

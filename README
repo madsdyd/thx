@@ -24,8 +24,14 @@ You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA   
 
-This program has only been tested under Linux. You need support for OpenGL 
-(MesaGL) and probably some sort of hardware support to run this program.
+----------------------------------------------------------------------
+* REQUIREMENTS
+
+This program has only been tested under Linux. You need support for OpenGL
+(Mesa3D) and probably some sort of hardware support to run this program.
+
+My development machine is a PPro 232 Mhz, 128 MB ram, with two V2 3dfx cards.
+I get about 40 fps on medium maps on this machine, which is good enough.
 
 ----------------------------------------------------------------------
 * COMPILING
@@ -36,6 +42,8 @@ $cd src && make && cd ..
 You may have to fix some includes and stuff, especially for
 <GL/*>. Some compilers seems to be more strict about implict type
 conversions than others.
+
+You will get several warnings. Most should be safe to ignore for now.
 
 ----------------------------------------------------------------------
 * RUNNING
@@ -58,19 +66,31 @@ The program does not grab the mouse - make sure that you do not move
 the mouse outside the window you start the program in, or you may
 loose control.
 
+If you get a full screen window, that does not react to your input, 
+you may be stuck with the mouse outside the window. Also, if another
+application grabs global focus, you may no longer be able to control
+thx. (This happens for me, when I use my 3dfx card, and my mail box
+pops a message up. In this case, I blind switch to a virtual console,
+log in, and run "killall thx", which solves my problems).
+
 ----------------------------------------------------------------------
 * CONTROLS DURING GAME
 
 (Subject to change, please check inputconsumer.cc)
 
+You can use the usual keys or the mouse to navigate the menus.
+
 * General
-quit the game     : q
+quit thx          : q    (at any point, shuts thx down)
 in game menu      : esc
 
 * Controlling your viewpoint
 move view         : d,g,r,f,t,b
 rotate view       : h,k
 tilt view         : u,j
+
+The above keys are laid out as the arrow keys for your left and
+right hand. 
 
 * Controlling your canon
 tilt kanon        : up,down

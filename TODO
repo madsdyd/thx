@@ -2,28 +2,30 @@ Version schedule.
 
 This is an overview of what features go where. This is subject to change.
 
-- Probably convert all angle, force, etc. stuff to doubles.
-- The keyrepeat is not enabled, when quitting.
-- Make the map fall down be more smooth
-- Do some mouse stuff?
-- The inputmappings need to be aware of the mode (not?)
-- Clean away old keyboard handling code.
-
 ** 0.3.1 (Input control)
-  - Define input pipeline
+  - Define input pipeline (DONE)
   - Collect input from various sources into pipeline
-    - keyboard
-    - special keys
+    - keyboard (DONE)
+    - special keys (DONE)
     - mouse
     - joystick ?
     - time ?
-  - Disable key repeat
+  - Disable key repeat (DONE)
+
+** 0.3.2 (Moving on with input)
+  - Clean away old keyboard handling code.
+  - Probably convert all angle, force, etc. stuff to doubles.
+  - The keyrepeat is not enabled, when quitting.
+  - Make the map fall down be more smooth
+  - Do some mouse stuff?
+  - joystick - time?
+  - The inputmappings need to be aware of the mode (not?)
   - XGrabPointer?
 
 ** 0.3.5 (Command generation)
-  - Make command structure
-  - Make TGame aware of command structure
-  - Forward events from pipeline to command structure
+  - Make command structure (DONE)
+  - Make TGame aware of command structure (DONE)
+  - Forward events from pipeline to command structure (DONE)
   - Clean up dependencies between the different state variables
     especially the menu stuff and TGame stuff.
   - Remove dead code.
@@ -32,16 +34,16 @@ This is an overview of what features go where. This is subject to change.
   - Implement AI entities
   - Connect to event pipelines
 
-** 0.5.0 (Models)
+** 0.5.0 (Ressource management)
+  - Look below
+
+** 0.6.0 (Models)
   - On disk model format
   - Loader
   - Renderer
 
-** 0.6.0 (Map)
+** 0.7.0 (Map)
   - Change format to allow for LOD, culling, etc.
-
-** 0.7.0 (Ressource management)
-  - Look below
 
 ** 0.8.0 (Physics and gameplay)
   - Look below for ideas and problems
@@ -142,6 +144,7 @@ This is an overview of what features go where. This is subject to change.
 
 * Display/rendering
   - find better textures
+  - blend textures when height changes. What does tuxracer do?
   - better heigth related texturing
   - model for missiles
   - model for tanks

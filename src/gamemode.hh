@@ -37,8 +37,9 @@
 typedef enum {gamemode_menu = 0, 
 	      gamemode_edit = 1,
               gamemode_game = 2,
-              gamemode_any  = 3} gamemode_t;
-const int gamemode_count = 4;
+              gamemode_any  = 3,
+	      gamemode_raw  = 4} gamemode_t;
+const int gamemode_count = 5;
 /* The gamemode class */
 class TGameMode {
 private:

@@ -21,6 +21,8 @@
 */
 #ifndef __INPUTMOUSE_HH__
 #define __INPUTMOUSE_HH__
+#include <string>
+
 /* This is for input events generated from the mouse */
 #include "inputevent.hh"
 
@@ -72,6 +74,10 @@ public:
 		   mousebutton_button_t nbutton,
 		   unsigned int nx, unsigned int ny,
 		   unsigned int noldx, unsigned int noldy);
+  /* These will construct from a string, and write it self to a string */
+  TMouseInputEvent(string value);
+  string ToString();
+  
 };
 /* Declare a global mouse handling setup function
    Will register OpenGL/GLUT callbacks (in this case). */

@@ -22,6 +22,7 @@
 /* This is the implementation of the mouse input to event handling */
 #include <GL/glut.h>
 #include <map>
+#include <strstream>
 #include "debug.hh"
 #include "inputmouse.hh"
 
@@ -47,7 +48,40 @@ TMouseInputEvent::TMouseInputEvent(mousebutton_action_t naction,
   y                             = ny;
   oldx                          = noldx;
   oldy                          = noldy;
+};
+
+/* **********************************************************************
+ * Write it self to string 
+ * *********************************************************************/
+string TMouseInputEvent::ToString() {
+  string result; 
+  ostrstream tmpstream;
+  /* We write a marker to be able to skip stuff in a string we do not
+     need */
+  tmpstream << " |+| " << (int) mouse_inputevent_event.action 
+	    << " " << (int) mouse_inputevent_event.button
+	    << " " << x << " " << y << " " << oldx << " " << oldy << ends;
+  /* Hopefully this will not violate some allocation policies */
+  return tmpstream.str();
+};
+/* **********************************************************************
+ * Construct from a string
+ * *********************************************************************/
+TMouseInputEvent::TMouseInputEvent(string value) 
+  : TInputEvent(inputevent_type_pointer) {
+  istrstream tmpstream(value.c_str());
+  string magic;
+  do {
+    tmpstream >> magic;
+    // TODO: I wonder what happens if we empty the string?
+    // I think it may loop forever. 
+    // I need to get a book on C++
+  } while (magic != "|+|");
+  tmpstream >> (int) mouse_inputevent_event.action 
+	    >> (int) mouse_inputevent_event.button
+	    >> x >> y >> oldx >> oldy;
 }
+
 /* **********************************************************************
  * Definition of glut callback functions
  * *********************************************************************/
@@ -86,6 +120,15 @@ void MouseFunc(int button, int state, int x, int y) {
   }
   oldx = x;
   oldy = y;
+  /* Testing */
+  {
+    TMouseInputEvent base(mousedown, last_button, 
+			  x, y, oldx, oldy);
+    cout << base.ToString() << endl;
+    TMouseInputEvent tmp(base.ToString());
+    cout << tmp.ToString() << endl;
+  }  
+
 }
 
 /* **********************************************************************

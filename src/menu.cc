@@ -177,14 +177,14 @@ TMenu * TMenu::GetCurrentMenu() {
 void TMenu::Render(int xlow, int xhigh, int ylow, int yhigh) {
   if (visible) {
     /* Render the menu title at the top (offset 2*size), centered in magenta */
-    MenuTextRender.color = ColorDefinitions.GetColor("magenta");
+    MenuTextRender.color = ColorDefinitions.GetColor("menu-title");
     MenuTextRender.size = Display->height/20; /* 480/20 == 24 */
     MenuTextRender.PosY(yhigh-2*MenuTextRender.size);
     MenuTextRender.Center(xlow, xhigh, Title);
     
     /* Render a descrition of the focused items description
        at the bottom of the screen in yellow */
-    MenuTextRender.color = ColorDefinitions.GetColor("yellow");
+    MenuTextRender.color = ColorDefinitions.GetColor("menu-description");
     MenuTextRender.size = Display->height/34;  /* 480/34 ~= 14 */
     MenuTextRender.PosY(ylow+4*MenuTextRender.size);
     MenuTextRender.Center(xlow, xhigh, menuitems[focuseditem]->GetDescription());

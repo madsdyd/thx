@@ -25,8 +25,8 @@
 #include "debug.hh"
 #include "inputmouse.hh"
 
-/* Sadly, this unit needs to know stuff about the display - I could retrieve
-   it from glut, but this is easier */
+/* Sadly, this unit needs to know stuff about the display - I could
+   retrieve it from glut, but this is easier */
 #include "display.hh"
 
 
@@ -76,9 +76,11 @@ void MouseFunc(int button, int state, int x, int y) {
   }
   /* Push an event, store the new values as old */
   if (GLUT_DOWN == state) {
-    Inputs.Events.push(new TMouseInputEvent(mousedown, last_button, x, y, oldx, oldy));
+    Inputs.Events.push(new TMouseInputEvent(mousedown, last_button, 
+					    x, y, oldx, oldy));
   } else {
-    Inputs.Events.push(new TMouseInputEvent(mouseup, last_button, x, y, oldx, oldy));
+    Inputs.Events.push(new TMouseInputEvent(mouseup, last_button, 
+					    x, y, oldx, oldy));
   }
   oldx = x;
   oldy = y;
@@ -89,7 +91,8 @@ void MouseFunc(int button, int state, int x, int y) {
  * buttons pressed
  * *********************************************************************/
 void PassiveMotionFunc(int x, int y) {
-  Inputs.Events.push(new TMouseInputEvent(mousemove, mouse_none, x, y, oldx, oldy));
+  Inputs.Events.push(new TMouseInputEvent(mousemove, mouse_none, 
+					  x, y, oldx, oldy));
   oldx = x;
   oldy = y;
 }
@@ -99,7 +102,8 @@ void PassiveMotionFunc(int x, int y) {
  * Note, this function will not work with multiple buttons pressed. 
  * *********************************************************************/
 void MotionFunc(int x, int y) {
-  Inputs.Events.push(new TMouseInputEvent(mousemove, last_button, x, y, oldx, oldy));
+  Inputs.Events.push(new TMouseInputEvent(mousemove, last_button, 
+					  x, y, oldx, oldy));
   oldx = x;
   oldy = y;
 }
@@ -109,14 +113,14 @@ void MotionFunc(int x, int y) {
  * *********************************************************************/
 void EntryFunc(int state) {
   /* If the mouse left us, quickly return it to the center. */
-  if (GLUT_LEFT == state) {
-    // glutWarpPointer(Display->GetWidth()/2, Display->GetHeight()/2);
+  if (Display->GrabbingPointer() && GLUT_LEFT == state) {
+    glutWarpPointer(oldx, oldy);
   }
 }
 
-/* **********************************************************************
+/* ***************************************************************a*******
  * Registering and deregistering mouse handler functions in glut 
- * Registering also disables keyrepeat
+ * Registering also warps the pointer to the center of the display
  * *********************************************************************/
 void inputmouse_init() {
   /* Set the mouse functions */
@@ -124,9 +128,8 @@ void inputmouse_init() {
   glutPassiveMotionFunc(PassiveMotionFunc);
   glutMotionFunc(MotionFunc);
   glutSetCursor(GLUT_CURSOR_NONE);
-  /* Testing... */
   glutEntryFunc(EntryFunc);
-  /* Warp the pointer to the center of our screen */
+  /* Warp the pointer to the center of our display to start with */
   glutWarpPointer(Display->GetWidth()/2, Display->GetHeight()/2);
 }
 

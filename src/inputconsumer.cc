@@ -50,8 +50,14 @@ keymap_t key_map_std[] =
 {
   /* GENERAL */
   {gamemode_any,  {KEY_CTRLC,     keydown}, "quit", ""},
+  /* NOTE: Any "normal" keys, that are used in any mode, needs to be mapped
+     to keydown 'key' in the gamemode_edit mode! Otherwise, they can not 
+     be typed into names and so on */
   // TODO: Remove q?
   {gamemode_any,  {'q',           keydown}, "quit", ""},
+  {gamemode_edit, {'q',           keydown}, "keydown", "q"},
+  {gamemode_any,  {'a',           keydown}, "toggle-pointer-grab", ""},
+  {gamemode_edit, {'a',           keydown}, "keydown", "a"},
   
   /* MENU */
   {gamemode_menu, {KEY_UP,        keydown}, "focus-change", "up"},
@@ -113,14 +119,6 @@ keymap_t key_map_std[] =
   {gamemode_game, {'k',           keyup},   "viewpoint-rotate", "-right"},
   // TODO?: keyboard.cc : e == viewpoint->Reset(..);
   /* Tank manipulation stuff */
-  {gamemode_game, {'n',           keydown}, "canon", "+rotate-left"},
-  {gamemode_game, {'n',           keyup},   "canon", "-rotate-left"},
-  {gamemode_game, {'m',           keydown}, "canon", "+rotate-right"},
-  {gamemode_game, {'m',           keyup},   "canon", "-rotate-right"},
-  {gamemode_game, {'a',           keydown}, "canon", "+raise"},
-  {gamemode_game, {'a',           keyup},   "canon", "-raise"},
-  {gamemode_game, {'z',           keydown}, "canon", "+lower"},
-  {gamemode_game, {'z',           keyup},   "canon", "-lower"},
   {gamemode_game, {KEY_LEFT,      keydown}, "canon", "+rotate-left"},
   {gamemode_game, {KEY_LEFT,      keyup},   "canon", "-rotate-left"},
   {gamemode_game, {KEY_RIGHT,     keydown}, "canon", "+rotate-right"},
@@ -130,10 +128,6 @@ keymap_t key_map_std[] =
   {gamemode_game, {KEY_DOWN,      keydown}, "canon", "+lower"},
   {gamemode_game, {KEY_DOWN,      keyup},   "canon", "-lower"},
   /* Force */
-  {gamemode_game, {'p',           keydown}, "canon", "+force-increase"},
-  {gamemode_game, {'p',           keyup},   "canon", "-force-increase"},
-  {gamemode_game, {'o',           keydown}, "canon", "+force-decrease"},
-  {gamemode_game, {'o',           keyup},   "canon", "-force-decrease"},
   {gamemode_game, {'+',           keydown}, "canon", "+force-increase"},
   {gamemode_game, {'+',           keyup},   "canon", "-force-increase"},
   {gamemode_game, {'-',           keydown}, "canon", "+force-decrease"},

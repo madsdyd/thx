@@ -84,6 +84,8 @@ TDisplay::TDisplay(int argc, char** argv) {
   flymode     = true; 
   clipmode    = false;
   grabpointer = true;
+  cout << "Warping pointer - hit 'a' to disable (default mapping)" 
+       << endl;
   num_frames  = 0;
   viewpoint   = NULL;
   console     = new TConsole(1000); /* 1000 lines is stored */
@@ -176,6 +178,10 @@ TDisplay::TDisplay(int argc, char** argv) {
   if (!CommandDispatcher.RegisterConsumer("render", this)) {
     cerr << "TDisplay::TDisplay - could not register (render) command" << endl;
   }
+  if (!CommandDispatcher.RegisterConsumer("toggle-pointer-grab", this)) {
+    cerr << "TDisplay::TDisplay - could not register (toggle-pointer-grab) command" 
+	 << endl;
+  }
 }
 
 
@@ -188,6 +194,9 @@ TDisplay::~TDisplay() {
     cerr << "TDisplay::~TDisplay - could not unregister (display) commands" << endl;
   }
   if (!CommandDispatcher.UnregisterConsumer("render")) {
+    cerr << "TDisplay::~TDisplay - could not unregister (display) commands" << endl;
+  }
+  if (!CommandDispatcher.UnregisterConsumer("toggle-pointer-grab")) {
     cerr << "TDisplay::~TDisplay - could not unregister (display) commands" << endl;
   }
   delete textrender;
@@ -528,6 +537,9 @@ void TDisplay::RefreshRate() {
  * **********************************************************************
  * *********************************************************************/
 bool TDisplay::CommandConsume(TCommand * Command) {
+  /* **********************************************************************
+   * (display)
+   * *********************************************************************/
   if ("display" == Command->name) {
     if ("toggle-flymode" == Command->args) {
       if(flymode) {
@@ -552,6 +564,9 @@ bool TDisplay::CommandConsume(TCommand * Command) {
       return true;
     } 
   } /* (display) */
+  /* **********************************************************************
+   * (render)
+   * *********************************************************************/
   else if ("render" == Command->name) {
     if ("lines" == Command->args) {
       render_type = render_type_lines;
@@ -609,7 +624,13 @@ bool TDisplay::CommandConsume(TCommand * Command) {
     // Game->GetMap()->Invalidate();
     }
   } /* (render) */
-
+  /* **********************************************************************
+   * (toggle-pointer-grab)
+   * *********************************************************************/
+  else if ("toggle-pointer-grab" == Command->name) {
+    grabpointer = !grabpointer;
+    return true;
+  }
   cerr << "TDisplay::CommandConsume, not handling ("
        << Command->name << "," << Command->args << ")" << endl;
   return false;

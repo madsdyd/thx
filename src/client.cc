@@ -84,11 +84,13 @@ void Client_Idle() {
   last_time                = time_now;
   /* Empty the command chain */
   InputToCommand.Consume();
-  if (0 < CommandDispatcher.Dispatch()) {
-    glutPostRedisplay();
-  }
+  CommandDispatcher.Dispatch();
+  /* Always post a redisplay - either the menu or game needs to update */
+  glutPostRedisplay();
+
   /* The display should always be updated */
   Display->Update(delta_time);
+
   /* Main switch on wheter or not a game is running */
   if (Client->game_running) {
     /* Check the different elements */
@@ -123,14 +125,7 @@ void Client_Idle() {
     }
     /* Make frames count. TODO: Should go else where? */
     framerate_add(time_now, Display->num_frames);
-    
-    /* Always post a redisplay - we need it to get back here, etc. */
-    glutPostRedisplay();
-  } else {
-    /* Sleep 25 ms = 50000 usec */
-    usleep(25000);
-    /* TODO: Update the GameMenu */
-  }
+  } 
 }
   
 

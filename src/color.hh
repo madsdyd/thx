@@ -53,6 +53,8 @@ public:
   GLfloat * Alpha() {
     return &(data[3]);
   }
+  /* Scale the color by a double */
+  void SetIntensity(double intensity);
 };
 
 typedef std::map<string, TColor> TColors;

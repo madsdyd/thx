@@ -141,19 +141,26 @@ bool TMenuItem::TestHit(int x, int y) {
 void TMenuItem::SetRenderColor() {
   switch (state) {
   case menuitem_state_disabled:
-    MenuTextRender.color = ColorDefinitions.GetColor("gray");
+    MenuTextRender.color = ColorDefinitions.GetColor("menu-item-disabled");
     break;
   case menuitem_state_blurred:
     // cout << caption << " does not have focus" << endl;
-    MenuTextRender.color = ColorDefinitions.GetColor("red");
+    MenuTextRender.color = ColorDefinitions.GetColor("menu-item-blurred");
     break;
   case menuitem_state_focused:
-    // cout << caption << " has focus" << endl;
-    MenuTextRender.color = ColorDefinitions.GetColor("green");
-    break;
+    {
+      // cout << caption << " has focus" << endl;
+      MenuTextRender.color = ColorDefinitions.GetColor("menu-item-focused");
+      /* Here I am abusing the fact that system_time_t is a double */
+      system_time_t tmp = system_gettime();
+      /* Reduce to 0 - M_PI */
+      tmp = tmp - floor(tmp/M_PI)*M_PI;
+      MenuTextRender.color.SetIntensity(fabs(sin(3*tmp))*0.7+0.5);
+      break;
+    }
   case menuitem_state_selected:
     // cout << caption << " is editing " << endl;
-    MenuTextRender.color = ColorDefinitions.GetColor("blue");
+    MenuTextRender.color = ColorDefinitions.GetColor("menu-item-selected");
     break;
   }
 }
@@ -240,7 +247,7 @@ void TInfoMenuItem::AddLine(string line) {
  * Render the text over multiple lines
  * *********************************************************************/
 void TInfoMenuItem::Render(int xlow, int xhigh) {
-  MenuTextRender.color = ColorDefinitions.GetColor("white");
+  MenuTextRender.color = ColorDefinitions.GetColor("menu-item-info");
   MenuTextRender.CenterLn(xlow, xhigh, description);
   for (unsigned int i = 0; i < lines.size(); i++) {
     MenuTextRender.CenterLn(xlow, xhigh, lines[i]);

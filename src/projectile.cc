@@ -79,7 +79,9 @@ TProjectile * TProjectile::Fire(TVector * loc, TVector * vel) {
  * OnOrbit - default spawns little explosion
  * *********************************************************************/
 void TProjectile::OnOrbit(TGame * game, system_time_t deltatime) {
-  Display->console->AddLine("projectile went into orbit");
+  Display->console->AddLine("Projectile went into orbit");
+  /* Insert small delay */
+  game->AddEntity(new TDelay(owner, 1)); 
   /* Insert small explosion entity */
   /*  game->AddEntity(new TExplosion(owner, location, radius/4.0, 1.0, strength/4.0));
 #ifdef SOUND_ON

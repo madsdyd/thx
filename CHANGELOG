@@ -7,6 +7,8 @@
   - Tagging 0.3.4.5
   - Updated README
   - Tagging 0.3.5.0 and releasing it
+  - Demystified creation of objects in tank.cc
+  - Added slight delay when projectile orbits.
 
 20010428
   - Made TScollMenuItem and made all menus potentially have such a beast.

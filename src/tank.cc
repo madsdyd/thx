@@ -44,8 +44,9 @@
  * Initialize a tank
  * *********************************************************************/
 TTank::TTank(TPlayer * owner) : TEntity(owner) {
-  model = new TObject;
-  barrel = new TObject;
+  /* Setup the models */
+  model  = NULL;
+  barrel = NULL;
   /* Override default behaviour, we do not want to be freed be the game, 
      since players still reference us */
   free = false;
@@ -56,7 +57,10 @@ TTank::TTank(TPlayer * owner) : TEntity(owner) {
  * Destruct a tank
  * *********************************************************************/
 TTank::~TTank() {
-  delete model;
+  if (model) {
+    delete model;
+    delete barrel;
+  }
 }
 
 /* **********************************************************************
@@ -74,8 +78,13 @@ void TTank::PrepareRound(TGame * game, TVector * loc) {
   cannon.angle    = 45.0;
   cannon.rotation = 0.0;
   cannon.force    = 15.0;
-  default_tank(model, &color);
-  abrams_barrel(barrel, &color);
+  /* This can not be setup until we know the color */
+  if (!model) {
+    model  = new TObject();
+    barrel = new TObject();
+    default_tank(model, &color);
+    abrams_barrel(barrel, &color);
+  }
 
   /* Level the area */
   game->GetMap()->LevelArea(loc);

@@ -31,7 +31,9 @@ clean:
 #
 # main target
 
-thx:	$(OBS) $(TEXTOBS)
+thx:	../thx
+
+../thx:	$(OBS) $(TEXTOBS)
 	$(CC) $(CFLAGS) $(LFLAGS) -o ../thx $(TEXTOBS) $(OBS)
 
 ######################################################################

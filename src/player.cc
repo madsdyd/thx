@@ -296,43 +296,73 @@ bool TPlayer::CommandConsume(TCommand * Command) {
       return true;
     }
   }
+
   /* Viewpoint-rotate by mouse */
   if ("viewpoint-rotate" == Command->name) {
     if ("mouse" == Command->args.substr(0, 5)) {
       TMouseInputEvent MouseEvent(Command->args);
-      int xd, yd;
+      double xd, yd;
       /* Get relative always */
-      xd = MouseEvent.x - MouseEvent.oldx;
-      yd = MouseEvent.y - MouseEvent.oldy;
-      // cout << "TPlayer: mouse diff " << xd << ", " << yd << endl;
+      xd = (MouseEvent.x - MouseEvent.oldx)*0.15;
+      yd = (MouseEvent.y - MouseEvent.oldy)*0.15;
+
       /* Change the viewpoint */
       /* Left, right */
-      viewpoint.rotation.z += xd * 0.15;
-      if (viewpoint.rotation.z < 0.0) 
+      viewpoint.rotation.z += xd;
+      while (viewpoint.rotation.z < 0.0) 
 	viewpoint.rotation.z += 360.0;
-      if (viewpoint.rotation.z > 360.0) 
+      while (viewpoint.rotation.z > 360.0) 
 	viewpoint.rotation.z -= 360.0;
       /* Up/down */
-      viewpoint.rotation.x += yd * 0.15;
-      if (viewpoint.rotation.x < 0.0) 
+      viewpoint.rotation.x += yd;
+      while (viewpoint.rotation.x < 0.0) 
 	viewpoint.rotation.x += 360.0;
-      if (viewpoint.rotation.x > 360.0) 
+      while (viewpoint.rotation.x > 360.0) 
 	viewpoint.rotation.x -= 360.0;
       return true;
     }
   }
+  
+  /* Viewpoint-move by mouse */
+  if ("viewpoint-move" == Command->name) {
+    if ("mouse" == Command->args.substr(0, 5)) {
+      TMouseInputEvent MouseEvent(Command->args);
+      double xd, yd;
+      /* Get relative always */
+      xd = -(MouseEvent.x - MouseEvent.oldx) * 0.15;
+      yd = -(MouseEvent.y - MouseEvent.oldy) * 0.15;
+
+      /* Change the viewpoint */
+      /* Forward and back */
+      viewpoint.translation.x 
+	+= yd * sin(viewpoint.rotation.z * M_PI / 180.0);
+      viewpoint.translation.y 
+	+= yd * cos(viewpoint.rotation.z * M_PI / 180.0);
+      viewpoint.translation.z 
+	-= yd * sin(viewpoint.rotation.x * M_PI / 180.0);
+      /* Left and right */
+      viewpoint.translation.x 
+	-= xd * cos(viewpoint.rotation.z * M_PI / 180.0);
+      viewpoint.translation.y 
+	+= xd * sin(viewpoint.rotation.z * M_PI / 180.0);
+     
+      return true;
+    }
+  }
+  
+  /* Cannon rotate by mouse */
   if ("cannon" == Command->name) {
     if ("mouse" == Command->args.substr(0, 5)) {
       TMouseInputEvent MouseEvent(Command->args);
-      int xd, yd;
+      double xd, yd;
 
       /* Get relative always */
-      xd = MouseEvent.x - MouseEvent.oldx;
-      yd = MouseEvent.y - MouseEvent.oldy;
-
+      xd = -(MouseEvent.x - MouseEvent.oldx) * 0.15;
+      yd = -(MouseEvent.y - MouseEvent.oldy) * 0.15;
+      
       /* Change the cannon */
-      tank->AdjustRotation(-xd * 0.15);
-      tank->AdjustAngle(yd * 0.15);
+      tank->AdjustRotation(xd);
+      tank->AdjustAngle(yd);
       return true;
     }
   }

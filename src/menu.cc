@@ -41,8 +41,8 @@ TMenu * TMenu::CurrentMenu;
 /* This keeps track of the mouse position - in display coordinates ... 
    sigh */
 #include "inputmouse.hh"
-static unsigned int mouse_x = 0;
-static unsigned int mouse_y = 0;
+static int mouse_x = 0;
+static int mouse_y = 0;
 
 /* **********************************************************************
  * Create the menu with appropiate init of variables. 

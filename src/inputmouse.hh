@@ -64,16 +64,16 @@ class TMouseInputEvent : public TInputEvent {
 public:
   mouse_inputevent_event_t mouse_inputevent_event;
   /* These are used for up, down, move and drags */
-  unsigned int x;
-  unsigned int y;
+  int x;
+  int y;
   /* These are only used for move and drags */
-  unsigned int oldx;
-  unsigned int oldy;
+  int oldx;
+  int oldy;
   /* Constructor takes mouse event type and key that it relates to */
   TMouseInputEvent(mousebutton_action_t naction,
 		   mousebutton_button_t nbutton,
-		   unsigned int nx, unsigned int ny,
-		   unsigned int noldx, unsigned int noldy);
+		   int nx,  int ny,
+		   int noldx,  int noldy);
   /* These will construct from a string, and write it self to a string */
   TMouseInputEvent(string value);
   string ToString();

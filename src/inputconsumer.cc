@@ -182,7 +182,8 @@ mousemap_t mouse_map_std[] =
 
   /* GAME */
   {gamemode_game, {mousemove, mouse_none},   "viewpoint-rotate", "mouse"},
-  {gamemode_game, {mousemove, mouse_middle}, "cannon", "mouse"},
+  {gamemode_game, {mousemove, mouse_middle}, "cannon",           "mouse"},
+  {gamemode_game, {mousemove, mouse_right},  "viewpoint-move",   "mouse"},
 
   {gamemode_game, {mousedown, mouse_left},   "fire", ""},
   

@@ -47,7 +47,8 @@ TDisplay * Display;
 
 #define BITMAP_FONT GLUT_BITMAP_9_BY_15
 /* **********************************************************************
-   Put a line somewhere in the world - not really used anymore */
+ * Put a line somewhere in the world - not really used anymore
+ * *********************************************************************/
 void display_putline(int x, int y, int z, char * line) {
   int len, i;
   glRasterPos3i(x, y, z);
@@ -58,31 +59,40 @@ void display_putline(int x, int y, int z, char * line) {
 }
 
 /* **********************************************************************
-   This is our display reshape function that I can not figure out how to
-   put into the display class directly. */
+ * This is our display reshape function that I can not figure out how
+ * to put into the display class directly.
+ * *********************************************************************/
 void display_reshape(int w, int h) {
   Display->Reshape(w, h);
 }
 
 /* **********************************************************************
-   Initialize GL and the display class */
+ * **********************************************************************
+ * TDisplay, constructors and destructors
+ * **********************************************************************
+ * *********************************************************************/
+
+/* **********************************************************************
+ * Initialize GL and the display class
+ * *********************************************************************/
 TDisplay::TDisplay(int argc, char** argv) {
   textrender = new TTextRender;
 
   /* Default values */
-  width      = 800;
-  height     = 600;
-  flymode    = true; 
-  clipmode   = false;
-  num_frames = 0;
-  viewpoint  = NULL;
-  console    = new TConsole(1000); /* 1000 lines is stored */
+  width       = 800;
+  height      = 600;
+  flymode     = true; 
+  clipmode    = false;
+  grabpointer = true;
+  num_frames  = 0;
+  viewpoint   = NULL;
+  console     = new TConsole(1000); /* 1000 lines is stored */
 
   /* Let glut initialize a display and window */
   glutInit(&argc, argv);
   glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH);
-  glutInitWindowSize(width,height);
-  glutInitWindowPosition(0,0);
+  glutInitWindowSize(width, height);
+  glutInitWindowPosition(0, 0);
   glutCreateWindow("Tank Hill eXtreme");
   
   /* Testing game mode stuff */
@@ -144,9 +154,9 @@ TDisplay::TDisplay(int argc, char** argv) {
   glShadeModel(GL_SMOOTH);
 
   /* This is our display reshape function */
-  cerr << "TDisplay is registering a ReshapeFunc!" << endl;
   glutReshapeFunc(display_reshape);
-  // glutDisplayFunc(display_display);
+  /* Oddly enough, the client does the display at the moment */
+  // glutDisplayFunc(display_display); 
 
   /* Enable texturing - DECAL replaces every pixel*/
   glEnable(GL_TEXTURE_2D);
@@ -171,7 +181,8 @@ TDisplay::TDisplay(int argc, char** argv) {
 
 
 /* **********************************************************************
-   Clean up */
+ * Clean up
+ * *********************************************************************/
 TDisplay::~TDisplay() {
   if (!CommandDispatcher.UnregisterConsumer("display")) {
     cerr << "TDisplay::~TDisplay - could not unregister (display) commands" << endl;
@@ -184,17 +195,42 @@ TDisplay::~TDisplay() {
 }
 
 /* **********************************************************************
-   Update just updates the console rigth now */
-void TDisplay::Update(system_time_t deltatime) {
-  console->Update(deltatime);
+ * **********************************************************************
+ * TDisplay, Information about the display
+ * **********************************************************************
+ * *********************************************************************/
+unsigned int TDisplay::GetWidth() {
+  return width;
+}
+unsigned int TDisplay::GetHeight() {
+  return height;
+}
+unsigned int TDisplay::GetNumFrames() {
+  return num_frames;
+}
+
+bool TDisplay::GrabbingPointer() {
+  return grabpointer;
 }
 
 
 /* **********************************************************************
-   Reshape */
-void TDisplay::Reshape(int w, int h) {
-  // TODO: Is this dead code?
+ * **********************************************************************
+ * TDisplay, Call backs
+ * **********************************************************************
+ * *********************************************************************/
 
+/* **********************************************************************
+ * Update just updates the console rigth now
+ * *********************************************************************/
+void TDisplay::Update(system_time_t deltatime) {
+  console->Update(deltatime);
+}
+
+/* **********************************************************************
+ * Reshape
+ * *********************************************************************/
+void TDisplay::Reshape(int w, int h) {
   /* We store these for our own use */
   width  = w;
   height = h;
@@ -209,9 +245,16 @@ void TDisplay::Reshape(int w, int h) {
   NormalMode();
 }
 
-/* ************************************************************
-   To actually draw the textlines, we need to be in "flatmode"
-   where drawing happes "on screen" (sort of). */
+/* **********************************************************************
+ * **********************************************************************
+ * TDisplay, Render related functions
+ * **********************************************************************
+ * *********************************************************************/
+
+/* **********************************************************************
+ * To actually draw textlines, we need to be in "flatmode" where
+ * drawing happes "on screen" (sort of).
+ * *********************************************************************/
 void TDisplay::FlatMode() {
   //  set_gl_options( TEXT );
   if (GL_NO_ERROR != glGetError()) {
@@ -231,11 +274,11 @@ void TDisplay::FlatMode() {
   glLoadIdentity();
 }
 
-/* ************************************************************
-   Set up our projection and model mode to have a coordinate
-   system with z going up, x going from left to rigth and
-   y going into the screen, which is the same way our 
-   world is layed out */
+/* **********************************************************************
+ * Set up our projection and model mode to have a coordinate system
+ * with z going up, x going from left to rigth and y going into the
+ * screen, which is the same way our world is layed out
+ * *********************************************************************/
 void TDisplay::NormalMode() {
   /* To draw in normal mode, we need this setup */
   if (GL_NO_ERROR != glGetError()) {
@@ -252,12 +295,9 @@ void TDisplay::NormalMode() {
   glRotatef(-90.0, 1.0, 0.0, 0.0);
 }  
 
-/* ************************************************************
-   Called each frame to actually draw the contents.
-   TODO: The state of the game is always updated to this point, 
-   so what remains is to get a list of entities from the game
-   and have each of them draw oneselves */
-
+/* **********************************************************************
+ * Called each frame to actually draw the stuff the display knows about
+ * *********************************************************************/
 void TDisplay::Render(void) {
   if (!viewpoint) {
     cerr << "display_display with NULL viewpoint" << endl;
@@ -443,8 +483,8 @@ void TDisplay::Render(void) {
 }
 
 /* **********************************************************************
-   This is simple refreshrate tool - like Quake. */
-
+ * This is simple refreshrate benchmark - like Quake.
+ * *********************************************************************/
 void TDisplay::RefreshRate() {
   if (!viewpoint) {
     cerr << "display_refreshrate with NULL viewpoint" << endl;
@@ -481,8 +521,11 @@ void TDisplay::RefreshRate() {
   console->AddLine(otmp.str(), total);
   // cout << otmp.str() << endl;
 }
+
 /* **********************************************************************
- * Handling our commands
+ * **********************************************************************
+ * TDisplay, Handling commands
+ * **********************************************************************
  * *********************************************************************/
 bool TDisplay::CommandConsume(TCommand * Command) {
   if ("display" == Command->name) {

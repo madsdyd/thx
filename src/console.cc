@@ -29,7 +29,8 @@
 #define DELTA_POS 50
 
 /* **********************************************************************
-   Constructor */
+ * Constructor
+ * *********************************************************************/
 TConsole::TConsole(int num_lines) {
   max_num_lines = num_lines;
   fade_time     = 0;
@@ -39,8 +40,9 @@ TConsole::TConsole(int num_lines) {
 }
 
 /* **********************************************************************
-   The update function mainly makes sure the display lines time out,
-   or move the */
+ * The update function mainly makes sure the display lines time out,
+ * or move the
+ * *********************************************************************/
 void TConsole::Update(system_time_t deltatime) {
   /* Control the fade time */
   fade_time = mymax(0, fade_time - deltatime);
@@ -58,9 +60,10 @@ void TConsole::Update(system_time_t deltatime) {
 }
 
 /* **********************************************************************
-   The render function renders the lines that are currently visible
-   It can be in one of two modes, displaying only a couple of lines with
-   no background or a background with several lines of text */
+ * The render function renders the lines that are currently
+ * visible. It can be in one of two modes, displaying only a couple of
+ * lines with no background or a background with several lines of text
+ * *********************************************************************/
 void TConsole::Render(TDisplay * display) {
   if (0 != position) {
     /* render with background */
@@ -70,7 +73,7 @@ void TConsole::Render(TDisplay * display) {
     int i   = mymin((int) lines.size(), 
 		    (int) rint(fade_time/FADE_DELTA));
     // cout << "TConsole::Render without background i = " << i << endl;
-    display->textrender->Pos(0, display->height-display->textrender->size);
+    display->textrender->Pos(0, display->GetHeight()-display->textrender->size);
     while(i > 0) {
       display->textrender->PrintLn(lines[lines.size()-i--]);
     }
@@ -78,7 +81,8 @@ void TConsole::Render(TDisplay * display) {
 }
 
 /* **********************************************************************
-   Add a line to all the lines */
+ * Add a line to all the lines
+ * *********************************************************************/
 void TConsole::AddLine(string line) {
   /* Check if we need to remove a line */
   if (lines.size() >= max_num_lines) {
@@ -98,7 +102,8 @@ void TConsole::AddLine(string line, system_time_t extratime) {
 }
 
 /* **********************************************************************
-   Up and down */
+ * Up and down
+ * *********************************************************************/
 void TConsole::Down() {
   delta_pos = DELTA_POS;
 }
@@ -108,7 +113,8 @@ void TConsole::Up() {
 }
 
 /* **********************************************************************
-   Clear */
+ * Clear
+ * *********************************************************************/
 void TConsole::Clear() {
   fade_time = 0;
 }

@@ -33,25 +33,54 @@ class TViewpoint;
 class TConsole;
 class TTextRender;
 class TDisplay : public TCommandConsumer {
-public:
-  TTextRender * textrender;
-  unsigned int num_frames;
-  /* We should probably publish these otherwise */
+private:
+  /* Wheter or not we grab the pointer */
+  bool grabpointer; 
   unsigned int width;
   unsigned int height;
   bool flymode;
   bool clipmode;
+  unsigned int num_frames;
+public:
+  TTextRender * textrender;
+
+  /* We should probably publish these in another way */  
   TViewpoint * viewpoint;
   TConsole * console;
+
+  /* **********************************************************************
+   * Construction and such.
+   * *********************************************************************/
   
   TDisplay(int argc, char** argv);
   virtual ~TDisplay();
+  
+  /* **********************************************************************
+   * Information about the display
+   * *********************************************************************/
+  unsigned int GetWidth();
+  unsigned int GetHeight();
+  unsigned int GetNumFrames();
+  bool GrabbingPointer();
+  /* **********************************************************************
+   * Call backs
+   * *********************************************************************/
+
   void Update(system_time_t deltatime); 
   void Reshape(int w, int h);
-  void NormalMode();
-  void FlatMode();
-  void Render();
-  void RefreshRate();
+
+  /* **********************************************************************
+   * Render related functions
+   * *********************************************************************/
+
+  void NormalMode(); /* Sets up a 3D projection */
+  void FlatMode();   /* Sets up a 2D projection for menus, etc */
+  void Render();     /* Actually render everything the display knows about */
+  void RefreshRate();/* Perform a refreshrate test */
+
+  /* **********************************************************************
+   * CommandConsume
+   * *********************************************************************/
   virtual bool CommandConsume(TCommand * Command);
 };
 extern TDisplay * Display;

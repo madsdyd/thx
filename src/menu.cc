@@ -178,25 +178,25 @@ void TMenu::Render(int xlow, int xhigh, int ylow, int yhigh) {
   if (visible) {
     /* Render the menu title at the top (offset 2*size), centered in magenta */
     MenuTextRender.color = ColorDefinitions.GetColor("menu-title");
-    MenuTextRender.size = Display->height/20; /* 480/20 == 24 */
+    MenuTextRender.size = Display->GetHeight()/20; /* 480/20 == 24 */
     MenuTextRender.PosY(yhigh-2*MenuTextRender.size);
     MenuTextRender.Center(xlow, xhigh, Title);
     
     /* Render a descrition of the focused items description
        at the bottom of the screen in yellow */
     MenuTextRender.color = ColorDefinitions.GetColor("menu-description");
-    MenuTextRender.size = Display->height/34;  /* 480/34 ~= 14 */
+    MenuTextRender.size = Display->GetHeight()/34;  /* 480/34 ~= 14 */
     MenuTextRender.PosY(ylow+4*MenuTextRender.size);
     MenuTextRender.Center(xlow, xhigh, menuitems[focuseditem]->GetDescription());
     
     /* Render the menu items */
     /* Set the size for the "normal" menu entries */
-    MenuTextRender.size = Display->height/27; /* 480/27 ~= 18 */
+    MenuTextRender.size = Display->GetHeight()/27; /* 480/27 ~= 18 */
     /* We render them between position 25 % down and the position where the 
        description is.
        The Menuitem updates the MenuTextPosition themselves;
        they prepare for the next menuitem to write by calling println */
-    MenuTextRender.PosY(yhigh-(Display->height/4));
+    MenuTextRender.PosY(yhigh-(Display->GetHeight()/4));
     int py = MenuTextRender.PosY()+MenuTextRender.size;
     TMenuItemsIterator End = menuitems.end();
     for (TMenuItemsIterator i = menuitems.begin(); i != End; i++) {
@@ -306,7 +306,7 @@ bool TMenu::CommandConsume(TCommand * Command) {
     args >> button_foo >> x >> y;
     // cout << "TMenu: mouse is at " << x << ", " << y << endl;
     mouse_x = x; 
-    mouse_y = Display->height - y;
+    mouse_y = Display->GetHeight() - y;
     
     /* Now, check if any hits... */
     TMenuItemsIterator End = menuitems.end();
@@ -365,7 +365,7 @@ bool TMenu::CommandConsume(TCommand * Command) {
     args >> button_foo >> x >> y;
     // cout << "TMenu: mouse is at " << x << ", " << y << endl;
     mouse_x = x; 
-    mouse_y = Display->height - y;
+    mouse_y = Display->GetHeight() - y;
     
     /* Now, check if any hits... */
     TMenuItemsIterator End = menuitems.end();

@@ -124,7 +124,7 @@ void Client_Idle() {
       
     }
     /* Make frames count. TODO: Should go else where? */
-    framerate_add(time_now, Display->num_frames);
+    framerate_add(time_now, Display->GetNumFrames());
   } 
 }
   
@@ -148,7 +148,7 @@ void Client_Display() {
       if (Client->has & CLIENT_HAS_BUYMENU) {
 	if (BuyMenu) {
 	  Display->FlatMode();
-	  BuyMenu->Render(0, Display->width, 0, Display->height);
+	  BuyMenu->Render(0, Display->GetWidth(), 0, Display->GetHeight());
 	  glutSwapBuffers();
 	} else {
 	  cerr << "Client::Render - client has buymenu that is NULL!" << endl;
@@ -161,7 +161,7 @@ void Client_Display() {
       if (Client->has & CLIENT_HAS_SCORE) {
 	if (ScoreMenu) {
 	  Display->FlatMode();
-	  ScoreMenu->Render(0, Display->width, 0, Display->height);
+	  ScoreMenu->Render(0, Display->GetWidth(), 0, Display->GetHeight());
 	  glutSwapBuffers();
 	} else {
 	  cerr << "Client::Render - client has scoremenu that is NULL!" << endl;
@@ -185,17 +185,17 @@ void Client_Display() {
 
       // TODO: Fix 100 offset dependencies
       if (Client->has & CLIENT_HAS_ROUNDOVERMENU) {
-	RoundOverMenu->Render(0, Display->width, 100, Display->height-100);
+	RoundOverMenu->Render(0, Display->GetWidth(), 100, Display->GetHeight()-100);
       } else {
 	if (Client->has & CLIENT_HAS_GAMEOVERMENU) {
-	  GameOverMenu->Render(0, Display->width, 100, Display->height-100);
+	  GameOverMenu->Render(0, Display->GetWidth(), 100, Display->GetHeight()-100);
 	}
       }
       
       /* The in game menu is only displayed if we are .. in the game */
       if (Client->has & CLIENT_HAS_GAME && 
 	  Client->has & CLIENT_HAS_INGAMEMENU) {
-	InGameMenu->Render(0, Display->width, 0, Display->height);
+	InGameMenu->Render(0, Display->GetWidth(), 0, Display->GetHeight());
       }
       /* Swap the buffers to show what we've just drawn */
       glutSwapBuffers();
@@ -212,7 +212,7 @@ void Client_Display() {
     /*Clear screen and set appropriate options */
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     Display->FlatMode();
-    GameMenu->Render(0, Display->width, 0, Display->height);
+    GameMenu->Render(0, Display->GetWidth(), 0, Display->GetHeight());
     
     /* Swap the buffers to show what we've just drawn */
     // cout << "Swapping buffers" << endl;
@@ -639,7 +639,6 @@ TClient::~TClient() {
   /* Stop GLUT */
   glutDisplayFunc(MyNULL);
   glutIdleFunc(NULL);
-  glutReshapeFunc(NULL);
 
   /* Free the menus */
   delete InGameMenu; InGameMenu = NULL;
@@ -664,24 +663,12 @@ TClient::~TClient() {
 }
 
 /* **********************************************************************
-   Reshape the display 
- * *********************************************************************/ 
-// TODO: Is this correct? Isn't it the Display we should reshape??
-void Client_Reshape(int w, int h) {
-  Display->Reshape(w, h);
-  /*  Display->width=w;
-  Display->height=h;
-  glViewport(0, 0, (GLsizei) w, (GLsizei) h); */
-}
-
-/* **********************************************************************
    Run - Setup the GLUT s
  * *********************************************************************/
 void TClient::Run() {
   /* Set up glut */
   glutDisplayFunc(Client_Display);
   glutIdleFunc(Client_Idle);
-  glutReshapeFunc(Client_Reshape);
 
   /* Initializing the input event system */
   InputToCommand.Init();

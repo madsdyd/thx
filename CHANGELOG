@@ -5,6 +5,7 @@
   - Changed the TColor of TColorDefinitions to be private, added interface.
   - Made the focused menu item "pulse"
   - Tagging version 0.3.3.1
+  - Made many of the attributes in TDisplay private.
 
 20010409
   - Added code to generate mouse input events

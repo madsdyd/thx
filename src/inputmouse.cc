@@ -25,6 +25,11 @@
 #include "debug.hh"
 #include "inputmouse.hh"
 
+/* Sadly, this unit needs to know stuff about the display - I could retrieve
+   it from glut, but this is easier */
+#include "display.hh"
+
+
 /* **********************************************************************
  * The TMouseInputEvent class (constructor) 
  * Creates an instance, sets attributes
@@ -100,6 +105,16 @@ void MotionFunc(int x, int y) {
 }
 
 /* **********************************************************************
+ * EntryFunc - called when the mouse enter/leaves our window
+ * *********************************************************************/
+void EntryFunc(int state) {
+  /* If the mouse left us, quickly return it to the center. */
+  if (GLUT_LEFT == state) {
+    // glutWarpPointer(Display->GetWidth()/2, Display->GetHeight()/2);
+  }
+}
+
+/* **********************************************************************
  * Registering and deregistering mouse handler functions in glut 
  * Registering also disables keyrepeat
  * *********************************************************************/
@@ -109,10 +124,15 @@ void inputmouse_init() {
   glutPassiveMotionFunc(PassiveMotionFunc);
   glutMotionFunc(MotionFunc);
   glutSetCursor(GLUT_CURSOR_NONE);
+  /* Testing... */
+  glutEntryFunc(EntryFunc);
+  /* Warp the pointer to the center of our screen */
+  glutWarpPointer(Display->GetWidth()/2, Display->GetHeight()/2);
 }
 
 void inputmouse_shutdown() {
   /* Reset the mouse functions */
+  glutEntryFunc(NULL);
   glutSetCursor(GLUT_CURSOR_INHERIT);
   glutMotionFunc(NULL);
   glutPassiveMotionFunc(NULL);

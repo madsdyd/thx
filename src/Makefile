@@ -2,7 +2,7 @@
 SOUNDDIR=
 CC=g++
 LFLAGS=-lm -lglut -lGLU -lGL -pthread
-CFLAGS=-Wall -DREENTRANT -D_REENTRANT -g -DSOUND_ON# -pg -pedantic 
+CFLAGS=-Wall -DREENTRANT -D_REENTRANT -g -DSOUND_ON # -pg -pedantic 
 # -DSOUNDDIR=$(SOUNDDIR)
 
 SOURCES=console.cc \
@@ -11,7 +11,8 @@ SOURCES=console.cc \
 	entities.cc projectile.cc explosion.cc game_cmds.cc textures.cc \
 	marker.cc menu.cc menuitem.cc color.cc text.cc vector.cc \
 	menu_game.cc client.cc menu_round.cc inventory.cc menu_buy.cc \
-	menu_score.cc
+	menu_score.cc \
+	lup.cc collision.cc object.cc point.cc triangle.cc models.cc
 
 OBS=$(SOURCES:.cc=.o)
 TEXTOBS=$(addprefix glTexFont/,tga.o gltga.o text.o)

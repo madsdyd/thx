@@ -16,7 +16,7 @@
 #endif
 
 
-void default_tank(TObject *model, color_t *color) {
+void default_tank(TObject *model, TColor *color) {
   switch(TANK_MODEL) {
   case 0:
     cube_tank(model, color);
@@ -30,15 +30,15 @@ void default_tank(TObject *model, color_t *color) {
   }
 }
 
-void cube_tank(TObject *model, color_t *color) {
+void cube_tank(TObject *model, TColor *color) {
   float col[4];
 
   (*model)  = TObject(8,12);
 
-  col[0] = color->red;
-  col[1] = color->green;
-  col[2] = color->blue;
-  col[3] = color->alpha;
+  col[0] = color->data[0];
+  col[1] = color->data[1];
+  col[2] = color->data[2];
+  col[3] = color->data[3];
 
   // Lowest four points
   model->addPoint(-0.5,-0.5,-0.5,col);
@@ -78,15 +78,15 @@ void cube_tank(TObject *model, color_t *color) {
 
 }
 
-void pyramid_tank(TObject *model, color_t *color) {
+void pyramid_tank(TObject *model, TColor *color) {
   float col[4];
 
   (*model)  = TObject(8,12);
 
-  col[0] = color->red;
-  col[1] = color->green;
-  col[2] = color->blue;
-  col[3] = color->alpha;
+  col[0] = color->data[0];
+  col[1] = color->data[1];
+  col[2] = color->data[2];
+  col[3] = color->data[3];
 
   // Top point
   model->addPoint(0.0,0.75,0.0,col);

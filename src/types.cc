@@ -13,7 +13,7 @@ system_time_t system_gettime() {
   return tmp.tv_sec + (tmp.tv_usec) / 1000000.0;
 }
 
-#ifdef NEVER
+
 /* ************************************************************
    Set a color value */
 void color_setcolor(color_t * color, GLfloat red, GLfloat green, 
@@ -63,4 +63,10 @@ void color_setblue(color_t * color) {
   color->red   = 0.0; color->green = 0.0;
   color->blue  = 1.0; color->alpha = 1.0;
 }
-#endif
+
+/* ************************************************************
+   Set a color to blue */
+void color_setmagenta(color_t * color) {
+  color->red   = 0.7; color->green = 0.0;
+  color->blue  = 0.7; color->alpha = 1.0;
+}

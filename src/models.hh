@@ -3,10 +3,11 @@
 
 #include "object.hh"
 #include "types.hh"
+#include "color.hh"
 
-void default_tank(TObject *model, color_t *color);
-void cube_tank(TObject *model, color_t *color);
-void pyramid_tank(TObject *model, color_t *color);
+void default_tank(TObject *model, TColor *color);
+void cube_tank(TObject *model, TColor *color);
+void pyramid_tank(TObject *model, TColor *color);
 
 
 

@@ -22,6 +22,7 @@
 #include "aiplayer.hh"
 #include "game.hh"
 #include "display.hh"
+#include "console.hh"
 
 /* **********************************************************************
  * Constructors and destructors
@@ -82,6 +83,8 @@ void TAIPlayer::BeginTurn() {
   /* In here, the turn goals are set - actually meeting them is done
      in "Update"
      The basic player does not set any goals */
+  /* Make sure that we are aware that we have not yet fired */
+  has_fired = false;
 }
 
 /* **********************************************************************
@@ -176,30 +179,70 @@ void TAIPlayer::Update(system_time_t timenow) {
   UpdateViewpoint();
   /* If all our objectives are meet, fire the projectile. 
      Caveat: We do need to have a target... */
-  if (ca && cr && cf && Target) {
-    game->FireProjectile();
+  if (ca && cr && cf) {
+    if (game->FireProjectile()) {
+      has_fired = true;
+      Display->console->AddLine(name + " fired!");
+    }
   }
 }
+
 
 /* **********************************************************************
  * This updates the viewpoint, to allow us to follow the cannon
  * *********************************************************************/
 
 void TAIPlayer::UpdateViewpoint() {
-  // viewpoint.rotation.x = tank->cannon.angle;
-  viewpoint.rotation.x = 20;
-  viewpoint.rotation.z = -tank->cannon.rotation + 90.0;
+  if (has_fired) { return; };
   
+  /* Try and set the viewpoint in such a way, that we are looking at the 
+     tank from a little behind the direction the cannon has */
   viewpoint.translation = tank->location;
+
+  /* The z parameter has the same function as the rotation */
+  viewpoint.rotation.z = -tank->cannon.rotation + 90.0;
+
+  /* Move back */
   double scale_move = 3.0;
   viewpoint.translation.x 
     -= scale_move * sin(viewpoint.rotation.z * M_PI / 180.0);
   viewpoint.translation.y 
     -= scale_move * cos(viewpoint.rotation.z * M_PI / 180.0);
-  viewpoint.translation.z 
-    += scale_move * sin(viewpoint.rotation.x * M_PI / 180.0);
 
-  /* TODO : Adjust further, based on */
+  /* Try and get scale_move "up" */
+  /* viewpoint.translation.z 
+     += scale_move * sin(viewpoint.rotation.x * M_PI / 180.0); */
+  viewpoint.translation.z += 3.0;
+
+  /* Enforce current viewpoint rules */
   Display->UpdateViewpoint();
-
+  
+  /* Adjust the "angle" we are looking, such that we can see the tank.
+     We are scale_move behind it, and hopefully somewhat above it 
+     Simple trigonometry will solve it for us. */
+  /* The x on the viewpoint has the same "function" as the angle parameter 
+     on the cannon (what a mess) */
+  double dy = tank->location.z - viewpoint.translation.z;
+  viewpoint.rotation.x = RadToDegree(atan(-dy/scale_move));
+  while(viewpoint.rotation.x < 0.0) {
+    viewpoint.rotation.x += 360.0;
+  }
+  // viewpoint.rotation.x = tank->cannon.angle;
 }
+
+/* **********************************************************************
+ * This updates the viewpoint, to allow us to follow the missiles 
+ * Set the location to the v
+ * *********************************************************************/
+void TAIPlayer::TrackProjectile(TVector * location, TVector * velocity) {
+  /* Try and follow this bloody projectile in a decent way. Pretty hard,
+     actually */
+  viewpoint.translation = *location;
+  
+  TVector tmpvec(velocity);
+  tmpvec.Normalize();
+  tmpvec.z = -1.0;
+  tmpvec = tmpvec * 3;
+  viewpoint.translation = viewpoint.translation - tmpvec;
+}
+

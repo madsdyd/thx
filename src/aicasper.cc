@@ -76,14 +76,14 @@ void TAIPlayerCasper::BeginTurn() {
   /* If we have a target, it might not be active. Let us test that */
   if (Target) {
     if (!Target->IsActive()) {
-      Display->console->AddLine("Caspers target is not active");
+      // Display->console->AddLine("Caspers target is not active");
       Target = NULL;
     }
   }
   if (!Target) {
     /* Need to find an active target. If this is not possible, something
        is surely wrong. */
-    Display->console->AddLine("Casper locates a new target");
+    // Display->console->AddLine("Casper locates a new target");
     
     Target = game->NotMe(this);
     Assert(Target != NULL, 
@@ -109,7 +109,7 @@ void TAIPlayerCasper::BeginTurn() {
     double dy = Target->tank->location.y - tank->location.y;
     // cout << "dx : " << dx << ", dy : " << dy << endl;
     if (fabs(dx) < EPSILON) {
-      Display->console->AddLine("Target is straight up/down");
+      Display->console->AddLine(name + " target is straight up/down");
       /* Either straight above us, or straight below us */
       if (dy > 0) {
 	cannon_target.rotation = 90.0;
@@ -121,14 +121,14 @@ void TAIPlayerCasper::BeginTurn() {
       cannon_target.rotation = RadToDegree(atan(dy/dx));
       if (dx < 0) {
 	/* Ups, adjust */
-	Display->console->AddLine("Adjusting tangent angle");
+	// Display->console->AddLine("Adjusting tangent angle");
 	cannon_target.rotation += 180.0;
       }
     }
     while (cannon_target.rotation < 0.0) {
       cannon_target.rotation += 360.0;
     }
-    cout << "Rotation : " << cannon_target.rotation << endl;
+    // cout << "Rotation : " << cannon_target.rotation << endl;
     /* TODO: We should add some variation to the angle */
     /* Set the force to a suitable value.
        TODO: This should depend on the distance */
@@ -136,7 +136,7 @@ void TAIPlayerCasper::BeginTurn() {
     /* We have changed targets. The best_valid can not be true */
     best_valid = false;
   } else {    
-    Display->console->AddLine("Casper is keeping his target");
+    // Display->console->AddLine("Casper is keeping his target");
     /* Clear the best valid, since we are about to shoot again. */
     best_valid = false;
   }
@@ -149,7 +149,7 @@ void TAIPlayerCasper::EndTurn() {
   /* Deregister the commands, etc */
   TPlayer::EndTurn();
   /* TODO: We should probably evaluate our strategy in here */
-  Display->console->AddLine("TIAPlayerCasper::EndTurn");
+  // Display->console->AddLine("TIAPlayerCasper::EndTurn");
 
   /* Try and get closer to hitting */
 
@@ -158,7 +158,7 @@ void TAIPlayerCasper::EndTurn() {
 
   /* First, check that we got an explosion at all */
   if (!best_valid) {
-    Display->console->AddLine("Casper does not have a valid best");
+    Display->console->AddLine(name + " does not have a valid best (orbit?)");
     /* No hit - we probably shot outside the map */
     cannon_target.force = cannon_target.force / 2.0;
     cannon_target.angle += 1.0;
@@ -172,7 +172,7 @@ void TAIPlayerCasper::EndTurn() {
   if (tank->location.Distance(Target->tank->location) <
       tank->location.Distance(&best_location)) {
     /* We shot too long */
-    Display->console->AddLine("Casper shot too long");
+    Display->console->AddLine(name + " shot too long");
     /* This adjustment needs to work better... */
     if (cannon_target.angle < 80) {
       cannon_target.angle += 5.0;
@@ -182,7 +182,7 @@ void TAIPlayerCasper::EndTurn() {
     }
   } else {
     /* we shot to short... */
-    Display->console->AddLine("Casper shot too short");
+    Display->console->AddLine(name + " shot too short");
     /* This adjustment needs to work better... */
     if (cannon_target.angle > 30) {
       cannon_target.angle -= 2.0;
@@ -198,7 +198,7 @@ void TAIPlayerCasper::EndTurn() {
  * In here, we should record this turns best match.
  * *********************************************************************/
 void TAIPlayerCasper::Explosion(TExplosion * Explosion) {
-  Display->console->AddLine("TAIPlayerCasper::Explosion");
+  Display->console->AddLine(name + "TAIPlayerCasper::Explosion");
   UpdateBest(&(Explosion->location));
 }
 
@@ -209,9 +209,9 @@ void TAIPlayerCasper::Explosion(TExplosion * Explosion) {
 void TAIPlayerCasper::RegisterHit(TTank * Tank, TExplosion * Explosion, 
 		 float dist, float damage) {
   if (tank != Tank) {
-    Display->console->AddLine("TAIPlayerCasper::Explosion - hit someone");
+    Display->console->AddLine(name + "TAIPlayerCasper::Explosion - hit someone");
   } else {
-    Display->console->AddLine("TAIPlayerCasper::Explosion - hit ourselves!");
+    Display->console->AddLine(name + "TAIPlayerCasper::Explosion - hit ourselves!");
   }
   UpdateBest(&(Explosion->location));
 }
@@ -225,6 +225,6 @@ void TAIPlayerCasper::UpdateBest(TVector * Hit) {
     /* Update best location */
     best_location = *Hit;
     best_valid = true;
-    Display->console->AddLine("Casper updated best valid");
+    Display->console->AddLine(name + "Casper updated best valid");
   }
 }

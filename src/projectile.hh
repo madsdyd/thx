@@ -43,6 +43,9 @@ class TProjectile : public TEntity {
 protected:
   TVector location;
   TVector velocity;
+  bool  track;    /* This is used to indicate wheter or not the missile should be
+		     tracked - meaning that the missile will let the owner know
+		     of its position */
   float radius;   /* This is used mostly to set the radius of the explosion */
   float strength; /* This is used mostly to set the strength of the explosion */
   virtual void OnPosUpdate(system_time_t deltatime);
@@ -56,7 +59,7 @@ protected:
      I wish I knew more C++ :-(*/
   virtual TProjectile * CopyThis();
 public:
-  /* The constructor is used only for instantiating a "template" */
+  /* This constructor is used only for instantiating a "template" */
   TProjectile(TGame * game, TPlayer * owner, float rad, float str);  
   /* This constructor is used to create entities that can be used in the game */
   TProjectile(TGame * game, TPlayer * owner, float rad, float str, 

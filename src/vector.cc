@@ -23,6 +23,12 @@
 
 #include "math.h"
 
+TVector::TVector(TVector * nv) {
+  x = nv->x;
+  y = nv->y;
+  z = nv->z;
+}
+
 TVector::TVector(float a, float b, float c) {
   x = a;
   y = b;

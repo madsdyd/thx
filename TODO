@@ -8,8 +8,8 @@ AUTOTOOLS TEMP TODO:
 
 NORMAL TODO:
 
-- Better viewpoint following. Make sure key event are visible; missile, 
-  explosions. Maybe "follow-missile-mode".
+- Better viewpoint following. Make sure exploding tanks are visible!
+- Maybe "global viewpoint" command? 
 
 - Client_Idle can not change mode when aborting a round????
 - We need to encapsulate the canon parameters.
@@ -23,9 +23,6 @@ Also, look in AI.txt.
 Version schedule. 
 
 This is an overview of what features go where. This is subject to change.
-
-- FIX: Rotation can loop, when speed is to high to be caught. Need to fix,
-  probably by figuring out the shortest distance to target, and use that.
 
 The text () is the focus of the "series". E.g. 0.4.0 (AI) means that
 everything starting with 0.4. is probably going to be related to AI. The 0.4.0 release

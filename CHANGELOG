@@ -1,3 +1,9 @@
+20010909
+  - Following of projectiles now "sortof" works.
+
+20010908
+  - Better naming of Casper players, and removed some old debug prints
+
 20010906
   - Casper will figure out if an enemy dies, and try to get a new target.
   - The buymenu will not show for players that does not need "interaction".

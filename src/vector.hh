@@ -30,7 +30,8 @@
 /* Defined a vector of 3 floats. */
 class TVector {
 public:
-  TVector() {}
+  TVector() {};
+  TVector(TVector * nv);
   TVector(float a, float b, float c);
   float x, y, z;
   void Normalize();

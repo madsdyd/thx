@@ -32,6 +32,7 @@ protected:
   TPlayer * Target;
   /* variable used to store the target for cannon */
   cannon_t cannon_target;
+  bool has_fired; /* true if we have fired in current round */
   void RegisterCommands();
   void UnregisterCommands();
   /* Used to follow the cannon around with */
@@ -44,7 +45,8 @@ public:
   virtual void PrepareRound(TVector * location);
   virtual void BeginTurn(); /* Called, when this players turn is about to start */
   virtual void EndTurn();   /* Called, when this players turn is about to end */
-  // virtual bool CommandConsume(TCommand * Command);
+  /* Follow a fired missile */
+  void TrackProjectile(TVector * location, TVector * velocity);
   /* The update command mostly handle the movement stuff */
   virtual void Update(system_time_t timenow);
 };

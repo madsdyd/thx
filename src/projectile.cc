@@ -32,6 +32,7 @@
 #include "display.hh"
 #include "console.hh"
 #include "sound.hh"
+#include "player.hh"
 
 /* **********************************************************************
    Configuration stuff, accessible from the outside */
@@ -73,6 +74,8 @@ TProjectile * TProjectile::Fire(TVector * loc, TVector * vel) {
   TProjectile * tmp = CopyThis();
   tmp->location = *loc;
   tmp->velocity = *vel;
+  /* Fired missiles always track their position */
+  tmp->track    = true;
   return tmp;
 }
 
@@ -164,6 +167,11 @@ void TProjectile::Update(system_time_t deltatime) {
     game->AddEntity(new TMarker(game, owner, location, 0.05, 2.0));
   /* Call OnPosUpdate */
   OnPosUpdate(deltatime);
+
+  /* Call the owner, let him know where we are, if he is interessted... */
+  if (track && owner) {
+    owner->TrackProjectile(&location, &velocity);
+  }
 }
 
 /* **********************************************************************
@@ -173,9 +181,8 @@ void TProjectile::Render(TViewpoint * viewpoint) {
   glPushMatrix();
   glTranslatef(location.x, location.y, location.z);
   glColor4f(0.8, 0.8, 0.8, 1.0);
-  /* This used to be a radius measurement, but should change to some kind 
-     of model later on */
-  glutSolidSphere(0.20, 8, 8);
+  /* This should change to some kind of model later on */
+  glutSolidSphere(0.10, 8, 8);
   glPopMatrix();
 };
 

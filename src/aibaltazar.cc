@@ -40,14 +40,12 @@ void TAIPlayerBaltazar::BeginTurn() {
   /* Calling our parents BeginTurn should be safe and register the
      commands */
   TAIPlayer::BeginTurn();
+
   /* Baltazar is totally random in its goals, and is 
      modelled after the way my son played, when he was 4 months old. ;-) */
   cannon_target.angle    =  90.0*rand()/(RAND_MAX+1.0);
   cannon_target.rotation = 359.0*rand()/(RAND_MAX+1.0);
   cannon_target.force    = 100.0*rand()/(RAND_MAX+1.0);
-  /* cout << "TAIPlayerBaltazar::BeginTurn - setting goals " 
-     << cannon_target.angle << ", " << cannon_target.rotation 
-     << ", " << cannon_target.force << endl; */
 }
 
 

@@ -73,6 +73,8 @@ public:
   virtual void BeginTurn();       /* Called, when this players turn is about to 
 				     start */
   virtual void EndTurn();         /* Called, when this players turn is about to end */
+  /* Called when a tracking missile has been updated */
+  virtual void TrackProjectile(TVector * location, TVector * velocity) {};
   /* Called, when a players projectile explodes */
   virtual void Explosion(TExplosion * Explosion) {}; 
   /* Called from a tank, when a players projectile hits a tank */  

@@ -53,7 +53,8 @@ void TPlayerMenu::SyncPlayerSettings() {
     if (3 >= PlayerSettings->size()) {
       // tmpset.name        = "Baltazar";
       // tmpset.playerclass = "baltazar";
-      tmpset.name        = "Casper";
+      tmp4.form("Casper (%i)", PlayerSettings->size() + 1) << ends;
+      tmpset.name        = tmp4.str();
       tmpset.playerclass = "casper";
     } else {
       tmpset.playerclass = "human";

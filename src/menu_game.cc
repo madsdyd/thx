@@ -79,10 +79,10 @@ TGameMenu::TGameMenu(string title,
       new TListMenuItem(NewGameMenu, "Map type", 
 			"Select the topology of the map", 
 			&maptype);
-    tmpitem->AddValue("flatlands");
-    tmpitem->AddValue("bumby");
     tmpitem->AddValue("highlands");
     tmpitem->AddValue("mountains");
+    tmpitem->AddValue("flatlands");
+    tmpitem->AddValue("bumby");
     NewGameMenu->AddMenuItem(tmpitem);
     /* The player names TODO: Should be dynamic */
     playernames[0] = "Player 1";

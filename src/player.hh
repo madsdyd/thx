@@ -38,6 +38,7 @@ typedef pair <string, TCommand> TActiveCommandsElement;
 
 class TInventory;
 class TTank;
+class TGame;
 class TPlayer : public TCommandConsumer {
 protected:
   /* These are the commands that are active for the 
@@ -57,7 +58,7 @@ public:
   TViewpoint viewpoint;   /* The players viewpoint */
   TPlayer(string nname);
   virtual ~TPlayer();
-  void PrepareRound(TVector * location);
+  void PrepareRound(TGame * game, TVector * location);
   void BeginTurn();       /* Called, when this players turn is about to start */
   void EndTurn();         /* Called, when this players turn is about to end */
   virtual bool CommandConsume(TCommand * Command);

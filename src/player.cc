@@ -45,11 +45,11 @@ TPlayer::~TPlayer() {
 
 /* **********************************************************************
    PrepareRound sets up the player for another round */
-void TPlayer::PrepareRound(TVector * location) {
+void TPlayer::PrepareRound(TGame * game, TVector * location) {
   /* Reset the inventory */
   inventory->SelectFirst();
   /* Prepare the tank */
-  tank->PrepareRound(location);
+  tank->PrepareRound(game, location);
   /* Reset the viewpoint */
   viewpoint.Reset(location);
   /* Adjust a bit, to better see our tank - this backs up a little, and looks

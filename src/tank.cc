@@ -62,8 +62,7 @@ TTank::~TTank() {
 /* **********************************************************************
  * Set the location of a tank and prepare it for a new round
  * *********************************************************************/
-void TTank::PrepareRound(TVector * loc) {
-
+void TTank::PrepareRound(TGame * game, TVector * loc) {
   keep            = true;
   location        = *loc;
   velocity.x      = 0;
@@ -77,6 +76,9 @@ void TTank::PrepareRound(TVector * loc) {
   cannon.force    = 15;
   default_tank(model, &color);
   abrams_barrel(barrel, &color);
+
+  /* Level the area */
+  game->GetMap()->LevelArea(loc);
 }
 
 /* **********************************************************************
@@ -202,9 +204,11 @@ void TTank::Update(TGame * game, system_time_t deltatime) {
 	 The calculations here are a little uncorrect, but hey, such is life. */
       // health -= (velocity.z*velocity.z);
       health += velocity.z;
+      /* Make sure we are done falling */
       velocity.z = 0;
       location.z = game->GetMap()->HeightAt(location.x, location.y);
-      // TODO; fix the surroindings to be "flat"
+      /* Adjust the map */
+      game->GetMap()->LevelArea(&location);
       /* Never go below 0 */
       if (health <= 0) {
 	health = 0;
@@ -300,12 +304,15 @@ void TTank::Render(TViewpoint * viewpoint) {
   /* Rotate back to compensate for... errrr... something...
      Now the Y-axis in the tank model is actually up... */
   glRotatef(90.0, 1.0, 0.0, 0.0);
+
   glTranslatef(0.0, 0.75, 0.0);
+  /* This is just to make the tank appear on a diagonal */
+  glRotatef(-45.0, 0.0, 1.0, 0.0);
   glColor4fv(color.data);
-  glPushMatrix();
+  //glPushMatrix();
   //  glScalef(2.0, 2.0, 2.0);
   model->draw();
-  glPopMatrix();
+  //glPopMatrix();
   
   /* ************************************************** */
   /* Remove ligthning */

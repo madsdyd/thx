@@ -465,7 +465,7 @@ bool TGame::RoundStart() {
     for(TPlayerInfosIterator i = playerInfos.begin(); i != End; i++) {
       (*i)->active         = true;
       (*i)->num_turn_fired = 0;
-      (*i)->player->PrepareRound(&(*spot));
+      (*i)->player->PrepareRound(this, &(*spot));
       /* (Re)add the tanks to the game */
       AddEntity((*i)->player->tank);
       spot++;

@@ -42,6 +42,7 @@ typedef enum { tankstate_alive,    /* Alive and well - health > 0 */
 class TExplosion;
 class TMap;
 class TObject;
+class TGame;
 class TTank : public TEntity {
 protected:
   float levitation;               /* Used for death animation */
@@ -57,7 +58,7 @@ public:
   TTank(TPlayer * owner);
   ~TTank();
   /* Prepare a tank for a new round, updates location, health, etc */
-  void PrepareRound(TVector * loc);
+  void PrepareRound(TGame * game, TVector * loc);
   /* Adjust the force of the cannon */
   void AdjustForce(int adjust);
   /* Adjust the angle of the cannon */

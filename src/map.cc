@@ -374,14 +374,12 @@ void TMap::lsNormals(int xlow, int xhigh, int ylow, int yhigh) {
 
 /* **********************************************************************
  * Return a random spot within the map, at least border from the edge 
+ * The spots are always on .5, .5 in x and y.
  * *********************************************************************/
 TVector TMap::RandomSpot(int border) {
   TVector tmp;
-  /*  tmp.x      = rint(border + ((double) width-(2*border))*rand()/(RAND_MAX+1.0));
-  tmp.y      = rint(border + ((double) length-(2*border))*rand()/(RAND_MAX+1.0));
-  tmp.z      = PointAt(tmp.x, tmp.y)->z; */
-  tmp.x      = border + ((double) width-(2*border))*rand()/(RAND_MAX+1.0);
-  tmp.y      = border + ((double) length-(2*border))*rand()/(RAND_MAX+1.0);
+  tmp.x      = rint(border + ((double) width-(2*border))*rand()/(RAND_MAX+1.0)) + 0.5;
+  tmp.y      = rint(border + ((double) length-(2*border))*rand()/(RAND_MAX+1.0)) + 0.5;
   tmp.z      = HeightAt(tmp.x, tmp.y); 
   return tmp;
 }
@@ -583,10 +581,11 @@ void TMap::LowerAll(TVector * location, float radius) {
 }
 
 
-/* ********************************************************************************
-   Take a hit from an explosion 
-   TODO: Different projectile types should have different impact functions? */
-/* Take a hit a x, y */
+/* **********************************************************************
+ * Take a hit from an explosion 
+ * TODO: Different projectile types should have different impact
+ * functions?
+ * *********************************************************************/
 void TMap::Explosion(TExplosion * Explosion) {
   /* Check that the steepness is sane! */
   max_steepness = mymax(max_steepness, 0.5);
@@ -596,6 +595,24 @@ void TMap::Explosion(TExplosion * Explosion) {
   Invalidate();
 }
 
+/* **********************************************************************
+ * Level the 4 points around this point.  For consistency checking,
+ * the points are assumed to have been generated with RandomSpot
+ * *********************************************************************/
+void TMap::LevelArea(TVector * location) {
+  int xlow, ylow;
+  xlow = (int) floor(location->x);
+  ylow = (int) floor(location->y);
+  /* Adjust the height of the area */
+  PointAt(xlow,   ylow  )->z = location->z;
+  PointAt(xlow+1, ylow  )->z = location->z;
+  PointAt(xlow+1, ylow+1)->z = location->z;
+  PointAt(xlow,   ylow+1)->z = location->z;
+  /* Recalculate normals */
+  lsNormals(xlow, xlow+1, ylow, ylow+1);
+  /* Map was changed. Displays etc can use this. */
+  Invalidate();
+}
 /* **********************************************************************
  * **********************************************************************
  * Collision and within check code

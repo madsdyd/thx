@@ -75,37 +75,57 @@ public:
   float max_steepness; /* The max steepness after a slide */
   float mapsteepness;  // Scalefactor for landscape generation.
   float bumpiness;     // How bumpy the map should be
+
+  /* **********************************************************************
+   * Constructor, destructor
+   * *********************************************************************/
   TMap(int w, int l, float nmapsteepness);
   ~TMap();
+
+  /* **********************************************************************
+   * Information about the map
+   * *********************************************************************/
   /* Get the width and length of the map */
   int GetWidth(); 
   int GetLength();
-  /* Make the map invalidate its internal representation */
-  void Invalidate();
   /* Return n random spots within the map, with min border dist from border
      and other spots */
   TVectors * RandomSpots(int n, int border);
   /* Return the center point */
   TMappoint CenterPoint();
+  /* Return the height at a given point - within a triangle */
+  float HeightAt(float x, float y);
+  /* Check if we are within the map. TRUE if we are, FALSE otherwise
+     Only the x an y coordinates are checked. */
+  bool Within(TVector * location);
+
+  /* **********************************************************************
+   *  Collision, explosion and levelling. 
+   * *********************************************************************/
   /* Check for collision with the map. Returns true if a collision would happen 
      between old and new, and returns the coordinates of the collision in 
      new (if collision).
      old_location is assumes to be _above_ the map, and new_location potentially
      below it. */
   bool CollisionDetect(TVector * old_location, TVector * new_location);
-  /* Check if we are within the map. TRUE if we are, FALSE otherwise
-     Only the x an y coordinates are checked. */
-  bool Within(TVector * location);
   /* Take a hit at location, with damage radius radius. 
      This simply "removes" part of the landscape, leaving stuff that is no
      more then map_max_steepness steep */
   void Explosion(TExplosion * Explosion);
-  /* Return the height at a given point - within a triangle */
-  float HeightAt(float x, float y);
+  /* Level the 4 points around this point. 
+     For consistency checking, the points are assumed to have been generated
+     with RandomSpot */
+  void LevelArea(TVector * location);
+
+  /* **********************************************************************
+   * Rendering stuff
+   * *********************************************************************/
   /* Init the renderer */
   void InitRender();
   /* Render the map */
   void Render(TViewpoint * viewpoint);
+  /* Make the map invalidate its internal representation */
+  void Invalidate();
 };  
 
 #endif

@@ -47,6 +47,10 @@ void TAIPlayer::UnregisterCommands() {
 /* **********************************************************************
  * Round and turn commands - the meat of this object
  * *********************************************************************/
+
+/* **********************************************************************
+ * Prepareround should set the overall goal for the round, somehow
+ * *********************************************************************/
 void TAIPlayer::PrepareRound(TVector * location) {
   /* It should be safe to perform the same steps as our parent. */
   TPlayer::PrepareRound(location);
@@ -55,32 +59,76 @@ void TAIPlayer::PrepareRound(TVector * location) {
   /* This is also where the AI player buys weapons */
 }
 
+/* **********************************************************************
+ * Set the goal for this turn
+ * *********************************************************************/
 void TAIPlayer::BeginTurn() {
   /* Calling our parents BeginTurn should be safe and register the
      commands */
   TPlayer::BeginTurn();
   /* In here, the turn goals are set - actually meeting them is done
-     in "Update" */
-  cannon_target.angle    = 15;
-  cannon_target.rotation = 170;
-  cannon_target.force    = 8;
-  cout << "TAIPlayer::BeginTurn - setting goals" << endl;
-
+     in "Update" 
+     Please note that the basic AI player is totally random in its goals,
+     modelled after the way my son played, when he was 4 months old. ;-) */
+  cannon_target.angle    =  90.0*rand()/(RAND_MAX+1.0);
+  cannon_target.rotation = 359.0*rand()/(RAND_MAX+1.0);
+  cannon_target.force    = 100.0*rand()/(RAND_MAX+1.0);
+  /* cout << "TAIPlayer::BeginTurn - setting goals " 
+     << cannon_target.angle << ", " << cannon_target.rotation 
+     << ", " << cannon_target.force << endl; */
 }
 
+/* **********************************************************************
+ * EndTurn should maybe evaluate how our turn went
+ * *********************************************************************/
 void TAIPlayer::EndTurn() {
   /* Deregister the commands, etc */
   TPlayer::EndTurn();
   /* We should probably evaluate our strategy in here */
 }
 
+/* **********************************************************************
+ * The update function simply tries to meet the round goals - adjusting
+ * the angle, rotation and force, and finally firering, when all are meet
+ * *********************************************************************/
 void TAIPlayer::Update(system_time_t timenow) {
   /* Call our parents update */
   TPlayer::Update(timenow);
   
   /* In here, we check if our turngoal is met, and if that is the case, 
      we kinda fire */
-  bool ca, cr, cf;
+  bool cr, ca, cf;
+  
+  /* Adjust to the correct rotation */
+  if (fabs(cannon_target.rotation - tank->cannon.rotation) < 1.0) {
+    // cout << "TAIPlayer::Update - goal met" << endl;
+    /* If we are close enough, stop adjusting the cannon 
+       This should work, since we are on simulated time */
+    CommandConsume(new TCommand(timenow, "cannon", "-rotate-left"));
+    CommandConsume(new TCommand(timenow, "cannon", "-rotate-right"));
+    cr = true;
+  } else {
+    // TODO: This goes "the wrong way" across 360->0 and 0->360 degree border.
+    if (cannon_target.rotation < tank->cannon.rotation) {
+      // cout << "TAIPlayer::Cannon rotate too large " 
+      // << tank->cannon.rotation << endl;
+      /* Stop any pending raises, insert lower (duplicates will not
+	 be inserted) */
+      CommandConsume(new TCommand(timenow, "cannon", "-rotate-left"));
+      CommandConsume(new TCommand(timenow, "cannon", "+rotate-right"));
+    } else {
+      // cout << "TAIPlayer::Cannon rotate too small: " 
+      // << tank->cannon.rotation << endl;
+      /* Stop any pending lowers, insert raise (duplicates will not
+	 be inserted */
+      CommandConsume(new TCommand(timenow, "cannon", "-rotate-right"));
+      CommandConsume(new TCommand(timenow, "cannon", "+rotate-left"));
+    }
+    cr = false;
+    return;
+  }
+
+  /* Adjust to the correct angle */
   if (fabs(cannon_target.angle - tank->cannon.angle) < 1.0) {
     // cout << "TAIPlayer::Update - goal met" << endl;
     /* If we are close enough, stop adjusting the cannon 
@@ -90,23 +138,54 @@ void TAIPlayer::Update(system_time_t timenow) {
     ca = true;
   } else {
     if (cannon_target.angle < tank->cannon.angle) {
-      cout << "TAIPlayer::Cannon too high " << tank->cannon.angle << endl;
+      // cout << "TAIPlayer::Cannon too high " << tank->cannon.angle << endl;
       /* Stop any pending raises, insert lower (duplicates will not
 	 be inserted) */
       CommandConsume(new TCommand(timenow, "cannon", "-raise"));
       CommandConsume(new TCommand(timenow, "cannon", "+lower"));
     } else {
-      cout << "TAIPlayer::Cannon too low: " << tank->cannon.angle << endl;
+      // cout << "TAIPlayer::Cannon too low: " << tank->cannon.angle << endl;
       /* Stop any pending lowers, insert raise (duplicates will not
 	 be inserted */
       CommandConsume(new TCommand(timenow, "cannon", "-lower"));
       CommandConsume(new TCommand(timenow, "cannon", "+raise"));
     }
     ca = false;
+    return;
+  }
+  
+
+  /* Adjust the force */
+  if (fabs(cannon_target.force - tank->cannon.force) < 1.0) {
+    // cout << "TAIPlayer::Update - goal met" << endl;
+    /* If we are close enough, stop adjusting the cannon 
+       This should work, since we are on simulated time */
+    CommandConsume(new TCommand(timenow, "cannon", "-force-increase"));
+    CommandConsume(new TCommand(timenow, "cannon", "-force-decrease"));
+    cf = true;
+  } else {
+    // TODO: This goes "the wrong way" across 360->0 and 0->360 degree border.
+    if (cannon_target.force < tank->cannon.force) {
+      // cout << "TAIPlayer::Cannon force too large " 
+      // << tank->cannon.force << endl;
+      /* Stop any pending raises, insert lower (duplicates will not
+	 be inserted) */
+      CommandConsume(new TCommand(timenow, "cannon", "-force-increase"));
+      CommandConsume(new TCommand(timenow, "cannon", "+force-decrease"));
+    } else {
+      // cout << "TAIPlayer::Cannon force too small: " 
+      // << tank->cannon.force << endl;
+      /* Stop any pending lowers, insert raise (duplicates will not
+	 be inserted */
+      CommandConsume(new TCommand(timenow, "cannon", "-force-decrease"));
+      CommandConsume(new TCommand(timenow, "cannon", "+force-increase"));
+    }
+    cf = false;
+    return;
   }
 
   /* If all our objectives are meet, fire the projectile. */
-  if (ca) {
+  if (ca && cr && cf) {
     game->FireProjectile();
   }
 }

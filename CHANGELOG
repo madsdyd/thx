@@ -1,3 +1,7 @@
+20010716
+  - Updated the basic AI to be slightly more interessting.
+    Still nowhere fun enough to play with, but basic and in place..
+
 20010608
   - Added the first AI structure - fires when it gets a chance
   - Respects -geometry, uses default settings if not present

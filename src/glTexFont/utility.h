@@ -27,4 +27,14 @@
 typedef unsigned char byte;
 typedef unsigned int  uint;
 
+long FileGetSize(FILE *stream);
+long FileNameGetSize(char *name);
+byte *FileReadAll(FILE *in, long &size);
+void LineRead(char **pos, char *dest);
+char *LineRead(char *pos);
+void LineEat(char **pos);
+void LineEatWhite(char **pos);
+char *LineReadUntil(char **pos, char end);
+void ReadQuotedString(char **where, char *dest, int size);
+
 #endif

@@ -41,7 +41,7 @@ glTga_t::glTga_t(char *name)
    Load(name);
 }
 
-glTga_t::glTga_t(char *name, int texId, GLenum nf)
+glTga_t::glTga_t(char *name, GLuint texId, GLenum nf)
 {
    minFilter = magFilter = GL_LINEAR;
    wrapS = wrapT = GL_REPEAT;
@@ -57,30 +57,17 @@ int glTga_t::Load(char *name)
    int ret = tga_t::Load(name);
 
    if (ret == 1)
-   {
-      switch (bits)
-      {
-         case 8:
-            format = internal = GL_ALPHA;
-         break;
-         case 24:
-            format = internal = GL_RGB;
-         break;
-         case 32:
-            format = internal = GL_RGBA;
-         break;
-      }
-   }
+      SetupFormat();
    return ret;
 }
 
-int glTga_t::Load(char *name, int texId, GLenum nf)
+int glTga_t::Load(char *name, GLuint texId, GLenum nf)
 {
    int err;
 
    if ((err = Load(name)) == 1)
    {
-      Id(texId);      
+      SetId(texId);      
 
       if (nf)
          format = nf;
@@ -89,7 +76,31 @@ int glTga_t::Load(char *name, int texId, GLenum nf)
    return err;
 }
 
-int glTga_t::Upload(int n)
+int glTga_t::LoadBuffer(byte *buff)
+{
+   int ret = tga_t::LoadBuffer(buff);
+
+   if (ret)
+      SetupFormat();
+   return ret;
+}
+
+int glTga_t::LoadBuffer(byte *buff, GLuint texId, GLenum nf)
+{
+   int err;
+
+   if ((err = LoadBuffer(buff)) == 1)
+   {
+      SetId(texId);      
+
+      if (nf)
+         format = nf;
+   }
+
+   return err;
+}
+
+int glTga_t::Upload(bool n)
 {
    if (!data)
       return badUpload;
@@ -113,14 +124,14 @@ int glTga_t::Upload(int n)
        GL_UNSIGNED_BYTE, data);
    
    if (n)
-      delete [] data;
+      Release();
    
    return 1;
 }
 
 int glTga_t::CheckSize(int x)
 {
-   unsigned int i = 0;
+   uint i = 0;
 
    for ( ; pow(2, i) <= maxTexSize; i++)
       if (x == pow(2, i))
@@ -135,4 +146,20 @@ void glTga_t::Reset(void)
    texEnv = GL_MODULATE;
    texid = format = internal = 0;
    tga_t::Reset();
+}
+
+void glTga_t::SetupFormat(void)
+{
+   switch (bits)
+   {
+      case 8:
+         format = internal = GL_ALPHA;
+      break;
+      case 24:
+         format = internal = GL_RGB;
+      break;
+      case 32:
+         format = internal = GL_RGBA;
+      break;
+   }
 }

@@ -15,7 +15,7 @@ SOURCES=console.cc \
 	lup.cc collision.cc object.cc point.cc triangle.cc models.cc
 
 OBS=$(SOURCES:.cc=.o)
-TEXTOBS=$(addprefix glTexFont/,tga.o gltga.o text.o)
+TEXTOBS=$(addprefix glTexFont/,tga.o gltga.o text.o utility.o)
 all:	thx
 
 clean:	

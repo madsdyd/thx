@@ -1,14 +1,12 @@
-# Define where to get our sounds
-SOUNDDIR=
+# Compiles these files into a bunch of .o files
 CC=g++
-LFLAGS=-lm -lglut -lGLU -lGL -pthread
-CFLAGS=-Wall -DREENTRANT -D_REENTRANT -g # -pg -pedantic # -DSOUNDDIR=$(SOUNDDIR)
-SOURCES=tga.cpp gltga.cpp text.cpp
+CFLAGS=-Wall -D_REENTRANT -g # -pg -pedantic 
+SOURCES=utility.cpp tga.cpp gltga.cpp text.cpp
 OBS=$(SOURCES:.cpp=.o)
 all:	$(OBS)
 
 clean:	
-	rm -f ../core ../3dse *~ *.o ../gmon.out *.d
+	rm -f *~ *.o *.d
 
 %.o:	%.cpp
 	$(CC) $(CFLAGS) -c $<

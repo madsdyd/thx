@@ -34,43 +34,116 @@ tga_t::tga_t(char *name)
 
    Load(name);
 }
-
-int tga_t::Load(char *name)
+// not tested, probably broken so use at your own risk
+void tga_t::Write(char *dest, byte *buff, int w, int h, int pbits)
 {
-   byte type[4];
-   byte info[7];
-   FILE *iFile;
+   byte *tempBuff = 0;
+   tgaHeader_t header;
+   int bit = 0;
+   int type = 0;
+   byte temp;
 
-   if (!(iFile = fopen(name, "r+bt")))
-      return Error(notFound, 0);
+   switch (pbits)
+   {
+      case bitsRGB:
+         tempBuff = new byte[w * h * (bit = 3)];
+         type = 2;
+      break;
+      case bitsRGBA:
+         tempBuff = new byte[w * h * (bit = 4)];   
+         type = 2;
+      break;
+      case bitsGray:
+         tempBuff = new byte[w * h * (bit = 1)];
+         type = 3;
+      break;
+   }
 
-   fread(&type, sizeof(byte), 3, iFile); // read in colormap info and image type, byte 0 ignored
-   fseek(iFile, 12, SEEK_SET); // seek past the header and useless info
-   fread(&info, sizeof(byte), 6, iFile);
-   fseek(iFile, type[0], SEEK_CUR); // skip past image identification
+   if (!buff)
+      return;
 
-   if (type[1] != 0 || (type[2] != 2 && type[2] != 3))
-      return Error (badType, iFile);
+	FILE *out = fopen(dest, "wb");
+    
+   memset(&header, 0, sizeof(tgaHeader_t));
+   header.imageType = type;
+   header.width[0] = w % 256; header.width[1] = w / 256;
+   header.height[0] = h % 256; header.height[1] = h / 256;
+   header.bpp = pbits;
+   
+	fwrite(&header, 1, sizeof(tgaHeader_t), out);
+	
+   if (bit != 1)     
+   {
+      memcpy(tempBuff, buff, w * h * bit);
+	   for (int i = 0; i < (w * h * bit); i += bit)
+	   {
+   		temp = buff[i];
+		   tempBuff[i] = buff[i + 2];
+		   tempBuff[i + 2] = temp;
+	   }
+   }
 
-   width = info[0] + info[1] * 256; 
-   height = info[2] + info[3] * 256;
-   bits =	info[4]; 
+	fwrite(tempBuff, 1, w * h * bit, out);
 
+	fclose(out);
+   delete [] tempBuff;
+}
+
+int tga_t::ParseBuffer(byte *buffer)
+{
+   byte *where = buffer;
+   tgaHeader_t *header = (tgaHeader_t *) where;
+   
+   where += (sizeof(tgaHeader_t) + header->numIden);
+
+   if (header->colorMapType != 0)
+      return badType;
+
+   if (header->imageType != 2 && header->imageType != 3)
+      return badType;
+
+   width = header->width[0] + header->width[1] * 256; 
+   height = header->height[0] + header->height[1] * 256; 
+   bits = header->bpp; 
    size = width * height; 
 
    // make sure we are loading a supported type 
    if (bits != 32 && bits != 24 && bits != 8)
-      return Error(badBits, iFile);
+      return badBits; 
 
-   data = GrabData(iFile, size);
+   data = GrabData(where, size);
 
    // no image data 
    if (data == 0)
-      return Error(badData, iFile);
-
-   fclose(iFile);
+      return badData;
 
    return 1;
+}
+
+int tga_t::Load(char *name)
+{
+   FILE *iFile = 0;
+   byte *buffer = 0;
+   uint fSize;
+
+   if (!(iFile = fopen(name, "rb")))
+      return notFound;
+
+   fSize = FileGetSize(iFile);
+
+   if (!(buffer = new byte[fSize + 1]))
+   {
+      fclose(iFile);
+      return badData;
+   }
+   
+   fread(buffer, 1, fSize, iFile);
+   fclose(iFile);
+
+   int ret = ParseBuffer(buffer);
+   delete [] buffer;
+
+   return ret;
 }
 
 void tga_t::Reset(void)
@@ -81,31 +154,16 @@ void tga_t::Reset(void)
    data = 0;
 }
 
-int tga_t::Error(int errNum, FILE *strm)
+byte *tga_t::GetRGBA(byte *buff, int size)
 {
-   lastError = errNum;
-
-   if (strm)
-      fclose(strm);
-
-   return 0;
-}  
-
-byte *tga_t::GetRGBA(FILE *strm, int size)
-{
-   byte *rgba;
+   byte *rgba = new byte[size * 4];
    byte temp;
-   int bread;
    int i;
-
-   rgba = new byte[size * 4]; 
 
    if (rgba == 0)
       return 0;
 
-   bread = fread(rgba, sizeof(byte), size * 4, strm); 
-
-   if (bread != size * 4)
+   if (!memcpy(rgba, buff, size * 4))
    {
       delete [] rgba;
       return 0;
@@ -121,21 +179,16 @@ byte *tga_t::GetRGBA(FILE *strm, int size)
    return rgba;
 }
 
-byte *tga_t::GetRGB(FILE *strm, int size)
+byte *tga_t::GetRGB(byte *buff, int size)
 {
-   byte *rgb;
+   byte *rgb = new byte[size * 3];
    byte temp;
-   int bread;
    int i;
-
-   rgb = new byte[size * 3]; 
 
    if (rgb == 0)
       return 0;
 
-   bread = fread (rgb, sizeof(byte), size * 3, strm);
-
-   if (bread != size * 3)
+   if (!memcpy(rgb, buff, size * 3))
    {
       delete [] rgb;
       return 0;
@@ -151,19 +204,15 @@ byte *tga_t::GetRGB(FILE *strm, int size)
    return rgb;
 }
 
-byte *tga_t::GetGray(FILE *strm, int size)
+byte *tga_t::GetGray(byte *buff, int size)
 {
-   byte *grayData;
-   int bread;
-
-   grayData = new byte[size];
+   byte *grayData = new byte[size];
 
    if (grayData == 0)
       return 0;
 
-   bread = fread(grayData, sizeof(byte), size, strm);
-
-   if (bread != size)
+   
+   if (!memcpy(grayData, buff, size))
    {
       delete [] grayData;
       return 0;
@@ -172,14 +221,14 @@ byte *tga_t::GetGray(FILE *strm, int size)
    return grayData;
 }
 
-byte *tga_t::GrabData(FILE *strm, int size)
+byte *tga_t::GrabData(byte *buff, int size)
 {
    if (bits == 32)
-      return GetRGBA (strm, size);
+      return GetRGBA (buff, size);
    else if (bits == 24)
-      return GetRGB (strm, size);	
+      return GetRGB (buff, size);	
    else if (bits == 8)
-      return GetGray (strm, size);
+      return GetGray (buff, size);
    
    return 0;
 }

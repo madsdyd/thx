@@ -19,7 +19,7 @@
 */
 
 #ifndef __TEXTH__
-#define __TEXTH_
+#define __TEXTH__
 
 #include "gltga.h"
 #include <stdio.h>
@@ -81,6 +81,8 @@ struct text_t
    void GradientColor4fv(GLfloat *clr)
     {gdColor[0] = clr[0]; gdColor[1] = clr[1]; gdColor[2] = clr[2];
      gdColor[3] = clr[3];}
+
+   GLint GetSize(void) {return size;}
 
 protected:
    void Reset(void);

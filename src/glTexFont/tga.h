@@ -18,6 +18,10 @@
    See gpl.txt for more information regarding the GNU General Public License.
 */
 /*
+   CHANGELOG
+      - 04/27/00
+         - code now deals with buffers rather than file streams   
+         - added a header struct, things make more sense now
    TODO  
       - add ability to write tga from passed data and format
 */
@@ -32,34 +36,53 @@ enum
    badType,
    badBits,    
    badData,    
+   bitsRGB = 24,
+   bitsRGBA = 32,
+   bitsGray = 8
 };
+
+typedef struct
+{
+   byte numIden;
+   byte colorMapType;
+   byte imageType;
+   byte colorMapSpec[5]; // not used, just here to take up space
+   byte origX[2];
+   byte origY[2];
+   byte width[2];
+   byte height[2];
+   byte bpp;
+   byte imageDes; // don't use, space eater
+} tgaHeader_t;
 
 struct tga_t
 {
    tga_t();
    tga_t(char *name);
-   virtual ~tga_t()         {}
+   virtual ~tga_t()           {}
    int Load(char *name);
+   int LoadBuffer(byte *buff) {return ParseBuffer(buff);}
+   void Write(char *dest, byte *buff, int w, int h, int pbits);
    void Reset(void);
-   void Free(void)          {delete [] data;}
-   int LastError(void)      {return lastError;}
-   int Width(void)          {return width;}
-   void Width(int w)        {width = w;}
-   int Height(void)         {return height;}
-   void Height(int h)       {height = h;}
-   int Bits(void)           {return bits;}
-   void Bits(int b)         {bits = b;}
-   byte *Data(void)         {return data;}
-   void Data(byte *src)     {data = src;}
-   byte operator[](int ndx) {return data[ndx];}
-
+   void Release(void)         {delete [] data; data = 0;}
+   int GetLastError(void)     {return lastError;}
+   int GetWidth(void)         {return width;}
+   void SetWidth(int w)       {width = w;}
+   int GetHeight(void)        {return height;}
+   void SetHeight(int h)      {height = h;}
+   int GetBits(void)          {return bits;}
+   void SetBits(int b)        {bits = b;}
+   byte *GetData(void)        {return data;}
+   void SetData(byte *src)    {data = src;}
+   byte operator[](int ndx)   {return data[ndx];}
+   
 protected:
-   int Error(int errNum, FILE *strm);
+   int ParseBuffer(byte *buffer);
    int CheckSize(int x);
-   byte *GetRGB(FILE *strm, int size);
-   byte *GetRGBA(FILE *strm, int size);
-   byte *GetGray(FILE *strm, int size);
-   byte *GrabData(FILE *strm, int size);
+   byte *GetRGB(byte *buff, int size);
+   byte *GetRGBA(byte *buff, int size);
+   byte *GetGray(byte *buff, int size);
+   byte *GrabData(byte *buff, int size);
 
    int lastError;
    int bits;

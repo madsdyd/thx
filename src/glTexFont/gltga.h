@@ -19,6 +19,7 @@
 */
 /*
    TODO
+      - i need to write a document on how to use this stuff...
       - no support for GL_TEXTURE_BORDER_COLOR, GL_TEXTURE_PRIORITY yet...
       - still a work in progress, things will change
 */
@@ -38,53 +39,53 @@ enum
    badUpload = badData + 1,
    badDimension,
    maxTexSize = 1024, // dont hardcode
-   imageRelease = 1,
 };
 
 struct glTga_t : public tga_t
 {
    glTga_t();
    glTga_t(char *name);
-   glTga_t(char *name, int texId, GLenum nf = (GLenum) 0);
+   glTga_t(char *name, GLuint texId, GLenum nf = (GLenum) 0);
    ~glTga_t() { }
-   int Load(char *name);
-   int Load(char *name, GLint texId, GLenum nf = (GLenum) 0);
-   int Upload(int n = 0);
+   GLint Load(char *name);
+   GLint Load(char *name, GLuint texId, GLenum nf = (GLenum) 0);
+   GLint LoadBuffer(byte *buff, GLuint texId, GLenum nf = (GLenum) 0);
+   GLint LoadBuffer(byte *buff);
+   GLint Upload(bool n = 0); // pass a 1 to delete data on upload
    void Reset(void);
-   void Delete(void) {delete [] data; data = 0;}
 
-   void MipMap(int m)      {mipmap = m;}
-   int MipMap(void)        {return mipmap;}
-   void MinFilter(GLint m) {minFilter = m;}
-   GLint MinFilter(void)   {return minFilter;}
-   void MagFilter(GLint m) {magFilter = m;}
-   GLint MagFilter(void)   {return magFilter;}
-   void WrapS(GLint m)     {wrapS = m;}
-   GLint WrapS(void)       {return wrapS;}
-   void WrapT(GLint m)     {wrapT = m;}
-   GLint WrapT(void)       {return wrapT;}
-   void TexEnv(GLint m)    {texEnv = m;}
-   GLint TexEnv(void)      {return texEnv;}
-   void Id(GLint id)       {texid = id;}
-   GLint Id(void)          {return texid;}
-   GLenum Format(void)     {return format;}
-   void Format(GLenum f)   {format = f;}
-   void Internal(GLenum m) {internal = m;}
-   GLenum Internal(void)   {return (GLenum) internal;}
+   void SetMipMap(GLint  m)      {mipmap = m;}
+   int GetMipMap(void)        {return mipmap;}
+   void SetMinFilter(GLint m) {minFilter = m;}
+   GLint GetMinFilter(void)   {return minFilter;}
+   void SetMagFilter(GLint m) {magFilter = m;}
+   GLint GetMagFilter(void)   {return magFilter;}
+   void SetWrapS(GLint m)     {wrapS = m;}
+   GLint GetWrapS(void)       {return wrapS;}
+   void SetWrapT(GLint m)     {wrapT = m;}
+   GLint GetWrapT(void)       {return wrapT;}
+   void SetTexEnv(GLint m)    {texEnv = m;}
+   GLint GetTexEnv(void)      {return texEnv;}
+   void SetId(GLuint id)      {texid = id;}
+   GLuint GetId(void)         {return texid;}
+   GLenum GetFormat(void)     {return format;}
+   void SetFormat(GLenum f)   {format = f;}
+   void SetInternal(GLenum m) {internal = m;}
+   GLenum GetInternal(void)   {return (GLenum) internal;}
+   void SetupFormat(void); // test
    void GenId(int num, uint *dest) {glGenTextures(num, dest);}
-
 protected:
-   int CheckSize(int x);
+   GLint CheckSize(int x);
 
-   int lastError; 
-   int mipmap;
+   GLint lastError; 
+   GLint mipmap;
    GLint minFilter; // GL_TEXTURE_MIN_FILTER
    GLint magFilter; // GL_TEXTURE_MAG_FILTER
    GLint wrapS;     // GL_TEXTURE_WRAP_S
    GLint wrapT;     // GL_TEXTURE_WRAP_T
    GLint texEnv;
 
-   GLint texid;     // texture id   
+   GLuint texid;    // texture id   
    GLenum format;   // texture format
    GLint internal;  // texture internal format
 };

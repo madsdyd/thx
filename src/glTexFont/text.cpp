@@ -24,6 +24,13 @@ some things, should redo the inner loop for text rendering. This thing is
 too SLOW, need to change that.
 
 CHANGES
+   06/04/00
+      - added some Get* functions
+      - fixed not drawing \ 
+   06/03/00
+      - fixed stupid hang bug when you just have \c or \a \b \i
+   06/02/00
+      -  !!!!! font size is held over multiple draws, its annoying if not !!!!!
    04/04/00
       - fixed stupid region bug
 */
@@ -36,7 +43,7 @@ GLint text_t::fontBlockCol = 16;
 GLint text_t::fontBlockRow = 16;
 GLint text_t::fontGetModes = 1; 
 GLint text_t::fontRestoreModes = 2; 
-const GLint text_t::fontMaxLen = 1024;
+const GLint text_t::fontMaxLen = 1024 * 5;
 GLint text_t::fontTabSpace = 4;
 GLfloat text_t::fontITOF = (GLfloat) pow (255, -1);
 GLint text_t::fontItalic = 8;
@@ -47,7 +54,7 @@ text_t::text_t()
 {
    ColorCopy(fgColor, white); 
    ColorCopy(gdColor, gray);
-   ColorCopy(gdColor, gray);
+   ColorCopy(bgColor, gray);
    size = 12;
    shadow = 0;
    gradient = 0;
@@ -69,7 +76,7 @@ text_t::text_t()
 
 void text_t::Reset(void)
 {
-   size = 12;
+   //size = 12;
    shadow = 0;
    region = 0;
    gradient = 0;
@@ -99,7 +106,7 @@ GLint text_t::Load(const char *name)
    if ((ret = image.Load(name, texId, GL_ALPHA)) != 1) 
       return ret;
 
-   return image.Upload(imageRelease);
+   return image.Upload(1);
 }
 
 GLint text_t::LoadEx (const char *name, GLint row, GLint col)
@@ -121,7 +128,7 @@ GLint text_t::LoadEx (const char *name, GLint row, GLint col)
    if ((ret = image.Load(name, texId, GL_ALPHA)) != 1)
       return ret;
 
-   return image.Upload(imageRelease);
+   return image.Upload(1);
 }
 
 void text_t::DrawChar(char c, GLint x, GLint y, GLint size, GLint shadow)
@@ -203,17 +210,35 @@ GLint text_t::SlashParser(char *buffPtr, GLint *x, GLint *y)
    switch (*buffPtr)
    {
       case 'a':
-      case 'c':
-         *x -= size;
-         return SetColorFromToken(buffPtr);
+      case 'c':   
+      {
+         /*x -= size;
+         return SetColorFromToken(buffPtr);*/
+         int ret = SetColorFromToken(buffPtr);
+         if (ret != -1)
+            *x -= size;
+         return ret == -1 ? 0 : ret;
+      }
       break;
-      case 'i':
-         *x -= size;
-         return ItalicsMode(buffPtr);
+      case 'i':   
+      {
+         /**x -= size;
+         return ItalicsMode(buffPtr);*/
+         int ret = ItalicsMode(buffPtr);
+         if (ret != -1)
+            *x -= size;
+         return ret == -1 ? 0 : ret;
+      }
       break;
       case 'b':
-         *x -= size;
-         return BoldMode(buffPtr);
+      {
+         /**x -= size;
+         return BoldMode(buffPtr);*/
+         int ret = BoldMode(buffPtr);
+         if (ret != -1)
+            *x -= size;
+         return ret == -1 ? 0 : ret;
+      }
       break;
       default:
          *buffPtr--;
@@ -282,12 +307,20 @@ void text_t::WalkString(char *buffPtr, GLint xpos, GLint ypos, GLint *vPort)
          break;
       
          case '\\':
-            buffPtr += SlashParser(buffPtr, &x, &y);
+         {
+            int ret = SlashParser(buffPtr, &x, &y);
+            
+            buffPtr += ret;
+
             if (*buffPtr == '\n' || *buffPtr == '\t')
             {
                buffPtr -= 1;
                continue;
             }
+      
+            if (!ret)
+               RenderChar(*buffPtr, x, y, size);
+         }
          break;
          default:
             RenderChar(*buffPtr, x, y, size);
@@ -409,10 +442,8 @@ void text_t::MakeMap(void)
 
 
    for (y = 1 - tIncY; y >= 0; y -= tIncY)
-     for (x = 0; x <= 1 - tIncX; x += tIncX, i ++) {
+      for (x = 0; x <= 1 - tIncX; x += tIncX, i ++)
          vCopy(tPoints[i], x, y);
-	 //	 cout << "tPoints[" << i << "] [0] = " << x << " [1] = " << y << endl;
-     }
 #undef vCopy
 }
 

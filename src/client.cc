@@ -237,6 +237,32 @@ void Client_Keyboard(unsigned char key, int x, int y) {
   }
 }
 
+/* This is a quick hack to make up, down, left, right work in the menus */
+void Client_Special(int key, int x, int y) {
+  /* If displaying any kind of menu, then stuff characters */
+  if (!Client->game_running 
+      || (Client->has & 
+	  (CLIENT_HAS_INGAMEMENU || CLIENT_HAS_ROUNDOVERMENU 
+	   || CLIENT_HAS_GAMEOVERMENU || CLIENT_HAS_BUYMENU 
+	   || CLIENT_HAS_SCORE))) {
+    switch(key) {
+    case GLUT_KEY_UP:
+      Client_Keyboard('a', x, y);
+      break;
+    case GLUT_KEY_DOWN:
+      Client_Keyboard('z', x, y);
+      break;
+    case GLUT_KEY_LEFT:
+      Client_Keyboard(2, x, y); /* Ctrl+B */
+      break;
+    case GLUT_KEY_RIGHT:
+      Client_Keyboard(6, x, y); /* Ctrl+F */
+      break;
+    }
+  }
+}
+
+
 /* **********************************************************************
  * GameMenu Callback functions
  * *********************************************************************/
@@ -594,6 +620,7 @@ TClient::~TClient() {
   /* Stop GLUT */
   glutDisplayFunc(MyNULL);
   glutKeyboardFunc(NULL);
+  glutSpecialFunc(NULL);
   glutIdleFunc(NULL);
 
   /* Free the menus */
@@ -619,6 +646,7 @@ void TClient::Run() {
   /* Set up glut */
   glutDisplayFunc(Client_Display);
   glutKeyboardFunc(Client_Keyboard);
+  glutSpecialFunc(Client_Special);
   glutIdleFunc(Client_Idle);
   
     /* Start GLUT mainloop */

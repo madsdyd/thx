@@ -105,7 +105,7 @@ TGameMenu::TGameMenu(string title,
      The HelpMenu menu */
   {
     TInfoMenuItem * tmpinfo = new TInfoMenuItem(HelpMenu, "Info", 
-						"Use a and z to select items,");
+						"Use the arrow keys to select");
     tmpinfo->AddLine("and change values.");
     tmpinfo->AddLine("Use the standard unix readline");
     tmpinfo->AddLine("keys to modify values:");

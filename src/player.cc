@@ -28,6 +28,9 @@
 #include "tank.hh"
 
 #include "command.hh"
+/* We need to use this, if we use the mouse */
+#include "inputmouse.hh"
+
 /* **********************************************************************
  * The constructor 
  * *********************************************************************/
@@ -293,21 +296,15 @@ bool TPlayer::CommandConsume(TCommand * Command) {
       return true;
     }
   }
-  /* Testing mouse handling */
+  /* Viewpoint-rotate by mouse */
   if ("viewpoint-rotate" == Command->name) {
     if ("mouse" == Command->args.substr(0, 5)) {
-      istrstream args(Command->args.c_str());
-      string foo;
-      unsigned int x;
-      unsigned int y;
-      unsigned int oldx;
-      unsigned int oldy;
+      TMouseInputEvent MouseEvent(Command->args);
       int xd, yd;
-      cout << "matched mouse" << endl;
-      args >> foo >> foo >> x >> y >> oldx >> oldy;
-      xd = x - oldx;
-      yd = y - oldy;
-      cout << "TPlayer: mouse diff " << xd << ", " << yd << endl;
+      /* Get relative always */
+      xd = MouseEvent.x - MouseEvent.oldx;
+      yd = MouseEvent.y - MouseEvent.oldy;
+      // cout << "TPlayer: mouse diff " << xd << ", " << yd << endl;
       /* Change the viewpoint */
       /* Left, right */
       viewpoint.rotation.z += xd * 0.15;
@@ -326,18 +323,13 @@ bool TPlayer::CommandConsume(TCommand * Command) {
   }
   if ("cannon" == Command->name) {
     if ("mouse" == Command->args.substr(0, 5)) {
-      istrstream args(Command->args.c_str());
-      string foo;
-      unsigned int x;
-      unsigned int y;
-      unsigned int oldx;
-      unsigned int oldy;
+      TMouseInputEvent MouseEvent(Command->args);
       int xd, yd;
-      cout << "matched mouse" << endl;
-      args >> foo >> foo >> x >> y >> oldx >> oldy;
-      xd = x - oldx;
-      yd = y - oldy;
-      cout << "TPlayer: mouse diff " << xd << ", " << yd << endl;
+
+      /* Get relative always */
+      xd = MouseEvent.x - MouseEvent.oldx;
+      yd = MouseEvent.y - MouseEvent.oldy;
+
       /* Change the cannon */
       tank->AdjustRotation(-xd * 0.15);
       tank->AdjustAngle(yd * 0.15);

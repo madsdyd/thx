@@ -40,6 +40,7 @@ TMenu * TMenu::CurrentMenu;
 
 /* This keeps track of the mouse position - in display coordinates ... 
    sigh */
+#include "inputmouse.hh"
 static unsigned int mouse_x = 0;
 static unsigned int mouse_y = 0;
 
@@ -299,14 +300,9 @@ bool TMenu::CommandConsume(TCommand * Command) {
    * *********************************************************************/
   else if ("mouse-move" == Command->name) {
     /* First, update the mouse position */
-    istrstream args(Command->args.c_str());
-    string button_foo;
-    unsigned int x;
-    unsigned int y;
-    args >> button_foo >> x >> y;
-    // cout << "TMenu: mouse is at " << x << ", " << y << endl;
-    mouse_x = x; 
-    mouse_y = Display->GetHeight() - y;
+    TMouseInputEvent MouseEvent(Command->args);
+    mouse_x = MouseEvent.x; 
+    mouse_y = Display->GetHeight() - MouseEvent.y;
     
     /* Now, check if any hits... */
     TMenuItemsIterator End = menuitems.end();
@@ -358,14 +354,9 @@ bool TMenu::CommandConsume(TCommand * Command) {
        mouse-move to this position, and then a down. If another item
        is in editing, however, we want this state to be left */
     /* First, update the mouse position */
-    istrstream args(Command->args.c_str());
-    string button_foo;
-    unsigned int x;
-    unsigned int y;
-    args >> button_foo >> x >> y;
-    // cout << "TMenu: mouse is at " << x << ", " << y << endl;
-    mouse_x = x; 
-    mouse_y = Display->GetHeight() - y;
+    TMouseInputEvent MouseEvent(Command->args);
+    mouse_x = MouseEvent.x; 
+    mouse_y = Display->GetHeight() - MouseEvent.y;
     
     /* Now, check if any hits... */
     TMenuItemsIterator End = menuitems.end();

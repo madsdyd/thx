@@ -156,12 +156,13 @@ keymap_t key_map_std[] =
  * Mouse default mappings
  * *********************************************************************/
 
-/* To a mouse command, the following information is always appended;
-   button - which button pressed
-   where  - x y location 
-   from   - x y location as most recently registered
-   in this format; {none|left|middle|right} x y x y
-   When some of the information is not known, it is faked. */
+/* To a mouse command, a TMouseInputEvent is appended as a string.
+   This means, that a TMouseInputEvent can be constructed from 
+   the args like this; 
+   TMouseInputEvents tmp(Command->args);
+   The string can have stuff in front and after the TMouseInputEvent - 
+   it scans for a "magic". */
+
 struct mousemap_t {
   gamemode_t mode;
   mouse_inputevent_event_t mev;
@@ -177,7 +178,7 @@ mousemap_t mouse_map_std[] =
   {gamemode_any,  {mousemove, mouse_middle}, "mouse-move", ""},
   {gamemode_any,  {mousemove, mouse_right},  "mouse-move", ""},
   {gamemode_any,  {mousedown, mouse_left},   "mouse-down", ""},
-  {gamemode_any,  {mouseup,   mouse_left},   "mouse-up",   ""},
+  // {gamemode_any,  {mouseup,   mouse_left},   "mouse-up",   ""},
 
   /* GAME */
   {gamemode_game, {mousemove, mouse_none},   "viewpoint-rotate", "mouse"},
@@ -271,7 +272,7 @@ int TInputToCommand::Consume() {
 	       << " maps to \"" << (*loc).second.cmd << "\"" << endl;
 #endif
 	  CommandQueue.push(new TCommand(KeyEvent->timestamp,
-					 (*loc).second.cmd, (*loc).second.arg));	       
+					 (*loc).second.cmd, (*loc).second.arg));       
 	} else {
 	  /* No mapping found -
 	     Keyboard events for "down" that are not mapped,
@@ -315,32 +316,11 @@ int TInputToCommand::Consume() {
 
     case inputevent_type_pointer:
       {
-	/* Find the command in the mouse map */
+	/* Find the command in the mouse map by checking the current
+           and any modes */
 	TMouseInputEvent * MouseEvent 
 	  = (TMouseInputEvent *) InputEvent;
-	/* Construct the command append information */
-	ostrstream append_arg;
-	switch (MouseEvent->mouse_inputevent_event.button) {
-	case mouse_none:
-	  append_arg << " none";
-	  break;
-	case mouse_left:
-	  append_arg << " left";
-	  break;
-	case mouse_middle:
-	  append_arg << " middle";
-	  break;
-	case mouse_right:
-	  append_arg << " right";
-	  break;
-	} /* Button switch */
-	append_arg << " " << MouseEvent->x
-		   << " " << MouseEvent->y
-		   << " " << MouseEvent->oldx
-		   << " " << MouseEvent->oldy
-		   << ends;
-	
-	
+
 	/* Check the current mode */
 	TMouseCommandMapIterator loc 
 	  = MouseCommandMap[GameMode.GetMode()].find(MouseEvent->mouse_inputevent_event);
@@ -352,7 +332,8 @@ int TInputToCommand::Consume() {
 #endif
 	  CommandQueue.push(new TCommand(MouseEvent->timestamp,
 					 (*loc).second.cmd, 
-					 (*loc).second.arg + append_arg.str()));
+					 (*loc).second.arg 
+					 + MouseEvent->ToString()));
 	} else {
 	  /* No mapping found for the current mode, check 
 	     for the any mode */
@@ -366,7 +347,8 @@ int TInputToCommand::Consume() {
 #endif
 	    CommandQueue.push(new TCommand(MouseEvent->timestamp,
 					   (*loc).second.cmd, 
-					   (*loc).second.arg + append_arg.str()));
+					   (*loc).second.arg 
+					   + MouseEvent->ToString()));
 	  } /* Any mode mapping */
 #if(INPUT_DEBUG)
 	  else { /* No mappings found */
@@ -400,7 +382,8 @@ bool TInputToCommand::AddKeyboardMapping(gamemode_t mode,
     = KeyboardCommandMap[mode].find(event);
   if (loc != KeyboardCommandMap[GameMode.GetMode()].end()) {
     /* A mapping alread exists. */
-    cerr << "TInputToCommand::AddKeyboardMapping - mapping for event already exists" << endl;
+    cerr << "TInputToCommand::AddKeyboardMapping - mapping for event already exists" 
+	 << endl;
     return false;
   } else {
     KeyboardCommandMap[mode][event] = TCmdArg(cmd, arg);

@@ -120,14 +120,14 @@ void MouseFunc(int button, int state, int x, int y) {
   }
   oldx = x;
   oldy = y;
-  /* Testing */
-  {
+  /* Testing mouse to and from string.*/
+  /* {
     TMouseInputEvent base(mousedown, last_button, 
 			  x, y, oldx, oldy);
     cout << base.ToString() << endl;
     TMouseInputEvent tmp(base.ToString());
     cout << tmp.ToString() << endl;
-  }  
+    }  */
 
 }
 

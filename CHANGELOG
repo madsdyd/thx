@@ -1,6 +1,7 @@
 20010528
   - Checked in stuff that allows for more dynamic configuration of players.
     Lots of details still missing.
+  - Tagging 0.3.5.1
 
 20010505
   - Made menuitem to select colors

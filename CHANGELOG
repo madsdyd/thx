@@ -2,7 +2,7 @@
   - Finally figured out why we had a segfault. I hate implicit type conversion in 
     C++.
   - Tagging 0.3.4.2
-  - Modified helk menu, added about menu, changed email address.
+  - Modified help menu, added about menu, changed email address.
 
 20010421
   - Added first step towards mouse mapping support in TControlsMenuItem

@@ -167,6 +167,21 @@ TDisplay::TDisplay(int argc, char** argv) {
   /* The textrender can not be initialized until OpenGL is running */
   textrender->Load("data/graphics/fonts/fontGray.tga");
 
+  /* Testing fog */
+#ifdef NEVER
+  {
+    glEnable(GL_FOG);
+    GLfloat fogColor[4] = {0.5, 0.5, 0.5, 1.0};
+    glFogi(GL_FOG_MODE, GL_EXP2);
+    glFogfv(GL_FOG_COLOR, fogColor);
+    glFogf(GL_FOG_DENSITY, 0.05);
+    glHint(GL_FOG_HINT, GL_DONT_CARE);
+    glFogf(GL_FOG_START, 10.0);
+    glFogf(GL_FOG_END, 50.0);
+    glClearColor(0.5, 0.5, 0.5, 1.0);
+  }
+#endif
+
   if (GL_NO_ERROR != glGetError()) {
     cerr << "TDisplay::TDisplay: GL was in error condition on exit" << endl;
   } 
@@ -271,7 +286,7 @@ void TDisplay::FlatMode() {
   } 
   glDisable(GL_LIGHTING);
   glDisable(GL_DEPTH_TEST);
-
+  // glDisable(GL_FOG);
   // Set parallelprojection mode to create "correct" menus
   glMatrixMode(GL_PROJECTION);
   glLoadIdentity();
@@ -295,6 +310,7 @@ void TDisplay::NormalMode() {
   } 
   glEnable(GL_LIGHTING);
   glEnable(GL_DEPTH_TEST);
+  // glEnable(GL_FOG);
   glMatrixMode(GL_PROJECTION);
   glLoadIdentity();
   gluPerspective(70.0, (GLfloat) width/(GLfloat) height, 0.8, 100.0);

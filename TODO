@@ -7,7 +7,6 @@ of playable game in version 0.3.0 that could actually be enjoyed.
   - move data to consistent structure
   - fix remaining showstopper bugs
   - play test
-  - remove char buffers (DONE?)
   - convert to c++ finally
     framerate.hh
     game_cmds.hh

@@ -202,7 +202,7 @@ GLint text_t::SlashParser(char *buffPtr, GLint *x, GLint *y)
 {
    GLint ret = 0;
 
-   *buffPtr++;
+   buffPtr++;
 
    if (!*buffPtr)
       return ret;
@@ -241,7 +241,7 @@ GLint text_t::SlashParser(char *buffPtr, GLint *x, GLint *y)
       }
       break;
       default:
-         *buffPtr--;
+         buffPtr--;
          RenderChar(*buffPtr, *x, *y, size);
          return ret;
       break;
@@ -274,7 +274,7 @@ void text_t::WalkString(char *buffPtr, GLint xpos, GLint ypos, GLint *vPort)
    } else ScissorNormal(xpos, ypos, tabs, carrage, size, len);
 
    /* lets draw! */
-   for ( ; *buffPtr; *buffPtr++, x += size)
+   for ( ; *buffPtr; buffPtr++, x += size)
    {
       if (x > xMax)
          break;
@@ -425,7 +425,7 @@ GLint text_t::BoldMode (char *s)
 GLint text_t::GetCharHits(char *s, char f)
 {
   GLint hits;
-  for (hits = 0; *s; *s++)
+  for (hits = 0; *s; s++)
     if (*s == f)
       hits ++;
   return hits;
@@ -505,9 +505,9 @@ void text_t::SetModes(GLint state)
    {
       /* put everything back where it was before */
       if (polyMode[0] != GL_FILL)
-         glPolygonMode(GL_FRONT, polyMode[0]);
+         glPolygonMode(GL_FRONT, (GLenum) polyMode[0]);
       if (polyMode[1] != GL_FILL)
-         glPolygonMode(GL_BACK, polyMode[1]);
+         glPolygonMode(GL_BACK, (GLenum) polyMode[1]);
 
       if (lightingOn)
          glEnable(GL_LIGHTING);
@@ -529,6 +529,6 @@ void text_t::SetModes(GLint state)
       if (!scissorOn) 
          glDisable(GL_SCISSOR_TEST);
 
-      glMatrixMode(matrixMode);
+      glMatrixMode((GLenum) matrixMode);
    }
 }

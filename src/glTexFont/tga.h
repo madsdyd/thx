@@ -58,9 +58,9 @@ typedef struct
 struct tga_t
 {
    tga_t();
-   tga_t(char *name);
+   tga_t(const char *name);
    virtual ~tga_t()           {}
-   int Load(char *name);
+   int Load(const char *name);
    int LoadBuffer(byte *buff) {return ParseBuffer(buff);}
    void Write(char *dest, byte *buff, int w, int h, int pbits);
    void Reset(void);

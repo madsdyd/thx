@@ -3,6 +3,7 @@
   - Removed the LAME SOUND warnings
   - Fixed conversion warnings
   - Fixed warnings from sound.cc
+  - Upgraded the glTexFont files, removed most of the warnings.
 
 20000724
   - Cleaned up a bit

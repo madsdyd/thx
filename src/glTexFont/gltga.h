@@ -44,11 +44,11 @@ enum
 struct glTga_t : public tga_t
 {
    glTga_t();
-   glTga_t(char *name);
-   glTga_t(char *name, GLuint texId, GLenum nf = (GLenum) 0);
+   glTga_t(const char *name);
+   glTga_t(const char *name, GLuint texId, GLenum nf = (GLenum) 0);
    ~glTga_t() { }
-   GLint Load(char *name);
-   GLint Load(char *name, GLuint texId, GLenum nf = (GLenum) 0);
+   GLint Load(const char *name);
+   GLint Load(const char *name, GLuint texId, GLenum nf = (GLenum) 0);
    GLint LoadBuffer(byte *buff, GLuint texId, GLenum nf = (GLenum) 0);
    GLint LoadBuffer(byte *buff);
    GLint Upload(bool n = 0); // pass a 1 to delete data on upload

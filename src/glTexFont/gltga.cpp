@@ -25,34 +25,37 @@ glTga_t::glTga_t()
    minFilter = magFilter = GL_LINEAR;
    wrapS = wrapT = GL_REPEAT;
    texEnv = GL_MODULATE;
-   texid = format = internal = 0;
+   texid = internal = 0;
+   format = (GLenum) 0;
    mipmap = 0;
    lastError = 0;
 }
 
-glTga_t::glTga_t(char *name)
+glTga_t::glTga_t(const char *name)
 {
    minFilter = magFilter = GL_LINEAR;
    wrapS = wrapT = GL_REPEAT;
    texEnv = GL_MODULATE;
-   texid = format = internal = 0;
+   texid = internal = 0;
+   format = (GLenum) 0;
    lastError = 0;
    mipmap = 0;
    Load(name);
 }
 
-glTga_t::glTga_t(char *name, GLuint texId, GLenum nf)
+glTga_t::glTga_t(const char *name, GLuint texId, GLenum nf)
 {
    minFilter = magFilter = GL_LINEAR;
    wrapS = wrapT = GL_REPEAT;
    texEnv = GL_MODULATE;
-   texid = format = internal = 0;
+   texid = internal = 0;
+   format = (GLenum) 0;
    lastError = 0;
    mipmap = 0;
    Load(name, texId, nf);
 }
 
-int glTga_t::Load(char *name)
+int glTga_t::Load(const char *name)
 {
    int ret = tga_t::Load(name);
 
@@ -61,7 +64,7 @@ int glTga_t::Load(char *name)
    return ret;
 }
 
-int glTga_t::Load(char *name, GLuint texId, GLenum nf)
+int glTga_t::Load(const char *name, GLuint texId, GLenum nf)
 {
    int err;
 
@@ -144,7 +147,8 @@ void glTga_t::Reset(void)
    minFilter = magFilter = GL_LINEAR;
    wrapS = wrapT = GL_REPEAT;
    texEnv = GL_MODULATE;
-   texid = format = internal = 0;
+   texid = internal = 0;
+   format = (GLenum) 0;
    tga_t::Reset();
 }
 
@@ -153,13 +157,16 @@ void glTga_t::SetupFormat(void)
    switch (bits)
    {
       case 8:
-         format = internal = GL_ALPHA;
+	 format = GL_ALPHA; 
+	 internal = GL_ALPHA;
       break;
       case 24:
-         format = internal = GL_RGB;
+	 format = GL_ALPHA; 
+	 internal = GL_ALPHA;
       break;
       case 32:
-         format = internal = GL_RGBA;
+	 format = GL_ALPHA; 
+	 internal = GL_ALPHA;
       break;
    }
 }

@@ -26,7 +26,7 @@ tga_t::tga_t()
    data = 0;
 }
 
-tga_t::tga_t(char *name)
+tga_t::tga_t(const char *name)
 {
    lastError = 0;
    bits = width = height = size = 0; 
@@ -120,7 +120,7 @@ int tga_t::ParseBuffer(byte *buffer)
    return 1;
 }
 
-int tga_t::Load(char *name)
+int tga_t::Load(const char *name)
 {
    FILE *iFile = 0;
    byte *buffer = 0;

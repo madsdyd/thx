@@ -214,9 +214,43 @@ TControlsMenu::TControlsMenu(string title) : TMenu(title) {
 				    "fire", ""));
 
   /* System */
-  AddMenuItem(new TControlsMenuItem(this, "Grab mouse", 
-				    "Change what key grabs your mouse",
+  AddMenuItem(new TControlsMenuItem(this, "Toggle grabbing", 
+				    "Change what key toggles grabbing the mouse",
 				    "toggle-pointer-grab", "", gamemode_any));
+  AddMenuItem(new TControlsMenuItem(this, "Render lines", 
+				    "Change what key select line render mode",
+				    "render", "lines"));
+  AddMenuItem(new TControlsMenuItem(this, "Render polygons", 
+				    "Change what key select polygon render mode",
+				    "render", "polygons"));
+  AddMenuItem(new TControlsMenuItem(this, "Render textures", 
+				    "Change what key select texture render mode",
+				    "render", "textures"));
+  AddMenuItem(new TControlsMenuItem(this, "Toggle lighting", 
+				    "Change what key toggles lighting",
+				    "render", "toggle-lights"));
+  AddMenuItem(new TControlsMenuItem(this, "Toggle shading", 
+				    "Change what key toggles shademode",
+				    "render", "toggle-shademode"));
+  AddMenuItem(new TControlsMenuItem(this, "Toggle normals", 
+				    "Change what key toggles display of normals",
+				    "render", "toggle-normals"));
+  AddMenuItem(new TControlsMenuItem(this, "Toggle markers", 
+				    "Change what key toggles display of markers",
+				    "render", "toggle-markers"));
+  AddMenuItem(new TControlsMenuItem(this, "Toggle flymode", 
+				    "Change what key toggles flymode",
+				    "display", "toggle-flymode"));
+  AddMenuItem(new TControlsMenuItem(this, "Toggle clipmode", 
+				    "Change what key toggles clipmode",
+				    "display", "toggle-clipmode"));
+  AddMenuItem(new TControlsMenuItem(this, "Test refreshrate", 
+				    "Change what key test the refreshrate",
+				    "display", "refreshrate"));
+  AddMenuItem(new TControlsMenuItem(this, "Quit immediate", 
+				    "Change what key quits THX",
+				    "quit", "", gamemode_any));
+
 
   CloseScrollArea(10, tmpitem2);
 

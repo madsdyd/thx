@@ -200,7 +200,7 @@ void TDisplay::Reshape(int w, int h) {
   height = h;
   
   /* Set the textrender size */
-  textrender->size = h/40; /* 480/40 == 12 */
+  textrender->size = h/42; /* 480/40 == 12, slightly less */
 
   /* Set the viewport - only needed on change */
   glViewport(0, 0, (GLsizei) w, (GLsizei) h);
@@ -367,6 +367,7 @@ void TDisplay::Render(void) {
 
   /* ************************************************************
      Draw translation information stuff - mostly for debug */
+#ifdef NEVER
   {
     ostrstream tmp;
     tmp.form("POS: %4.1f, %4.1f, %4.1f", viewpoint->translation.x,
@@ -375,7 +376,8 @@ void TDisplay::Render(void) {
     textrender->Pos(0, 2*textrender->size);
     textrender->Print(tmp.str());
   }
-  
+#endif  
+
   /* ************************************************************
      Draw fps stuff */
   {
@@ -425,7 +427,7 @@ void TDisplay::Render(void) {
     {
       /* Print selected projectile, rotation, angle and force */
       ostrstream tmp;
-      tmp.form("Rotation:%3.0f Angle:%3.0f Force:%3.0f Weapon:", 
+      tmp.form("Rotation:%1.0f Angle:%1.0f Force:%1.0f Weapon:", 
 	       Game->GetCurrentPlayer()->tank->cannon.rotation,
 	       Game->GetCurrentPlayer()->tank->cannon.angle,
 	       Game->GetCurrentPlayer()->tank->cannon.force);

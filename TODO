@@ -2,23 +2,18 @@ Version schedule.
 
 This is an overview of what features go where. This is subject to change.
 
-- Fix TControlsMenuItem to 
-  figure out what mappings the command already have
-  write what mappings the command already have
-  actually change the mapping
-  somehow be able to receive raw keypresses from the inputconsumer, 
-    maybe have a special mode for the command consumer.
 - Fix it, so that we can have many menu items on a screen
-- Fix it, so that the TControlsMenu can be used from several different places
-  
-
-- Make the init order more explicit
+- Why can't I map ESC?
+- Loosen up on registering and unregistering commands - should not keep 
+  a command, if failing to release another. (Maybe registering and release should
+  always work?)
+- Make the init order more explicit (needed now?)
 
 
 ** 0.3.6 (Input customization)
   - make global variables to adjust the axis on the mouse
   - Make a controls menu, that allow for in game configuration of keys and 	
-    mouse actions.
+    mouse actions. (ALMOST DONE)
   - Save and load bindings.
 
 ** 0.3.7 (Clean up)

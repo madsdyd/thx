@@ -1,3 +1,11 @@
+20010418
+  - Added a return item to the controls menu
+  - Made it possible to access the controls menu from the in game menu
+  - Added a raw mode to gamemode
+  - Made the controls menu actually change the mappings for (most) keys.
+  - Renamed some keys
+  - Made the controls menu use a smaller size - temporary fix, probably.
+
 20010417
   - GetKeyMappings now work. Everything else is broken :-)
 

@@ -23,10 +23,15 @@
 #include "lup.hh"
 
 /*************************
- * checkPointPoly
- * Check point, P, moving at velocity V against
- * triangle P0,P1,P2 moving at velocity W
- * Currently W is unused!
+ * checkPointPoly(*P, *Q, *P0, *P1, *P2)
+ * Checks if the line (PQ) intersects the
+ * triangle P0P1P2 and returns the "collisiontime",
+ * e.g. a number between 0 and 1, that can be used
+ * to determine the collisionpoint:
+ *     collision = P + t * (Q - P)
+ * If no collision is detected 2.0 is returned. We do
+ * not return 1.0 since we could have a collision at
+ * this time.
  *************************/
 float checkPointPoly(TVector *P, TVector *Q, TVector *P0, TVector *P1, TVector *P2) {
 

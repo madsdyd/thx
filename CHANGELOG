@@ -1,3 +1,9 @@
+20010409
+  - Added code to generate mouse input events
+  - Made the menu show the mouse
+  - Made it possible to get the y position from the TextRender
+  - Made the menus use the mouse. Minor flaws still present.
+
 20010408
   - Added debug file
   - Added more -W options to the compile

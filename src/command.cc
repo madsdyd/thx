@@ -31,7 +31,7 @@ TCommand::TCommand(system_time_t ntimestamp, string nname, string nargs) {
   timestamp = ntimestamp;
   name      = nname;
   args      = nargs;
-  /*  printf("TCommand::TCommand - time is %f\n", ntimestamp);
+  /* printf("TCommand::TCommand - time is %f\n", ntimestamp);
   cout << "TCommand::TCommand(" << ntimestamp << ", " << nname 
   << ", " << nargs << ")" << endl; */
 };

@@ -24,12 +24,12 @@
 /* This is for input events generated from the mouse */
 #include "inputevent.hh"
 
-/* What was the reason for the event. */
+/* What was the reason for the event. 
+   A mousedrag is when a move happens with a button pressed */
 typedef enum {mouseup, 
 	      mousedown,
-	      mousemove,
-	      mousedrag
-} mousebutton_state_t;
+	      mousemove
+} mousebutton_action_t;
 
 /* Is any button pressed */
 typedef enum {mouse_none,
@@ -38,42 +38,40 @@ typedef enum {mouse_none,
 	      mouse_right
 } mousebutton_button_t;
 
-/* Uniqly define a mouse event */
+
+/* Uniqly define a mouse event for mappings. */
 typedef struct {
-  /* Used for up and down */
-  mousebutton_state_t state;
-  /* Used for drag, up and down */
+  mousebutton_action_t action;
   mousebutton_button_t button;
+} mouse_inputevent_event_t;
+
+/* Use this for comparing */
+struct lt_miet
+{
+  bool operator()(const mouse_inputevent_event_t m1, 
+		  const mouse_inputevent_event_t m2) const
+  {
+    return ((m1.action < m2.action) 
+      || (m1.action == m2.action 
+	  && (m1.button < m2.button)));
+  }
+};
+
+/* This class is a mouse event */
+class TMouseInputEvent : public TInputEvent {
+public:
+  mouse_inputevent_event_t mouse_inputevent_event;
   /* These are used for up, down, move and drags */
   unsigned int x;
   unsigned int y;
   /* These are only used for move and drags */
   unsigned int oldx;
   unsigned int oldy;
-} mouse_inputevent_event_t;
-
-/*
-struct lt_miet
-{
-  bool operator()(const mouse_inputevent_event_t k1, 
-		  const mouse_inputevent_event_t k2) const
-  {
-    return ((k1.key < k2.key) 
-      || (k1.key == k2.key 
-	  && (k1.type == keydown 
-	      &&  k2.type == keyup)));
-  }
-};
-*/
-/* This class is a mouse event */
-class TMouseInputEvent : public TInputEvent {
-public:
-  mouse_inputevent_event_t mouse_inputevent_event;
   /* Constructor takes mouse event type and key that it relates to */
-  TMouseInputEvent(mousebutton_state_t nstate,
+  TMouseInputEvent(mousebutton_action_t naction,
 		   mousebutton_button_t nbutton,
-		   unsigned int x, unsigned int y,
-		   unsigned int oldx, unsigned int oldy);
+		   unsigned int nx, unsigned int ny,
+		   unsigned int noldx, unsigned int noldy);
 };
 /* Declare a global mouse handling setup function
    Will register OpenGL/GLUT callbacks (in this case). */

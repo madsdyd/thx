@@ -19,9 +19,11 @@
     along with this program; if not, write to the Free Software
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
+#include "types.hh"
+#include "debug.hh"
+
 #include "menuitem.hh"
 #include "menu.hh"
-#include "types.hh"
 #include "sound.hh"
 #include "command.hh"
 /* **********************************************************************
@@ -38,6 +40,11 @@ TMenuItem::TMenuItem(TMenu * owner, string cap, string desc) {
   state       = menuitem_state_blurred;
   caption     = cap;
   description = desc;
+  /* No hit */
+  xl          = 1;
+  xh          = 0;
+  yl          = 1;
+  yh          = 0;
 }
 /* **********************************************************************
  * TMenuItem Enable and Disable 
@@ -60,7 +67,7 @@ bool TMenuItem::Disable() {
 };
   
 /* **********************************************************************
- * TMenuItem Focus and Blur
+ * TMenuItem Focus, Blur, Cancel, Selected
  * *********************************************************************/
 bool TMenuItem::Focus() {
   if (menuitem_state_blurred == state) {
@@ -82,6 +89,28 @@ bool TMenuItem::Blur() {
   CommandDispatcher.UnregisterConsumer("menuitem");
   return true;
 };
+
+void TMenuItem::Cancel() {
+  state = menuitem_state_blurred;
+  CommandDispatcher.UnregisterConsumer("menuitem");
+}
+
+bool TMenuItem::Selected() {
+  return (state == menuitem_state_selected);
+}
+
+/* **********************************************************************
+ * Hit testing
+ * *********************************************************************/
+void TMenuItem::SetHitArea(int nxl, int nxh, int nyl, int nyh) {
+  xl = nxl; xh = nxh; yl = nyl; yh = nyh;
+  Assert(yl < yh, "TMenuItem::SetHitArea - yl >= yh");
+}
+
+bool TMenuItem::TestHit(int x, int y) {
+  /* Use < for completly within */
+  return (x < xh && x > xl && y < yh && y > yl);
+}
 
 /* **********************************************************************
  * TMenuItem::SetRenderColor
@@ -144,7 +173,7 @@ bool TSimpleActionMenuItem::CommandConsume(TCommand * Command) {
     DoAction();
     return true;
   } else {
-    cout << "TSimpleActionMenuItem::CommandConsume, do not know how to handle ("
+    cerr << "TSimpleActionMenuItem::CommandConsume, do not know how to handle ("
 	 << Command->name << ", " << Command->args << ")" << endl;
     return false;
   } 
@@ -240,18 +269,27 @@ void TActionMenuItem::DoAction() {
  * TValueMenuItem::{R,Unr}egisterCommands
  * *********************************************************************/
 bool TValueMenuItem::RegisterCommands() {
-  cout << "TValueMenuItem::RegisterCommands called" << endl;
+  // cout << "TValueMenuItem::RegisterCommands called" << endl;
   return CommandDispatcher.RegisterConsumer("itemedit", this);
 }
 
 bool TValueMenuItem::UnregisterCommands() {
-  cout << "TValueMenuItem::UnregisterCommands called" << endl;
+  // cout << "TValueMenuItem::UnregisterCommands called" << endl;
   return CommandDispatcher.UnregisterConsumer("itemedit");
 }
 
 /* **********************************************************************
  * TValueMenuItem::EnterEditState, and others
  * *********************************************************************/
+
+/* Cancel must be like receiving a cancel */
+void TValueMenuItem::Cancel() {
+  if (menuitem_state_selected == state) {
+    DiscardNewValue();
+  }
+  CommandDispatcher.UnregisterConsumer("menuitem");
+  state = menuitem_state_blurred;
+}
 
 /* This is called when we leave focus state and go into editing state..
    Returns true if we did enter the state, false otherwise */
@@ -568,14 +606,14 @@ bool TStringMenuItem::CommandConsume(TCommand * Command) {
 	return true;
       }
       if("transpose-chars" == Command->args) {
-	cout << "TODO: No code to handle transpose-chars" << endl;
+	cerr << "TODO: No code to handle transpose-chars" << endl;
       }
     }
     /* Keydown "events" */
     if ("keydown" == Command->name) {
       /* Characters between ' ' and '~' are just added at the cursor point*/
       const char * tmp = Command->args.c_str();
-      cout << "Got a keypress!" << endl;
+      // cout << "Got a keypress!" << endl;
       if (tmp[0] >= ' ' && tmp[0] <= '~') {
 	new_value.insert(cursorpos, Command->args);
 	cursorpos++;

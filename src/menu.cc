@@ -19,9 +19,11 @@
     along with this program; if not, write to the Free Software
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
+#include <GL/glut.h>
+#include <strstream>
+
 #include "menu.hh"
 
-#include <GL/glut.h>
 #include "sound.hh"
 #include "command.hh"
 
@@ -33,6 +35,11 @@ TTextRender MenuTextRender;
 
 /* This keeps track of the menu that has or lastly had focus */
 TMenu * TMenu::CurrentMenu;
+
+/* This keeps track of the mouse position - in display coordinates ... 
+   sigh */
+static unsigned int mouse_x = 0;
+static unsigned int mouse_y = 0;
 
 /* **********************************************************************
  * Create the menu with appropiate init of variables. 
@@ -85,6 +92,8 @@ void TMenu::Show() {
   /* This is a kind of testing of the command structure. */
   // cout << "TMenu::Show - " << Title << " - registering commands" << endl;
   CommandDispatcher.RegisterConsumer("focus-change", this);
+  CommandDispatcher.RegisterConsumer("mouse-move", this);
+  CommandDispatcher.RegisterConsumer("mouse-down", this);
 }
 
 /* **********************************************************************
@@ -109,6 +118,8 @@ void TMenu::Hide() {
   visible = false;
   /* This is a kind of testing of the command structure. */
   // cout << "TMenu::Hide - " << Title << " - unregistering commands" << endl;
+  CommandDispatcher.UnregisterConsumer("mouse-down");
+  CommandDispatcher.UnregisterConsumer("mouse-move");
   CommandDispatcher.UnregisterConsumer("focus-change");
 }
 
@@ -184,12 +195,23 @@ void TMenu::Render(int xlow, int xhigh, int ylow, int yhigh) {
        The Menuitem updates the MenuTextPosition themselves;
        they prepare for the next menuitem to write by calling println */
     MenuTextRender.PosY(yhigh-(Display->height/4));
+    int py = MenuTextRender.PosY()+MenuTextRender.size;
     TMenuItemsIterator End = menuitems.end();
     for (TMenuItemsIterator i = menuitems.begin(); i != End; i++) {
       /* The menuitems simply writes as if it was a textterminal,
 	 but updates the position in MenuTextRender */
       (*i)->Render(xlow, xhigh);
+      // This is if I had the coordinates I would like to 
+      // (*i)->SetHitArea(xlow, xhigh, py, MenuTextRender.PosY());
+      (*i)->SetHitArea(xlow, xhigh, MenuTextRender.PosY()+MenuTextRender.size, py);
+      py = MenuTextRender.PosY()+MenuTextRender.size;
     }
+    /* Render the mouse - this is a temporary way to do it, needs to be a texture, 
+       or something I reckon */
+    MenuTextRender.color = ColorDefinitions.Colors["white"];
+    MenuTextRender.PosY(mouse_y - MenuTextRender.size/2);
+    MenuTextRender.PosX(mouse_x - MenuTextRender.size/2);
+    MenuTextRender.Print("@");
 
   } else {
     /* We render a child, if we have one */
@@ -208,69 +230,180 @@ bool TMenu::CommandConsume(TCommand * Command) {
     cerr << "TMenu::CommandConsume on non-visible menu!" << endl;
     return false;
   }
-  /* The only commands handled is (focus-change, up) and
-     (focus-change, down) and escape */
-  if ("focus-change" != Command->name) {
-    cerr << "TMenu::CommandConsume non registered command!" << endl;
-    return false;
-  }
-  if ("up" == Command->args) {
-    if (menuitems[focuseditem]->Blur()) {
-      do {
-	focuseditem = ( focuseditem - 1 + menuitems.size() ) % menuitems.size();
-      } while(!menuitems[focuseditem]->Focus());
-#ifdef SOUND_ON
-      sound_play(names_to_nums["data/sounds/menu_move.raw"]);
-#endif
-      
-    }
-    return true;
-  }
-  if ("down" == Command->args) {
-    if (menuitems[focuseditem]->Blur()) {
-      do {
-	focuseditem = (focuseditem + 1) % menuitems.size();
-      } while(!menuitems[focuseditem]->Focus());
-#ifdef SOUND_ON
-      sound_play(names_to_nums["data/sounds/menu_move.raw"]);
-#endif
-    }
-    return true;
-  }
-  if ("escape" == Command->args) { 
-    bool handled = false;
-    if (-1 != cancelitem) {
-      /* Send an enter to it */
+
+  /* Handle the commands */
+  /* **********************************************************************
+   * focus-change - changing focus one step at a time
+   * *********************************************************************/
+  if ("focus-change" == Command->name) {
+    if ("up" == Command->args) {
       if (menuitems[focuseditem]->Blur()) {
-	/* Try and handle it */
-	if (!(menuitems[cancelitem]->Focus())) {
-	  cerr << "TMenu::CommandConsumer - could not focus CancelMenuItem" 
-	       << endl;
-	};
-	/* This is now the focused item */
-	int olditem = focuseditem;
-	focuseditem = cancelitem;
-	/* Construct a temporary command to send to the item */
-	TCommand * tmpcmd = new TCommand(Command->timestamp, "menuitem", "select");
-	handled = menuitems[cancelitem]->CommandConsume(tmpcmd);
-	if (!handled) { /* We only refocus if not handled */
-	  if (!(menuitems[cancelitem]->Blur())) {
-	    cerr << "TMenu::CommandConsumer - could not Blur CancelMenuItem" << endl;
+	do {
+	  focuseditem = ( focuseditem - 1 + menuitems.size() ) % menuitems.size();
+	} while(!menuitems[focuseditem]->Focus());
+#ifdef SOUND_ON
+	sound_play(names_to_nums["data/sounds/menu_move.raw"]);
+#endif
+      }
+      return true;
+    }
+    if ("down" == Command->args) {
+      if (menuitems[focuseditem]->Blur()) {
+	do {
+	  focuseditem = (focuseditem + 1) % menuitems.size();
+	} while(!menuitems[focuseditem]->Focus());
+#ifdef SOUND_ON
+	sound_play(names_to_nums["data/sounds/menu_move.raw"]);
+#endif
+      }
+      return true;
+    }
+    if ("escape" == Command->args) { 
+      bool handled = false;
+      if (-1 != cancelitem) {
+	/* Send an enter to it */
+	if (menuitems[focuseditem]->Blur()) {
+	  /* Try and handle it */
+	  if (!(menuitems[cancelitem]->Focus())) {
+	    cerr << "TMenu::CommandConsumer - could not focus CancelMenuItem" 
+		 << endl;
 	  };
-	  /* Always try and refocus the old one - should never fail */
-	  if (!menuitems[olditem]->Focus()) {
-	    cerr << "TMenu::CommandConsume - could not refocus on cancel" << endl;
-	  } else {
-	    focuseditem = olditem;
+	  /* This is now the focused item */
+	  int olditem = focuseditem;
+	  focuseditem = cancelitem;
+	  /* Construct a temporary command to send to the item */
+	  TCommand * tmpcmd = new TCommand(Command->timestamp, "menuitem", "select");
+	  handled = menuitems[cancelitem]->CommandConsume(tmpcmd);
+	  if (!handled) { /* We only refocus if not handled */
+	    if (!(menuitems[cancelitem]->Blur())) {
+	      cerr << "TMenu::CommandConsumer - could not Blur CancelMenuItem" << endl;
+	    };
+	    /* Always try and refocus the old one - should never fail */
+	    if (!menuitems[olditem]->Focus()) {
+	      cerr << "TMenu::CommandConsume - could not refocus on cancel" << endl;
+	    } else {
+	      focuseditem = olditem;
+	    }
+	  }
+	  delete tmpcmd;
+	}
+	return handled;
+      }
+    }
+  } /* focus-change */
+
+  /* **********************************************************************
+   * mouse-move - uses the mouse to change focus
+   * *********************************************************************/
+  else if ("mouse-move" == Command->name) {
+    /* First, update the mouse position */
+    istrstream args(Command->args.c_str());
+    string button_foo;
+    unsigned int x;
+    unsigned int y;
+    args >> button_foo >> x >> y;
+    // cout << "TMenu: mouse is at " << x << ", " << y << endl;
+    mouse_x = x; 
+    mouse_y = Display->height - y;
+    
+    /* Now, check if any hits... */
+    TMenuItemsIterator End = menuitems.end();
+    int count = 0;
+    for (TMenuItemsIterator i = menuitems.begin(); i != End; i++) {
+      if ((*i)->TestHit(mouse_x, mouse_y)) {
+	/* Got a hit - check if this is different from the focuseditem */
+	// cout << "Got a hit on " << (*i)->GetDescription() << endl;
+	if (count != focuseditem) {
+	  /* This is not the focuseditem - we should try to change focus */
+	  // cout << "This is not the focused item!" << endl;
+	  if (menuitems[focuseditem]->Blur()) {
+	    if ((*i)->Focus()) {
+	      focuseditem = count;
+#ifdef SOUND_ON
+	      sound_play(names_to_nums["data/sounds/menu_move.raw"]);
+#endif
+	    } else {
+	      /* Ups, refocus */
+	      // cout << "Try and refocus!" << endl;
+	      menuitems[focuseditem]->Focus();
+	    }
 	  }
 	}
-	delete tmpcmd;
+      } else {
+	// cout << "No hit for " << (*i)->GetDescription() << endl;
       }
-      return handled;
+      count++;
     }
-  }
-  /* If we reach here, we did not know the args */
-  cerr << "TMenu::CommandConsume unknown args to focus-change" << endl;
+    /* We handled this command */
+    return true;
+  } /* mouse-move */
+
+  /* **********************************************************************
+   * mouse-down - uses the mouse to enter selected state on menuitems
+   * *********************************************************************/
+  else if ("mouse-down" == Command->name) {
+    /* The funny thing about a mouse-down is that it is like a
+       mouse-move to this position, and then a down. If another item
+       is in editing, however, we want this state to be left */
+    /* First, update the mouse position */
+    istrstream args(Command->args.c_str());
+    string button_foo;
+    unsigned int x;
+    unsigned int y;
+    args >> button_foo >> x >> y;
+    // cout << "TMenu: mouse is at " << x << ", " << y << endl;
+    mouse_x = x; 
+    mouse_y = Display->height - y;
+    
+    /* Now, check if any hits... */
+    TMenuItemsIterator End = menuitems.end();
+    int count = 0;
+    for (TMenuItemsIterator i = menuitems.begin(); i != End; i++) {
+      if ((*i)->TestHit(mouse_x, mouse_y)) {
+	/* Got a hit - Cancel the current */
+	if (focuseditem == count && (*i)->Selected()) {
+	  /* Ignore this, the user clicked a selected entry */
+	  return true;
+	} else {
+	  menuitems[focuseditem]->Cancel();	
+	  if ((*i)->Focus()) {
+	    /* Now try to select it with a temporary command */
+	    TCommand * tmpcmd = new TCommand(Command->timestamp, "menuitem", "select");
+	    if ((*i)->CommandConsume(tmpcmd)) {
+	      // cout << "Command accepted" << endl;
+	      
+	      focuseditem = count;
+#ifdef SOUND_ON
+	      sound_play(names_to_nums["data/sounds/menu_move.raw"]);
+#endif
+	      
+	    } else {
+	      /* It did not accept the command */
+	      cerr << "TMenu, mouse command not accepted" << endl;
+	      (*i)->Blur();
+	      menuitems[focuseditem]->Focus();
+	    }
+	    delete tmpcmd;
+	  } else {
+	    /* The new entry did not want to focus */
+	    menuitems[focuseditem]->Focus();
+	  }
+	  return true;
+	} /* User clicked on something else */
+      } /* Testhit */
+      count++;
+    }
+    /* We handled this command anyway */
+    return true;
+  } /* mouse-down */
+
+  /* **********************************************************************
+   * Unhandled commands
+   * *********************************************************************/
+
+  /* If we reach here, we did not handle the command */
+  cerr << "TMenu::CommandConsumer, not handling ("
+       << Command->name << "," << Command->args << ")" << endl;
   return false;
 }
 

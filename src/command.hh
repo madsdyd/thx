@@ -41,6 +41,7 @@ public:
   TCommand(TCommand * cmd);
   TCommand(system_time_t ntimestamp, string nname, string nargs = "");
 };
+
 /* This is the type of the command queue */
 typedef queue <TCommand *> TCommands;
 /* This is the command queue */

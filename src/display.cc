@@ -227,6 +227,7 @@ void TDisplay::FlatMode() {
 
   // Back to modifying objects
   glMatrixMode(GL_MODELVIEW);
+  glScalef(1.0, -1.0, 1.0);
   glLoadIdentity();
 }
 
@@ -566,7 +567,7 @@ bool TDisplay::CommandConsume(TCommand * Command) {
     }
   } /* (render) */
 
-  cerr << "TDisplay::CommandConsumer, not handling ("
+  cerr << "TDisplay::CommandConsume, not handling ("
        << Command->name << "," << Command->args << ")" << endl;
   return false;
 }

@@ -21,6 +21,8 @@
 */
 /* The commands */
 #include <iostream>
+#include <strstream>
+
 #include "inputconsumer.hh"
 #include "command.hh"
 
@@ -35,9 +37,8 @@ TInputToCommand InputToCommand;
  * *********************************************************************/
 
 /* **********************************************************************
- * The TInputToCommand constructor - sets up default mappings
+ * Keyboard default mappings
  * *********************************************************************/
-/* First default mappings */
 struct keymap_t {
   gamemode_t mode;
   keyboard_inputevent_event_t kev;
@@ -45,7 +46,7 @@ struct keymap_t {
   char * arg;
 };
 
-keymap_t key_map_std_keys_down[] =
+keymap_t key_map_std[] =
 {
   /* GENERAL */
   {gamemode_any,  {KEY_CTRLC,     keydown}, "quit", ""},
@@ -156,20 +157,76 @@ keymap_t key_map_std_keys_down[] =
   {gamemode_any, {0, keydown}, "", ""}
 };
 
+
+/* **********************************************************************
+ * Mouse default mappings
+ * *********************************************************************/
+
+/* To a mouse command, the following information is always appended;
+   button - which button pressed
+   where  - x y location 
+   from   - x y location as most recently registered
+   in this format; {none|left|middle|right} x y x y
+   When some of the information is not known, it is faked. */
+struct mousemap_t {
+  gamemode_t mode;
+  mouse_inputevent_event_t mev;
+  char * cmd;
+  char * arg;
+};
+
+mousemap_t mouse_map_std[] =
+{
+  /* GENERAL */
+  {gamemode_any,  {mousemove, mouse_none},   "mouse-move", ""},
+  {gamemode_any,  {mousemove, mouse_left},   "mouse-move", ""},
+  {gamemode_any,  {mousemove, mouse_middle}, "mouse-move", ""},
+  {gamemode_any,  {mousemove, mouse_right},  "mouse-move", ""},
+  {gamemode_any,  {mousedown, mouse_left},   "mouse-down", ""},
+  {gamemode_any,  {mouseup,   mouse_left},   "mouse-up",   ""},
+
+  
+  /* FINAL */
+  {gamemode_any,  {mousemove, mouse_none}, "", ""}
+};
+
+/* **********************************************************************
+ * The TInputToCommand constructor - sets up default mappings
+ * *********************************************************************/
 TInputToCommand::TInputToCommand() {
   int i; 
   /* TODO: Nicer way to initialize - load and save, so on */
   /* Map the standard keys */
   i = 0;  
-  while(strcmp(key_map_std_keys_down[i].cmd, "")) {
+  while(strcmp(key_map_std[i].cmd, "")) {
 #if (INPUT_DEBUG)
-    cout << "Mapping key " << key_map_std_keys_down[i].kev.key << " to ("
-	 << key_map_std_keys_down[i].cmd << "," << key_map_std_keys_down[i].arg << ")" << endl;
+    cout << "Mapping key " << key_map_std[i].kev.key << " to ("
+	 << key_map_std[i].cmd << "," << key_map_std[i].arg << ")" << endl;
 #endif
-    KeyboardCommandMap[key_map_std_keys_down[i].mode][key_map_std_keys_down[i].kev]
-      = TCmdArg(string(key_map_std_keys_down[i].cmd), string(key_map_std_keys_down[i].arg));
+    // TODO: Use proper method
+    KeyboardCommandMap[key_map_std[i].mode][key_map_std[i].kev]
+      = TCmdArg(string(key_map_std[i].cmd), string(key_map_std[i].arg));
     i++;
   }    
+  /* Map the standard mouse */
+  i = 0;  
+  while(strcmp(mouse_map_std[i].cmd, "")) {
+#if (INPUT_DEBUG)
+    cout << "Mapping mouse (" << mouse_map_std[i].cmd 
+	 << "," << mouse_map_std[i].arg << ")" << endl;
+#endif
+    // TODO: Use proper method
+    MouseCommandMap[mouse_map_std[i].mode][mouse_map_std[i].mev]
+      = TCmdArg(string(mouse_map_std[i].cmd), string(mouse_map_std[i].arg));
+    i++;
+  }    
+}
+/* **********************************************************************
+ * Init the keyboard and mouse, and others
+ * *********************************************************************/
+void TInputToCommand::Init() {
+  inputkeyboard_init();
+  inputmouse_init();
 }
 
 /* **********************************************************************
@@ -256,9 +313,71 @@ int TInputToCommand::Consume() {
       } /* Current mode mapping */
       break;
     } /* Keyboard */
+
     case inputevent_type_pointer:
-      cerr << "TInputToCommand::Consume - no code to consume pointer events" << endl;
-      break;
+      {
+	/* Find the command in the mouse map */
+	TMouseInputEvent * MouseEvent 
+	  = (TMouseInputEvent *) InputEvent;
+	/* Construct the command append information */
+	ostrstream append_arg;
+	switch (MouseEvent->mouse_inputevent_event.button) {
+	case mouse_none:
+	  append_arg << " none";
+	  break;
+	case mouse_left:
+	  append_arg << " left";
+	  break;
+	case mouse_middle:
+	  append_arg << " middle";
+	  break;
+	case mouse_right:
+	  append_arg << " right";
+	  break;
+	} /* Button switch */
+	append_arg << " " << MouseEvent->x
+		   << " " << MouseEvent->y
+		   << " " << MouseEvent->oldx
+		   << " " << MouseEvent->oldy
+		   << ends;
+	
+	
+	/* Check the current mode */
+	TMouseCommandMapIterator loc 
+	  = MouseCommandMap[GameMode.GetMode()].find(MouseEvent->mouse_inputevent_event);
+	if (loc != MouseCommandMap[GameMode.GetMode()].end()) {
+	  /* Found a "real" mapping */
+#if (INPUT_DEBUG)
+	  cout << "TInputToCommand::Consume, current mode, mouse "
+	       << " maps to \"" << (*loc).second.cmd << "\"" << endl;
+#endif
+	  CommandQueue.push(new TCommand(MouseEvent->timestamp,
+					 (*loc).second.cmd, 
+					 (*loc).second.arg + append_arg.str()));
+	} else {
+	  /* No mapping found for the current mode, check 
+	     for the any mode */
+	  TMouseCommandMapIterator loc 
+	    = MouseCommandMap[gamemode_any].find(MouseEvent->mouse_inputevent_event);
+	  if (loc != MouseCommandMap[gamemode_any].end()) {
+	    /* Found a "real" mapping in the any mode<*/
+#if(INPUT_DEBUG)
+	    cout << "TInputToCommand::Consume, any mode, mouse "
+		 << " maps to \"" << (*loc).second.cmd << "\"" << endl;
+#endif
+	    CommandQueue.push(new TCommand(MouseEvent->timestamp,
+					   (*loc).second.cmd, 
+					   (*loc).second.arg + append_arg.str()));
+	  } /* Any mode mapping */
+#if(INPUT_DEBUG)
+	  else { /* No mappings found */
+	    cout << "TInputToCommand::Consume, no mapping found for mouse event"
+		 << endl;
+	  }
+#endif
+	} /* Current mode mapping */
+	break; /* pointer events */
+      }
     default:
       cerr << "TInputToCommand::Consume - Unknown inputeventtype" << endl;
       break;

@@ -688,9 +688,8 @@ void TClient::Run() {
   glutIdleFunc(Client_Idle);
   glutReshapeFunc(Client_Reshape);
 
-  /* Initializing the input event for the keyboard
-     TODO: Maybe we should not have to call the *keyboard*init*/
-  inputkeyboard_init();
+  /* Initializing the input event system */
+  InputToCommand.Init();
   
   /* Request fullscreen */
   // If fullscreen is enabled, my 3dfx breaks.

@@ -29,17 +29,17 @@
  * The TMouseInputEvent class (constructor) 
  * Creates an instance, sets attributes
  * *********************************************************************/
-TMouseInputEvent::TMouseInputEvent(mousebutton_state_t nstate,
+TMouseInputEvent::TMouseInputEvent(mousebutton_action_t naction,
 				   mousebutton_button_t nbutton,
-				   unsigned int x, unsigned int y,
-				   unsigned int oldx, unsigned int oldy)
+				   unsigned int nx, unsigned int ny,
+				   unsigned int noldx, unsigned int noldy)
   : TInputEvent(inputevent_type_pointer) {
-  mouse_inputevent_event.state  = nstate;
+  mouse_inputevent_event.action = naction;
   mouse_inputevent_event.button = nbutton;
-  mouse_inputevent_event.x      = x;
-  mouse_inputevent_event.y      = y;
-  mouse_inputevent_event.oldx   = oldx;
-  mouse_inputevent_event.oldy   = oldy;
+  x                             = nx;
+  y                             = ny;
+  oldx                          = noldx;
+  oldy                          = noldy;
 }
 /* **********************************************************************
  * Definition of glut callback functions
@@ -94,7 +94,7 @@ void PassiveMotionFunc(int x, int y) {
  * Note, this function will not work with multiple buttons pressed. 
  * *********************************************************************/
 void MotionFunc(int x, int y) {
-  Inputs.Events.push(new TMouseInputEvent(mousedrag, last_button, x, y, oldx, oldy));
+  Inputs.Events.push(new TMouseInputEvent(mousemove, last_button, x, y, oldx, oldy));
   oldx = x;
   oldy = y;
 }
@@ -108,10 +108,12 @@ void inputmouse_init() {
   glutMouseFunc(MouseFunc);
   glutPassiveMotionFunc(PassiveMotionFunc);
   glutMotionFunc(MotionFunc);
+  glutSetCursor(GLUT_CURSOR_NONE);
 }
 
 void inputmouse_shutdown() {
   /* Reset the mouse functions */
+  glutSetCursor(GLUT_CURSOR_INHERIT);
   glutMotionFunc(NULL);
   glutPassiveMotionFunc(NULL);
   glutMouseFunc(NULL);

@@ -47,6 +47,8 @@ protected:
   TMenu * Owner;
   /* Sets the render color based on the state */
   virtual void SetRenderColor();
+  /* Maintain a hit area */
+  int xl, xh, yl, yh;
 public:
   TMenuItem(TMenu * owner, string cap, string desc);
   virtual ~TMenuItem () {};
@@ -70,6 +72,15 @@ public:
   virtual bool Focus();
   /* If the menu item is editing, it will not allow blur */
   virtual bool Blur();
+  /* Even if the menu item is editing, it must allow a cancel
+     Wheter any changes are accepted or not is up to the item. */
+  virtual void Cancel();
+  /* Let the caller know if it is selected */
+  virtual bool Selected();
+
+  /* Hit test - hack upon hack */
+  void SetHitArea(int nxl, int nxh, int nyl, int nyh);
+  bool TestHit(int x, int y);
 };
   
 typedef std::vector<TMenuItem *> TMenuItems;
@@ -202,6 +213,8 @@ protected:
 public:
   TValueMenuItem(TMenu * owner, string cap, string desc) 
     : TMenuItem(owner, cap, desc) {};  
+  /* Special cancel for this class */
+  virtual void Cancel();
   /* Returns true if the key has been handled, false otherwise */
   virtual bool CommandConsume(TCommand * Command); 
 };

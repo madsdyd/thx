@@ -26,10 +26,10 @@
 #include <string>
 #include <map>
 #include "inputkeyboard.hh"
+#include "inputmouse.hh"
 #include "gamemode.hh"
 
-/* This map contains the mappings between keyboard input events and
-   command names */
+/* Define enough info about a command to issue it */
 class TCmdArg {
 public:
   string cmd;
@@ -43,17 +43,24 @@ public:
   }
 };
 
+/* Define maps for our mappings between keyboard and mouse events */
 typedef map <keyboard_inputevent_event_t, TCmdArg, lt_kiet> TKeyboardCommandMap;
 typedef TKeyboardCommandMap::iterator TKeyboardCommandMapIterator;
+
+typedef map <mouse_inputevent_event_t, TCmdArg, lt_miet> TMouseCommandMap;
+typedef TMouseCommandMap::iterator TMouseCommandMapIterator;
 
 /* This class can consume input events and fill the command queue */
 class TInputToCommand {
 private:
-  /* There is a keyboard map for all modes */
+  /* These are mapping maps for all gamemodes */
   TKeyboardCommandMap KeyboardCommandMap[gamemode_count];
+  TMouseCommandMap MouseCommandMap[gamemode_count];
 public: 
   /* The constructor sets up the initial mappings */
   TInputToCommand();
+  /* This initializes the input "systems" */
+  void Init();
   /* Consumes commands, and returns the number of commands added to
      the command queue */
   int Consume();

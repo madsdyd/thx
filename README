@@ -50,6 +50,8 @@ be a piece of cake.
 
 If you have checked out the sources from cvs, you should run the shell 
 script "bootstrap", which will create the script "configure" for you.
+For reasons not understood, it may be neccesary to run this script
+twice to get the necessary files created.
 
 * CONFIGURATION
 

@@ -1,5 +1,12 @@
 20010412 
   - Tagging version 0.3.3.3
+  - Added methods to let a mouse event write itself to a string, and construct from 
+    a string.
+  - Made the inputconsumer use the new MouseInputEvent interface.
+  - Updated any mouse consumer to use the MouseInputEvent interface.
+  - Changed the mouseevents to use signed ints (and updated depencies) 
+  - Added moving the viewpoint with the mouse
+  - Tagging 0.3.4.0, and releasing it
 
 20010411
   - Changed the Makefile to drop -g - makes final linking faster

@@ -2,17 +2,14 @@ Version schedule.
 
 This is an overview of what features go where. This is subject to change.
 
-- Fix encapsulation in viewpoint - sucks right now.
-- is the mousemovement errativ?
-- fix finally in player.cc
-- wrap mouse arguments - use signed ints? Fix manual decode.
 - update README
 
 ** 0.3.4 (Mouseinput continued)
-  - Make the game able to operate by mouse.
-  - The mouse input mappings need to be aware of the mode (not?)
+  - Make the game able to operate by mouse. (DONE)
+  - The mouse input mappings need to be aware of the mode (not?) (DONE)
 
 ** 0.3.6 (Input customization)
+  - make global variables to adjust the axis on the mouse
   - Make a controls menu, that allow for in game configuration of keys and 	
     mouse actions.
   - Save and load bindings.
@@ -75,6 +72,7 @@ This is an overview of what features go where. This is subject to change.
 
 * Menu system
   - Make menuitem color
+  - Make a menuitem that issues a command
   - Make the menu system smarter, wrt the way it uses variables from the
     gamestate
   - Render nice background image?
@@ -90,12 +88,18 @@ This is an overview of what features go where. This is subject to change.
     rendering of menus?
 
 * Bugs
+  - is the mousemovement erratic - or is it just to quick?
+  - Sometimes, someone can not register a command. This may have something
+    to do with the order the global objects are being created in. 
+    Need to fix this - Singleton pattern?
   - visual bugs sometimes - underside drawn? Related to texturing or culling?
     This bug may have gone away with the map now using floats for heights.
     May be related to the resolution of the depth buffer. Test with moving near
     plane farther away.
     The conflicts with glu objects seem to be resolved with moving the 
     clipplane away. However, the problems with textures may persist.
+    Need to do collision checking with the viewpoint, keeping it "near" 
+    away from everything.
   - it seems projectiles that leaves the map explode in the wrong height.
     This may be related to the Within method, that I have changed sligthly.
     (This may even be fixed).
@@ -185,12 +189,11 @@ This is an overview of what features go where. This is subject to change.
 
 * Control and configuration
   - console
-  - controle
+  - controles
   - configuration files
 
-* Mouse
-  - control orientation with mouse
-  - grab mouse in fullscreen mode
+* Clean up code
+  - encapsulate stuff in viewpoint
 
 * Network
   - network support

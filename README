@@ -42,9 +42,9 @@ To compile:
 $cd src && make && cd ..
 
 You may have to fix some includes and stuff, especially for
-<GL/*>. Some compilers seems to be more strict about implict type
-conversions than others. Yes, I know about autoconf, but not about
-how to make it work. I will eventually. :-)
+<GL/*>. Some compilers seems to be more strict about implicit type
+conversions than others. Yes, I know about autoconf, but not about how
+to make it work. I will eventually. :-)
 
 You will get several warnings. Most should be safe to ignore for now.
 
@@ -54,20 +54,20 @@ You will get several warnings. Most should be safe to ignore for now.
 To run:
 $./thx
 
-If you get a coredump, there are 3 very likely causes: 
-- you do not have rigths to access your 3d hardware. 
+If you get a core dump, there are 3 very likely causes: 
+- you do not have rights to access your 3d hardware. 
  (You may be running as non-root/with restrictive permissions).
 - you are running as root, but have not setup your display correctly.
 - you found a bug! (Please report this)
 
 If you have OSS sound, there should be some sound effects. THX will
-complaing at startup, if it can not open /dev/dsp, and you will hear
-no sound.
+complain at startup, if it can not open /dev/dsp, and you will hear no
+sound.
 
 ----------------------------------------------------------------------
 * GOTCHAS
 
-The program tries to keep the mouse in the window by warping the 
+The program tries to keep the mouse in the window by warping the
 pointer. (Disable this by pressing 'a' at any time, look under
 controls below).
 
@@ -82,28 +82,42 @@ thx", which solves my problems). This may be fixed with the warping.
 ----------------------------------------------------------------------
 * CONTROLS DURING GAME
 
-(Subject to change, please check inputconsumer.cc)
+(Please check inputconsumer.cc, if you wish to change the default
+bindings.)
 
-You can use the usual keys or the mouse to navigate the menus.
+For key bindings please note that 'a' is different from 'A' - and so
+on.
 
-Please note that 'a' is not the same as 'A' - and so on.
+* Menus 
+use the usual keys or the mouse to navigate the menus. Use the arrow
+keys to change values.
 
 * General
-quit thx          : q    (at almost any time, shuts thx down)
+quit thx          : q    (at almost any time, shuts thx down immediately)
 in game menu      : esc
 toggle mouse warp : a
 
-* Controlling your viewpoint
-move view         : d,g,r,f,t,b
-rotate view       : h,k
-tilt view         : u,j
+* Mouse control
+rotate view       : move mouse
+control cannon    : move mouse, while holding middle button
+move view         : move mouse, while holding right button
+fire              : left click
 
-The above keys are laid out as the arrow keys for your left and
-right hand. 
+* Controlling your viewpoint
+move view         : d, g, r, f, t, b
+rotate view       : h, k
+tilt view         : u, j
+
+The above keys are laid out as the arrow keys for your left and right
+hand. Using the mouse, you should use your left hand to control your
+position, and the right hand to control your orientation.  You have a
+choice of controlling the cannon with your mouse or the following
+keys. Use the mouse for major changes, fine tune with the keyboard.
+Adjusting the force of the cannon is always done using the keyboard.
 
 * Controlling your canon
-tilt kanon        : up,down
-rotate kanon      : left,right
+tilt cannon       : up, down
+rotate cannon     : left, right
 adjust force      : +,-
 change projectile : tab
 fire              : space or enter
@@ -112,11 +126,11 @@ fire              : space or enter
 render lines      : 1
 render polys      : 2
 render textures   : 3
-toogle lights     : 4
-toogle shademode  : 5
-toogle normals    : 6
-toogle markers    : 7
-flymode           : 8
-clipmode          : 9
-test refreshrate  : 0 
+toggle lights     : 4
+toggle shade mode : 5
+toggle normals    : 6
+toggle markers    : 7
+toggle fly mode   : 8
+toggle clip mode  : 9
+test refresh rate : 0 
 

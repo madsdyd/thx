@@ -56,11 +56,14 @@ public:
 };
 
 typedef std::map<string, TColor> TColors;
+typedef TColors::iterator TColorsIterator;
 
 class TColorDefinitions {
-  public:
+private:
   TColors Colors;
+public:
   TColorDefinitions();
+  TColor GetColor(string color);
 };
 
 extern TColorDefinitions ColorDefinitions;

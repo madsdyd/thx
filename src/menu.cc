@@ -177,14 +177,14 @@ TMenu * TMenu::GetCurrentMenu() {
 void TMenu::Render(int xlow, int xhigh, int ylow, int yhigh) {
   if (visible) {
     /* Render the menu title at the top (offset 2*size), centered in magenta */
-    MenuTextRender.color = ColorDefinitions.Colors["magenta"];
+    MenuTextRender.color = ColorDefinitions.GetColor("magenta");
     MenuTextRender.size = Display->height/20; /* 480/20 == 24 */
     MenuTextRender.PosY(yhigh-2*MenuTextRender.size);
     MenuTextRender.Center(xlow, xhigh, Title);
     
     /* Render a descrition of the focused items description
        at the bottom of the screen in yellow */
-    MenuTextRender.color = ColorDefinitions.Colors["yellow"];
+    MenuTextRender.color = ColorDefinitions.GetColor("yellow");
     MenuTextRender.size = Display->height/34;  /* 480/34 ~= 14 */
     MenuTextRender.PosY(ylow+4*MenuTextRender.size);
     MenuTextRender.Center(xlow, xhigh, menuitems[focuseditem]->GetDescription());
@@ -210,7 +210,7 @@ void TMenu::Render(int xlow, int xhigh, int ylow, int yhigh) {
     }
     /* Render the mouse - this is a temporary way to do it, needs to be a texture, 
        or something I reckon */
-    MenuTextRender.color = ColorDefinitions.Colors["white"];
+    MenuTextRender.color = ColorDefinitions.GetColor("white");
     MenuTextRender.PosY(mouse_y - MenuTextRender.size/2);
     MenuTextRender.PosX(mouse_x - MenuTextRender.size/2);
     MenuTextRender.Print("@");

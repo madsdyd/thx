@@ -314,7 +314,7 @@ void GameMenu_StartFunc() {
   case 4:
     player = new TPlayer(GameMenu->playernames[3]);
     tank   = new TTank(player);
-    tank->color      =  ColorDefinitions.Colors["yellow"];
+    tank->color      =  ColorDefinitions.GetColor("yellow");
     player->tank     = tank;
     if (!Game->AddPlayer(player)) {
       cerr << "Error adding player " << player->name << endl;
@@ -325,7 +325,7 @@ void GameMenu_StartFunc() {
   case 3:
     player = new TPlayer(GameMenu->playernames[2]);
     tank   = new TTank(player);
-    tank->color      = ColorDefinitions.Colors["blue"];;
+    tank->color      = ColorDefinitions.GetColor("blue");
     player->tank     = tank;
     if (!Game->AddPlayer(player)) {
       cerr << "Error adding player " << player->name << endl;
@@ -336,7 +336,7 @@ void GameMenu_StartFunc() {
   default:
     player = new TPlayer(GameMenu->playernames[1]);
     tank   = new TTank(player);
-    tank->color      = ColorDefinitions.Colors["green"];;
+    tank->color      = ColorDefinitions.GetColor("green");
     player->tank     = tank;
     if (!Game->AddPlayer(player)) {
       cerr << "Error adding player " << player->name << endl;
@@ -346,7 +346,7 @@ void GameMenu_StartFunc() {
 
     player = new TPlayer(GameMenu->playernames[0]);
     tank   = new TTank(player);
-    tank->color      = ColorDefinitions.Colors["red"];;
+    tank->color      = ColorDefinitions.GetColor("red");
     player->tank     = tank;
     if (!Game->AddPlayer(player)) {
       cerr << "Error adding player " << player->name << endl;

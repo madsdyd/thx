@@ -141,19 +141,19 @@ bool TMenuItem::TestHit(int x, int y) {
 void TMenuItem::SetRenderColor() {
   switch (state) {
   case menuitem_state_disabled:
-    MenuTextRender.color = ColorDefinitions.Colors["gray"];
+    MenuTextRender.color = ColorDefinitions.GetColor("gray");
     break;
   case menuitem_state_blurred:
     // cout << caption << " does not have focus" << endl;
-    MenuTextRender.color = ColorDefinitions.Colors["red"];
+    MenuTextRender.color = ColorDefinitions.GetColor("red");
     break;
   case menuitem_state_focused:
     // cout << caption << " has focus" << endl;
-    MenuTextRender.color = ColorDefinitions.Colors["green"];
+    MenuTextRender.color = ColorDefinitions.GetColor("green");
     break;
   case menuitem_state_selected:
     // cout << caption << " is editing " << endl;
-    MenuTextRender.color = ColorDefinitions.Colors["blue"];
+    MenuTextRender.color = ColorDefinitions.GetColor("blue");
     break;
   }
 }
@@ -240,7 +240,7 @@ void TInfoMenuItem::AddLine(string line) {
  * Render the text over multiple lines
  * *********************************************************************/
 void TInfoMenuItem::Render(int xlow, int xhigh) {
-  MenuTextRender.color = ColorDefinitions.Colors["white"];
+  MenuTextRender.color = ColorDefinitions.GetColor("white");
   MenuTextRender.CenterLn(xlow, xhigh, description);
   for (unsigned int i = 0; i < lines.size(); i++) {
     MenuTextRender.CenterLn(xlow, xhigh, lines[i]);

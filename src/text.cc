@@ -30,7 +30,7 @@ TTextRender::TTextRender() {
   size   = 12;
   x      = 0;
   y      = 0;
-  color  = ColorDefinitions.Colors["white"];
+  color  = ColorDefinitions.GetColor("white");
 }
 
 /* **********************************************************************

@@ -1004,7 +1004,7 @@ void TMap::Render(TViewpoint * viewpoint) {
     if (render_normals) {
       glDisable(GL_LIGHTING);
       glDisable(GL_TEXTURE_2D);
-      glColor4fv(ColorDefinitions.Colors["yellow"].data);
+      glColor4fv(ColorDefinitions.GetColor("yellow").data);
       glBegin(GL_LINES);
       for(y = 1; y < length-2; y++) {
 	for(x = 1; x < width-2; x++) {

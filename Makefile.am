@@ -4,7 +4,7 @@ SUBDIRS = src data
 # For now, it is not worth it.
 # The makefile here is the old makefile, which should probably go
 # into the distribution, untill I am sure the configure stuff works.
-EXTRA_DIST = bootstrap CHANGELOG thx.xpm DOCS src/Makefile.linux.mdk80
+EXTRA_DIST = bootstrap config CHANGELOG thx.xpm DOCS src/Makefile.linux.mdk80
 
 
 # Hook to install our data. This is a hack, I think.

@@ -26,14 +26,6 @@
 #define GRAVITY 9.82
 //#define GRAVITY 15
 
-/* OpenGL color */
-typedef struct {
-  GLfloat red;
-  GLfloat green;
-  GLfloat blue;
-  GLfloat alpha;
-} color_t;
-
 /* Vector is 3 floats */
 typedef struct {
   float x, y, z;
@@ -47,19 +39,6 @@ typedef struct {
 #else
 #error "Non Linux system and system_time_t is not defined"
 #endif
-
-void color_setcolor(color_t * color, GLfloat red, GLfloat green, 
-		    GLfloat blue, GLfloat alpha);
-
-/* Methods that sets a color to a specific color */
-void color_setwhite(color_t * color);
-void color_setblack(color_t * color);
-void color_setyellow(color_t * color);
-void color_setred(color_t * color);
-void color_setgreen(color_t * color);
-void color_setblue(color_t * color);
-void color_setmagenta(color_t * color);
-
 system_time_t system_gettime();
  
 

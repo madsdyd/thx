@@ -178,6 +178,21 @@ public:
 };
 
 /* **********************************************************************
+ * TScrollItem - displays an arrow up, calls its owners scrollup/down
+ * *********************************************************************/
+class TScrollMenuItem : public TSimpleActionMenuItem {
+protected:
+  bool IsUp;
+  bool CanScroll;
+  TScrollMenuItem * OtherEnd;
+  virtual void DoAction();
+public:
+  TScrollMenuItem(TMenu * owner, string desc, bool isup);
+  void SetOtherEnd(TScrollMenuItem * other);
+  void SetCanScroll();
+};
+
+/* **********************************************************************
  * TValueMenuItem
  * **********************************************************************
    This is a menuitem that can serve as a basis for menuitems that can

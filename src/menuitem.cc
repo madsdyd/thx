@@ -211,6 +211,67 @@ bool TSimpleActionMenuItem::CommandConsume(TCommand * Command) {
 
 /* **********************************************************************
  * **********************************************************************
+ * TScrollMenuItem
+ * **********************************************************************
+ * *********************************************************************/
+TScrollMenuItem::TScrollMenuItem(TMenu * owner, string desc, bool isup) 
+  : TSimpleActionMenuItem(owner, "--", desc) {
+  IsUp      = isup;
+  CanScroll = !isup;
+  OtherEnd  = NULL;
+  if (!isup) {
+    caption = "vv";
+  }
+};
+
+void TScrollMenuItem::SetOtherEnd(TScrollMenuItem * other) {
+  OtherEnd = other;
+}
+
+void TScrollMenuItem::SetCanScroll() {
+  CanScroll = true;
+  if (IsUp) {
+    caption = "^^";
+  } else {
+    caption = "vv";
+  }
+}
+/* **********************************************************************
+ * TScrollMenuItem::DoAction - this is kinda hacky.
+ * *********************************************************************/
+void TScrollMenuItem::DoAction() {
+  Assert(OtherEnd, "TScrollMenuItem::DoAction - no other end");
+  OtherEnd->SetCanScroll();
+  if (IsUp) {
+    /* We scroll Up - then test if it can be done again */
+    if (Owner->ScrollUp()) {
+#ifdef SOUND_ON
+      sound_play(names_to_nums["data/sounds/menu_deselect.raw"]);      
+#endif
+    }
+    if (!Owner->ScrollUp()) {
+      caption = "--";
+    } else {
+      Owner->ScrollDown();
+      caption = "^^";
+    }
+  } else {
+    if (Owner->ScrollDown()) {
+#ifdef SOUND_ON
+      sound_play(names_to_nums["data/sounds/menu_deselect.raw"]);      
+#endif
+    }
+    if (!Owner->ScrollDown()) {
+      caption = "--";
+    } else {
+      Owner->ScrollUp();
+      caption = "vv";
+    }
+  }
+}
+
+/* **********************************************************************
+ * **********************************************************************
  *  TSubMenuItem 
  * **********************************************************************
  * *********************************************************************/

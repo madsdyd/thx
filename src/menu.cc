@@ -21,6 +21,7 @@
 */
 #include <GL/glut.h>
 #include <strstream>
+#include "debug.hh"
 
 #include "menu.hh"
 
@@ -54,6 +55,7 @@ TMenu::TMenu(string nTitle) {
   visible        = false;
   focuseditem    = -1;
   cancelitem     = -1;
+  hasscrollarea  = false;
 }
 
 /* **********************************************************************
@@ -75,18 +77,7 @@ TMenu::~TMenu() {
  * *********************************************************************/
 void TMenu::Show() {
   if (focuseditem < 0) {
-    /* Locate element that can take focus */
-    focuseditem = 0;
-    while(focuseditem < (int) menuitems.size()) {
-      if (menuitems[focuseditem]->Focus()) {
-	break;
-      }
-      focuseditem++;
-    }
-    if (focuseditem >= (int) menuitems.size()) { /* Should never happen */
-      cerr << "TMenu::Show() - no menuitems want focus!" << endl;
-      focuseditem = 0;
-    }
+    FocusFirst();
   }
   visible = true;
   CurrentMenu = this;
@@ -149,11 +140,72 @@ void TMenu::HideChild(TMenu * oChild) {
 }
 
 /* **********************************************************************
+ * Functions to handle moving the Focus item
+ * *********************************************************************/
+/* **********************************************************************
+ * FocusFirst - find an element to focus, start from the top
+ * *********************************************************************/
+void TMenu::FocusFirst() {
+  /* Locate element that can take focus */
+  focuseditem = 0;
+  while(focuseditem < (int) menuitems.size()) {
+    if (menuitems[focuseditem]->Focus()) {
+      break;
+    }
+    focuseditem++;
+  }
+  if (focuseditem >= (int) menuitems.size()) { /* Should never happen */
+    cerr << "TMenu::FocusFirst() - no menuitems want focus!" << endl;
+    focuseditem = 0;
+  }
+}
+
+/* **********************************************************************
+ * IsHiddenInScrollArea - checks if a given position is hidden in the 
+ * scrollarea
+ * *********************************************************************/
+bool TMenu::IsHiddenInScrollArea(int position) {
+  if (hasscrollarea) {
+    return ((position > scrollmin && position < scrollpos) 
+	    || (position < scrollmax && position >= scrollpos + scrollsize));
+  } else {
+    return false;
+  }
+}
+
+/* **********************************************************************
+ * FocusMoveUp - tries to move up the focus, while avoiding
+ * items in the scroll area that are hidden
+ * *********************************************************************/
+bool TMenu::FocusMoveUp() {
+  int tmp = focuseditem;
+  do {
+    focuseditem = ( focuseditem - 1 + menuitems.size() ) % menuitems.size();
+  } while (IsHiddenInScrollArea(focuseditem) 
+	   || !menuitems[focuseditem]->Focus());
+  return (tmp != focuseditem);
+}
+
+/* **********************************************************************
+ * FocusMoveDown - tries to move down the focus, while avoiding
+ * items in the scroll area that are hidden
+ * *********************************************************************/
+bool TMenu::FocusMoveDown() {
+  int tmp = focuseditem;
+  do {
+    focuseditem = (focuseditem + 1) % menuitems.size();
+  } while (IsHiddenInScrollArea(focuseditem) 
+	   || !menuitems[focuseditem]->Focus());
+  return (tmp != focuseditem);
+}
+
+/* **********************************************************************
  * Set the menuitem size - called from Render
  * *********************************************************************/
 void TMenu::SetItemSize() {
   MenuTextRender.size = Display->GetHeight()/27; /* 480/27 ~= 18 */
 }
+
 /* **********************************************************************
  * Sometimes we will stop showing ourselves, and show our parent
  * *********************************************************************/
@@ -206,14 +258,20 @@ void TMenu::Render(int xlow, int xhigh, int ylow, int yhigh) {
     MenuTextRender.PosY(yhigh-(Display->GetHeight()/4));
     int py = MenuTextRender.PosY()+MenuTextRender.size;
     TMenuItemsIterator End = menuitems.end();
+    int count = 0;
     for (TMenuItemsIterator i = menuitems.begin(); i != End; i++) {
-      /* The menuitems simply writes as if it was a textterminal,
-	 but updates the position in MenuTextRender */
-      (*i)->Render(xlow, xhigh);
-      // This is if I had the coordinates I would like to 
-      // (*i)->SetHitArea(xlow, xhigh, py, MenuTextRender.PosY());
-      (*i)->SetHitArea(xlow, xhigh, MenuTextRender.PosY()+MenuTextRender.size, py);
-      py = MenuTextRender.PosY()+MenuTextRender.size;
+      if (IsHiddenInScrollArea(count)) {
+	(*i)->SetHitArea(-2, -1, -2, -1);
+      } else {
+	/* The menuitems simply writes as if it was a textterminal,
+	   but updates the position in MenuTextRender */
+	(*i)->Render(xlow, xhigh);
+	// This is if I had the coordinates I would like to 
+	// (*i)->SetHitArea(xlow, xhigh, py, MenuTextRender.PosY());
+	(*i)->SetHitArea(xlow, xhigh, MenuTextRender.PosY()+MenuTextRender.size, py);
+	py = MenuTextRender.PosY()+MenuTextRender.size;
+      }
+      count++;
     }
     /* Render the mouse - this is a temporary way to do it, needs to be a texture, 
        or something I reckon */
@@ -247,23 +305,21 @@ bool TMenu::CommandConsume(TCommand * Command) {
   if ("focus-change" == Command->name) {
     if ("up" == Command->args) {
       if (menuitems[focuseditem]->Blur()) {
-	do {
-	  focuseditem = ( focuseditem - 1 + menuitems.size() ) % menuitems.size();
-	} while(!menuitems[focuseditem]->Focus());
+	if (FocusMoveUp()) {
 #ifdef SOUND_ON
-	sound_play(names_to_nums["data/sounds/menu_move.raw"]);
+	  sound_play(names_to_nums["data/sounds/menu_move.raw"]);
 #endif
+	}
       }
       return true;
     }
     if ("down" == Command->args) {
       if (menuitems[focuseditem]->Blur()) {
-	do {
-	  focuseditem = (focuseditem + 1) % menuitems.size();
-	} while(!menuitems[focuseditem]->Focus());
+	if (FocusMoveDown()) {
 #ifdef SOUND_ON
-	sound_play(names_to_nums["data/sounds/menu_move.raw"]);
+	  sound_play(names_to_nums["data/sounds/menu_move.raw"]);
 #endif
+	}
       }
       return true;
     }
@@ -439,6 +495,10 @@ bool TMenu::CommandConsume(TCommand * Command) {
 }
 
 /* **********************************************************************
+ * Adding stuff to the menu
+ * *********************************************************************/
+
+/* **********************************************************************
  * Add a normal menu item
  * *********************************************************************/
 void TMenu::AddMenuItem(TMenuItem * item) {
@@ -449,7 +509,56 @@ void TMenu::AddMenuItem(TMenuItem * item) {
  * Add "the" Cancel menu item
  * *********************************************************************/
 void TMenu::AddCancelMenuItem(TMenuItem * item) {
-  menuitems.push_back(item);
+  AddMenuItem(item);
   cancelitem = menuitems.size() - 1;
+}
+
+/* **********************************************************************
+ * Controlling the scroll area
+ * *********************************************************************/
+
+/* **********************************************************************
+ * OpenScrollArea - this adds the item, and stores its number scrollmin
+ * *********************************************************************/
+void TMenu::OpenScrollArea(TMenuItem * item) {
+  AddMenuItem(item);
+  scrollmin = menuitems.size() - 1;
+}
+
+/* **********************************************************************
+ * CloseScrollArea - adds the item, sets the size, and stores the max 
+ * *********************************************************************/
+void TMenu::CloseScrollArea(int size, TMenuItem * item) {
+  AddMenuItem(item);
+  scrollsize = size;
+  scrollmax  = menuitems.size() - 1;
+  Assert(scrollmin < scrollmax, 
+	 "TMenu::CloseScrollArea - scrollmin >= scrollmax");
+  Assert((scrollmax - scrollmin) > scrollsize, 
+	 "TMenu::ClosescrollArea - size to large for number of items regged");
+  scrollpos = scrollmin + 1;
+  hasscrollarea = true;  
+}
+
+/* **********************************************************************
+ * Scroll up. Decrease scrollpos, if room.
+ * *********************************************************************/
+bool TMenu::ScrollUp() {
+  if (scrollpos > (scrollmin + 1)) {
+    scrollpos--;
+    return true;
+  }
+  return false;
+}
+
+/* **********************************************************************
+ * Scroll down. Increase scrollpos, if room.
+ * *********************************************************************/
+bool TMenu::ScrollDown() {
+  if (scrollpos < (scrollmax - scrollsize)) {
+    scrollpos++;
+    return true;
+  }
+  return false;
 }
 

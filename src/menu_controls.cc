@@ -140,6 +140,16 @@ public:
  * The constructor for the controls menu
  * *********************************************************************/
 TControlsMenu::TControlsMenu(string title) : TMenu(title) {
+  /* Setup a scroll area */
+  TScrollMenuItem * tmpitem1 
+    = new TScrollMenuItem(this, "Click to scroll up", true);
+  TScrollMenuItem * tmpitem2 
+    = new TScrollMenuItem(this, "Click to scroll down", false);
+  tmpitem1->SetOtherEnd(tmpitem2);
+  tmpitem2->SetOtherEnd(tmpitem1);
+
+  OpenScrollArea(tmpitem1);
+
   /* Viewpoint move related */
   AddMenuItem(new TControlsMenuItem(this, "Move forward", 
 				    "Change what key moves forward",
@@ -159,6 +169,7 @@ TControlsMenu::TControlsMenu(string title) : TMenu(title) {
   AddMenuItem(new TControlsMenuItem(this, "Move down", 
 				    "Change what key moves down",
 				    "viewpoint-move", "+down"));
+
   /* Viewpoint rotate related */
   AddMenuItem(new TControlsMenuItem(this, "Rotate forward", 
 				    "Change what key rotates forward",
@@ -172,11 +183,12 @@ TControlsMenu::TControlsMenu(string title) : TMenu(title) {
   AddMenuItem(new TControlsMenuItem(this, "Rotate right", 
 				    "Change what key rotates right",
 				    "viewpoint-rotate", "+right"));
+
   /* Tank related */
-  AddMenuItem(new TControlsMenuItem(this, "Cannon rotate left", 
+  AddMenuItem(new TControlsMenuItem(this, "Cannon left", 
 				    "Change what key rotates the cannon left",
 				    "cannon", "+rotate-left"));
-  AddMenuItem(new TControlsMenuItem(this, "Cannon rotate right", 
+  AddMenuItem(new TControlsMenuItem(this, "Cannon right", 
 				    "Change what key rotates the cannon right",
 				    "cannon", "+rotate-right"));
   AddMenuItem(new TControlsMenuItem(this, "Cannon raise", 
@@ -185,10 +197,10 @@ TControlsMenu::TControlsMenu(string title) : TMenu(title) {
   AddMenuItem(new TControlsMenuItem(this, "Cannon lower", 
 				    "Change what key lowers the cannon",
 				    "cannon", "+lower"));
-  AddMenuItem(new TControlsMenuItem(this, "Cannon increase force", 
+  AddMenuItem(new TControlsMenuItem(this, "Increase force", 
 				    "Change what key increases the cannon force",
 				    "cannon", "+force-increase"));  
-  AddMenuItem(new TControlsMenuItem(this, "Cannon decrease force", 
+  AddMenuItem(new TControlsMenuItem(this, "Decrease force", 
 				    "Change what key decreases the cannon force",
 				    "cannon", "+force-decrease"));  
   AddMenuItem(new TControlsMenuItem(this, "Next weapon", 
@@ -197,6 +209,8 @@ TControlsMenu::TControlsMenu(string title) : TMenu(title) {
   AddMenuItem(new TControlsMenuItem(this, "Fire", 
 				    "Change what key fires the cannon",
 				    "fire", ""));
+
+  CloseScrollArea(10, tmpitem2);
 
   /* Return menu item */
   AddCancelMenuItem(new TReturnMenuItem(this, "Return", 
@@ -207,5 +221,6 @@ TControlsMenu::TControlsMenu(string title) : TMenu(title) {
  * Overriding the item size
  * *********************************************************************/
 void TControlsMenu::SetItemSize() {
-  MenuTextRender.size = Display->GetHeight()/34;  /* 480/34 ~= 14 */
+  // MenuTextRender.size = Display->GetHeight()/34;  /* 480/34 ~= 14 */
+  MenuTextRender.size = Display->GetHeight()/27;  /* 480/34 ~= 14 */
 }

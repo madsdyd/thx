@@ -40,6 +40,26 @@ protected:
   TMenuItems menuitems;
   /* The number of the menuitem with focus. */
   int focuseditem;
+  /* This is to allow for scrolling a (single) section of the menu items 
+     up and down. The fragility is starting to show.... 
+     The arrow up and down items are always shown. Only a limited 
+     number of items between these are rendered.
+     Clicking the up arrow should allow an entry hidden at the top 
+     to be shown, and hide an entry at the bottom 
+     Clicking the down arrow should do the opposite */
+  bool hasscrollarea; 
+  int scrollmin;  /* The number of the arrow up item */
+  int scrollmax;  /* The number of the arrow down item */
+  int scrollsize; /* The number of visible items in the scroll area */
+  int scrollpos;  /* The number of the lowest item shown in the scroll
+		    area, assert 
+		    scrollpos > scrollmin, 
+		    scrollpos <= (scrollmax - scrollsize) */
+  /* New methods to encapsulate focus move logic */
+  void FocusFirst();    /* Finds an item to focus initially */
+  bool FocusMoveUp();   /* Attempts to move the focus "up" */
+  bool FocusMoveDown(); /* Attempts to move the focus "down" */
+  bool IsHiddenInScrollArea(int position);
   /* Wheter or not the menu is visible */
   bool visible;
   /* The Menu that needs to know, when this menu looses focus.
@@ -60,10 +80,15 @@ protected:
      all of render ... */
   virtual void SetItemSize();
 public:
-  /* Construct and destruct the menu */
+  /* **********************************************************************
+   * Construct and destroy the menu
+   * *********************************************************************/
   TMenu(string nTitle);
   virtual ~TMenu();
-  
+
+  /* **********************************************************************
+   * Control display of the menu
+   * *********************************************************************/
   /* Render the menu */
   void Render(int xlow, int xhigh, int ylow, int yhigh);
   /* Enable showing of this menu */
@@ -75,10 +100,28 @@ public:
   void ShowChild(TMenu * nChild);
   /* Hide this menu */
   void Hide();
+  
+  /* **********************************************************************
+   * Add "normal" items
+   * *********************************************************************/
   /* Add a TMenuItem to the menu */
   void AddMenuItem(TMenuItem * item);
   /* Add "the" TCancelMenuItem to the menu */
   void AddCancelMenuItem(TMenuItem * item);
+
+  /* **********************************************************************
+   * Support for the scroll area 
+   * NOTE: Almost no checking is performed - use at own risk
+   * *********************************************************************/
+  /* Open adds the topmost menuitem */
+  void OpenScrollArea(TMenuItem * item);
+  /* Close add the bottom menuitem, and indicates the number of visible 
+     items */
+  void CloseScrollArea(int size, TMenuItem * item);
+  /* Move the scroll area, so the visible items goes the opposite direction */  
+  bool ScrollUp(); 
+  bool ScrollDown();
+
   /* This is to get the current menu - which is a hack */
   TMenu * GetCurrentMenu();
   /* Handle commands */

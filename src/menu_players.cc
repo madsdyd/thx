@@ -110,6 +110,7 @@ void TPlayerMenu::Show() {
 			    &(*i).playerclass);
     stmpitem->AddOption("human", "human");
     stmpitem->AddOption("AI Baltazar", "baltazar");
+    stmpitem->AddOption("AI Casper", "casper");
     AddMenuItem(stmpitem);
 
     /* and the players team */

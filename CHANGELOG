@@ -3,6 +3,7 @@
     the player class - otherwise it was possible to fire when an IA player
     was active (no good).
   - Added an AI factory to facilitate creating AI players.
+  - Added two AI personalities, Baltazar and Casper (identical for now).
 
 20010716
   - Updated the basic AI to be slightly more interessting.

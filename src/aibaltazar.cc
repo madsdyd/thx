@@ -19,38 +19,36 @@
     along with this program; if not, write to the Free Software
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
-#include "aifactory.hh"
 #include "aibaltazar.hh"
-#include "aicasper.hh"
-/* **********************************************************************
- * The factory
- * *********************************************************************/
-TAIFactory AIFactory;
 
 /* **********************************************************************
- * Constructor - does nothing now
+ * Constructors and destructors
  * *********************************************************************/
-TAIFactory::TAIFactory() {
-};
+TAIPlayerBaltazar::TAIPlayerBaltazar(TGame * ngame, string nname, string nteam) 
+  : TAIPlayer(ngame, nname, nteam) {};
+
+TAIPlayerBaltazar::~TAIPlayerBaltazar() {};
 
 /* **********************************************************************
- * Destructor - equally empty
+ * Round and turn commands - the meat of this object
  * *********************************************************************/
-TAIFactory::~TAIFactory() {
-};
 
 /* **********************************************************************
- * Creates a name AI player
+ * Set the goal for this turn
  * *********************************************************************/
-TAIPlayer * TAIFactory::CreateAIPlayer(string ainame, TGame * game, 
-			   string playername, string teamname) {
-  if ("casper" == ainame) {
-    return new TAIPlayerCasper(game, playername, teamname);
-  } else if ("baltazar" == ainame) {
-    return new TAIPlayerBaltazar(game, playername, teamname);
-  } else {
-    cerr << "TAIFactory::CreateAIPlayer - Unknown AT \"" << ainame
-	 << "\" - creating Baltazar AI" << endl;
-    return new TAIPlayerBaltazar(game, playername, teamname);
-  }
+void TAIPlayerBaltazar::BeginTurn() {
+  /* Calling our parents BeginTurn should be safe and register the
+     commands */
+  TAIPlayer::BeginTurn();
+  /* Baltazar is totally random in its goals, and is 
+     modelled after the way my son played, when he was 4 months old. ;-) */
+  cannon_target.angle    =  90.0*rand()/(RAND_MAX+1.0);
+  cannon_target.rotation = 359.0*rand()/(RAND_MAX+1.0);
+  cannon_target.force    = 100.0*rand()/(RAND_MAX+1.0);
+  /* cout << "TAIPlayerBaltazar::BeginTurn - setting goals " 
+     << cannon_target.angle << ", " << cannon_target.rotation 
+     << ", " << cannon_target.force << endl; */
 }
+
+
+

@@ -19,28 +19,16 @@
     along with this program; if not, write to the Free Software
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
-#ifndef __AIPLAYER_HH__
-#define __AIPLAYER_HH__
+#ifndef __AIBALTAZAR_HH__
+#define __AIBALTAZAR_HH__
 /* This is an AI player - based on a normal player */
 
-#include "tank.hh"
-#include "player.hh"
+#include "aiplayer.hh"
 
-class TAIPlayer : public TPlayer {
-protected:
-  /* variable used to store the target for cannon */
-  cannon_t cannon_target;
-  void RegisterCommands();
-  void UnregisterCommands();
-  // void PerformCommandUpdate(system_time_t timenow);
+class TAIPlayerBaltazar : public TAIPlayer {
 public:
-  TAIPlayer(TGame * ngame, string nname, string nteam);
-  virtual ~TAIPlayer();
-  virtual void PrepareRound(TVector * location);
-  virtual void BeginTurn(); /* Called, when this players turn is about to start */
-  virtual void EndTurn();   /* Called, when this players turn is about to end */
-  // virtual bool CommandConsume(TCommand * Command);
-  /* The update command mostly handle the movement stuff */
-  virtual void Update(system_time_t timenow);
+  TAIPlayerBaltazar(TGame * ngame, string nname, string nteam);
+  virtual ~TAIPlayerBaltazar();
+  void BeginTurn(); /* The only thing Baltazar do */
 };
 #endif

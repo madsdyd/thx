@@ -108,8 +108,8 @@ TMouseInputEvent::TMouseInputEvent(string value)
 /* **********************************************************************
  * This is a global variable, that holds the last known state of the mouse
  * *********************************************************************/
-static int oldx = 0;
-static int oldy = 0;
+int mouse_last_x = 0;
+int mouse_last_y = 0;
 static mousebutton_button_t last_button = mouse_none;
 
 /* **********************************************************************
@@ -134,17 +134,17 @@ void MouseFunc(int button, int state, int x, int y) {
   /* Push an event, store the new values as old */
   if (GLUT_DOWN == state) {
     Inputs.Events.push(new TMouseInputEvent(mousedown, last_button, 
-					    x, y, oldx, oldy));
+					    x, y, mouse_last_x, mouse_last_y));
   } else {
     Inputs.Events.push(new TMouseInputEvent(mouseup, last_button, 
-					    x, y, oldx, oldy));
+					    x, y, mouse_last_x, mouse_last_y));
   }
-  oldx = x;
-  oldy = y;
+  mouse_last_x = x;
+  mouse_last_y = y;
   /* Testing mouse to and from string.*/
   /* {
     TMouseInputEvent base(mousedown, last_button, 
-			  x, y, oldx, oldy);
+			  x, y, mouse_last_x, mouse_last_y);
     cout << base.ToString() << endl;
     TMouseInputEvent tmp(base.ToString());
     cout << tmp.ToString() << endl;
@@ -168,12 +168,12 @@ void MouseMotionFunc(int x, int y,
      destination is the center of the screen, then ignore the event */
   if (center && justwarped && x == x2 && y == y2) {
     justwarped = false;
-    oldx = x;
-    oldy = y;
+    mouse_last_x = x;
+    mouse_last_y = y;
     return;
   }
   /* If new and old are the same, nothing happened, really */
-  if (x == oldx && y == oldy) {
+  if (x == mouse_last_x && y == mouse_last_y) {
     justwarped = false;
     return;
   }
@@ -182,13 +182,13 @@ void MouseMotionFunc(int x, int y,
      otherwise push true event*/
   /*  if (center) {
       Inputs.Events.push(new TMouseInputEvent(mousemove, button, 
-      x, y, oldx, oldy));  
+      x, y, mouse_last_x, mouse_last_y));  
       } else { */
   Inputs.Events.push(new TMouseInputEvent(mousemove, button, 
-					  x, y, oldx, oldy));  
+					  x, y, mouse_last_x, mouse_last_y));  
   //  }
-  oldx = x;
-  oldy = y;
+  mouse_last_x = x;
+  mouse_last_y = y;
   /* Make sure we warp back */
   if (center) {
     glutWarpPointer(x2, y2);
@@ -217,7 +217,7 @@ void MotionFunc(int x, int y) {
 void EntryFunc(int state) {
   /* If the mouse left us, quickly return it to the last known state. */
   if (Display->GrabbingPointer() && GLUT_LEFT == state) {
-    glutWarpPointer(oldx, Display->GetHeight() - oldy);
+    glutWarpPointer(mouse_last_x, Display->GetHeight() - mouse_last_y);
   }
 }
 
@@ -234,6 +234,8 @@ void inputmouse_init() {
   glutEntryFunc(EntryFunc);
   /* Warp the pointer to the center of our display to start with */
   glutWarpPointer(Display->GetWidth()/2, Display->GetHeight()/2);
+  /* We are in normal mode, however */
+  centermode = false;
 }
 
 void inputmouse_shutdown() {
@@ -247,9 +249,24 @@ void inputmouse_shutdown() {
 /* **********************************************************************
  * Center or normal mode
  * *********************************************************************/
+/* These are used to maintain the mouse position in center/grab mode */
+static int mouse_precenter_x = 0;
+static int mouse_precenter_y = 0;
+
 void inputmouse_centermode() {
-  centermode = true;
+  /* Ignore mode changes, if already in mode */
+  if (centermode) { return; };
+  mouse_precenter_x = mouse_last_x;
+  mouse_precenter_y = mouse_last_y;
+  glutWarpPointer(Display->GetWidth()/2, Display->GetHeight()/2);
+  centermode = true;  
 };
+
 void inputmouse_normalmode() {
+  /* Ignore mode changes, if already in mode */
+  if (!centermode) { return; };
+  glutWarpPointer(mouse_precenter_x, Display->GetHeight() - mouse_precenter_y);
+  mouse_last_x = mouse_precenter_x;
+  mouse_last_y = mouse_precenter_y;
   centermode = false;
 };

@@ -83,8 +83,7 @@ void TMenu::Show() {
   CurrentMenu = this;
   /* Force possible old focuseditem to focus. */
   menuitems[focuseditem]->Focus();
-  /* This is a kind of testing of the command structure. */
-  // cout << "TMenu::Show - " << Title << " - registering commands" << endl;
+  /* Register our commands */
   CommandDispatcher.RegisterConsumer("focus-change", this);
   CommandDispatcher.RegisterConsumer("mouse-move", this);
   CommandDispatcher.RegisterConsumer("mouse-down", this);

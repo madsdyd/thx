@@ -22,7 +22,12 @@
 /* Various stuff used when debugging */
 #ifndef __DEBUG_HH__
 #define __DEBUG_HH__
-#ifdef DEBUG /* Define from makefile */
+
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
+#ifdef DEBUG 
 #include <signal.h>
 
 /* A custom assert */

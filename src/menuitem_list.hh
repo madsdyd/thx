@@ -128,7 +128,7 @@ bool TListMenuItem <value_t>::CommandConsume(TCommand * Command) {
 	  = (selected_value - 1 + options.size()) % options.size();
 	*storage = options[selected_value].value;
 #ifdef SOUND_ON
-	sound_play(names_to_nums["data/sounds/menu_move.raw"]);
+	sound_play(names_to_nums[THX_DATADIR "/sounds/menu_move.raw"]);
 #endif    
 	return true;
       }
@@ -136,7 +136,7 @@ bool TListMenuItem <value_t>::CommandConsume(TCommand * Command) {
 	selected_value = (selected_value + 1) % options.size();
 	*storage = options[selected_value].value;
 #ifdef SOUND_ON
-	sound_play(names_to_nums["data/sounds/menu_move.raw"]);
+	sound_play(names_to_nums[THX_DATADIR "/sounds/menu_move.raw"]);
 #endif    
 	return true;
       }
@@ -150,7 +150,7 @@ bool TListMenuItem <value_t>::CommandConsume(TCommand * Command) {
     selected_value = (selected_value + 1) % options.size();
     *storage = options[selected_value].value;
 #ifdef SOUND_ON
-    sound_play(names_to_nums["data/sounds/menu_select.raw"]);
+    sound_play(names_to_nums[THX_DATADIR "/sounds/menu_select.raw"]);
 #endif
     /* Remember to call any registered function */
     if (NotifyTarget) {

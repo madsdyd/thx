@@ -19,6 +19,10 @@
     along with this program; if not, write to the Free Software
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+#include <strstream>
 #include "client.hh"
 #include "color.hh"
 #include "types.hh"
@@ -26,28 +30,18 @@
 #include "tank.hh"
 #include "player.hh"
 #include "aiplayer.hh"
-
 #include "display.hh"
 #include "framerate.hh"
-
 #include "menu.hh"
 #include "menu_game.hh"
 #include "menu_round.hh"
 #include "menu_buy.hh"
 #include "menu_score.hh"
 #include "menu_controls.hh"
-
-/* Testing input events */
 #include "inputconsumer.hh"
 #include "command.hh"
 #include "commandconsumer.hh"
-
-#include <strstream>
-
-#ifdef SOUND_ON
 #include "sound.hh"
-#endif
-
 #include "aifactory.hh"
 
 TClient * Client;
@@ -519,14 +513,14 @@ TClient::TClient(int argc, char ** argv) {
   }
   /* load a single sound */
   char * sounds[] = {
-    "data/sounds/explosion.raw",
-    "data/sounds/explosion2.raw",
-    "data/sounds/fire.raw",
-    "data/sounds/menu_back_menu.raw",
-    "data/sounds/menu_deselect.raw",
-    "data/sounds/menu_forward_menu.raw",
-    "data/sounds/menu_move.raw",
-    "data/sounds/menu_select.raw",
+    THX_DATADIR "/sounds/explosion.raw",
+    THX_DATADIR "/sounds/explosion2.raw",
+    THX_DATADIR "/sounds/fire.raw",
+    THX_DATADIR "/sounds/menu_back_menu.raw",
+    THX_DATADIR "/sounds/menu_deselect.raw",
+    THX_DATADIR "/sounds/menu_forward_menu.raw",
+    THX_DATADIR "/sounds/menu_move.raw",
+    THX_DATADIR "/sounds/menu_select.raw",
   };
   for (int i = 0; i < 8; i++) {
     if (0 != sound_load(i, sounds[i])) {
@@ -540,7 +534,7 @@ TClient::TClient(int argc, char ** argv) {
   
   /* Initialize MENU system */
   /* First the Text render system */
-  MenuTextRender.Load("data/graphics/fonts/fontGray.tga");
+  MenuTextRender.Load(THX_DATADIR "/graphics/fonts/fontGray.tga");
   /* Init the controls menu */
   ControlsMenu = new TControlsMenu("Controls");
 
@@ -645,7 +639,7 @@ bool TClient::CommandConsume(TCommand * Command) {
       has |= CLIENT_HAS_INGAMEMENU;
       InGameMenu->Show();
 #ifdef SOUND_ON
-      sound_play(names_to_nums["data/sounds/menu_forward_menu.raw"]);
+      sound_play(names_to_nums[THX_DATADIR "/sounds/menu_forward_menu.raw"]);
 #endif
       return true;
     }

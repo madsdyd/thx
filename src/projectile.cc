@@ -19,6 +19,9 @@
     along with this program; if not, write to the Free Software
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
 #include <stdlib.h>
 #include "projectile.hh"
 
@@ -28,10 +31,7 @@
 
 #include "display.hh"
 #include "console.hh"
-
-#ifdef SOUND_ON
 #include "sound.hh"
-#endif
 
 /* **********************************************************************
    Configuration stuff, accessible from the outside */
@@ -86,7 +86,7 @@ void TProjectile::OnOrbit(system_time_t deltatime) {
   /* Insert small explosion entity */
   /*  game->AddEntity(new TExplosion(owner, location, radius/4.0, 1.0, strength/4.0));
 #ifdef SOUND_ON
-  sound_play(names_to_nums["data/sounds/explosion.raw"]);
+  sound_play(names_to_nums[THX_DATADIR "/sounds/explosion.raw"]);
 #endif
   */
   /* Remove this projectile during next game update */
@@ -101,7 +101,7 @@ void TProjectile::OnCollision(system_time_t deltatime,
   // cout << "TProjectile impact detected" << endl;
   game->AddEntity(new TExplosion(game, owner, loc, radius, 6.0, strength));
 #ifdef SOUND_ON
-  sound_play(names_to_nums["data/sounds/explosion.raw"]);
+  sound_play(names_to_nums[THX_DATADIR "/sounds/explosion.raw"]);
 #endif
   keep = false;
 }
@@ -215,7 +215,7 @@ void TSpawnProjectile::OnCollision(system_time_t deltatime,
   game->AddEntity(new TExplosion(game, owner, loc, 
 				 radius/4.0, 6.0, strength/4.0));
 #ifdef SOUND_ON
-  sound_play(names_to_nums["data/sounds/explosion.raw"]);
+  sound_play(names_to_nums[THX_DATADIR "/sounds/explosion.raw"]);
 #endif
 
   keep = false;
@@ -260,7 +260,7 @@ void TMirvProjectile::OnPosUpdate(system_time_t deltatime) {
     game->AddEntity(new TExplosion(game, owner, location, 
 				   radius/4.0, 6.0, strength/4.0)); 
 #ifdef SOUND_ON
-    sound_play(names_to_nums["data/sounds/explosion.raw"]);
+    sound_play(names_to_nums[THX_DATADIR "/sounds/explosion.raw"]);
 #endif    
     /* Remove this projectile on next update */
     keep = false;

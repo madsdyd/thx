@@ -284,7 +284,7 @@ void TScrollMenuItem::DoAction() {
 void TSubMenuItem::DoAction() {
   if (SubMenu) {
 #ifdef SOUND_ON
-    sound_play(names_to_nums["data/sounds/menu_forward_menu.raw"]);
+    sound_play(names_to_nums[THX_DATADIR "/sounds/menu_forward_menu.raw"]);
 #endif
     Owner->ShowChild(SubMenu);
   } else {
@@ -328,7 +328,7 @@ void TInfoMenuItem::Render(int xlow, int xhigh) {
  * *********************************************************************/
 void TReturnMenuItem::DoAction() {
 #ifdef SOUND_ON
-  sound_play(names_to_nums["data/sounds/menu_back_menu.raw"]);
+  sound_play(names_to_nums[THX_DATADIR "/sounds/menu_back_menu.raw"]);
 #endif
   Owner->ShowParent();
   return;
@@ -346,7 +346,7 @@ void TReturnMenuItem::DoAction() {
 void TActionMenuItem::DoAction() {
   if (function) {
 #ifdef SOUND_ON
-    sound_play(names_to_nums["data/sounds/menu_select.raw"]);
+    sound_play(names_to_nums[THX_DATADIR "/sounds/menu_select.raw"]);
 #endif
     function();
   }
@@ -471,7 +471,7 @@ bool TValueMenuItem::CommandConsume(TCommand * Command) {
     if (menuitem_state_focused == state 
 	&& ("select" == Command->args)) {
 #ifdef SOUND_ON
-      sound_play(names_to_nums["data/sounds/menu_select.raw"]);
+      sound_play(names_to_nums[THX_DATADIR "/sounds/menu_select.raw"]);
 #endif
       EnterEditState();
       return true;
@@ -489,14 +489,14 @@ bool TValueMenuItem::CommandConsume(TCommand * Command) {
     if (menuitem_state_selected == state) {
       if ("accept" == Command->args) { 
 #ifdef SOUND_ON
-	sound_play(names_to_nums["data/sounds/menu_deselect.raw"]);
+	sound_play(names_to_nums[THX_DATADIR "/sounds/menu_deselect.raw"]);
 #endif
 	AcceptNewValue();
 	return true;
       }
       if ("cancel" == Command->args) {
 #ifdef SOUND_ON
-	sound_play(names_to_nums["data/sounds/menu_deselect.raw"]);
+	sound_play(names_to_nums[THX_DATADIR "/sounds/menu_deselect.raw"]);
 #endif
 	DiscardNewValue();
 	return true;

@@ -98,13 +98,13 @@ public:
 	  InputToCommand.ToggleMouseMapping(mode, tmpev.mouse_inputevent_event,
 					 command, args);
 #ifdef SOUND_ON
-	  sound_play(names_to_nums["data/sounds/menu_deselect.raw"]);
+	  sound_play(names_to_nums[THX_DATADIR "/sounds/menu_deselect.raw"]);
 #endif
 	  AcceptNewValue();
 	} else {
 	  /* Deselect this command */
 #ifdef SOUND_ON
-	  sound_play(names_to_nums["data/sounds/menu_deselect.raw"]);
+	  sound_play(names_to_nums[THX_DATADIR "/sounds/menu_deselect.raw"]);
 #endif
 	  DiscardNewValue();
 	}
@@ -120,7 +120,7 @@ public:
 	InputToCommand.ToggleKeyboardMapping(mode, tmpev, 
 					  command, args);
 #ifdef SOUND_ON
-	sound_play(names_to_nums["data/sounds/menu_deselect.raw"]);
+	sound_play(names_to_nums[THX_DATADIR "/sounds/menu_deselect.raw"]);
 #endif
 	AcceptNewValue();
 	return true;

@@ -309,7 +309,7 @@ bool TMenu::CommandConsume(TCommand * Command) {
       if (menuitems[focuseditem]->Blur()) {
 	if (FocusMoveUp()) {
 #ifdef SOUND_ON
-	  sound_play(names_to_nums["data/sounds/menu_move.raw"]);
+	  sound_play(names_to_nums[THX_DATADIR "/sounds/menu_move.raw"]);
 #endif
 	}
       }
@@ -319,7 +319,7 @@ bool TMenu::CommandConsume(TCommand * Command) {
       if (menuitems[focuseditem]->Blur()) {
 	if (FocusMoveDown()) {
 #ifdef SOUND_ON
-	  sound_play(names_to_nums["data/sounds/menu_move.raw"]);
+	  sound_play(names_to_nums[THX_DATADIR "/sounds/menu_move.raw"]);
 #endif
 	}
       }
@@ -417,7 +417,7 @@ bool TMenu::CommandConsume(TCommand * Command) {
 #endif
 	      focuseditem = count;
 #ifdef SOUND_ON
-	      sound_play(names_to_nums["data/sounds/menu_move.raw"]);
+	      sound_play(names_to_nums[THX_DATADIR "/sounds/menu_move.raw"]);
 #endif
 	    } else {
 	      /* Ups, refocus */
@@ -497,7 +497,7 @@ bool TMenu::CommandConsume(TCommand * Command) {
 	    /* It did not accept the command */
 	    /* Make a focus sound */
 #ifdef SOUND_ON
-	    sound_play(names_to_nums["data/sounds/menu_move.raw"]);
+	    sound_play(names_to_nums[THX_DATADIR "/sounds/menu_move.raw"]);
 #endif
 	    // This is most likely an error?
 	    cerr << "TMenu, mouse command not accepted" << endl;
@@ -577,7 +577,7 @@ bool TMenu::ScrollUp(bool playsound) {
     scrollpos--;
 #ifdef SOUND_ON
     if (playsound) {
-      sound_play(names_to_nums["data/sounds/menu_deselect.raw"]);      
+      sound_play(names_to_nums[THX_DATADIR "/sounds/menu_deselect.raw"]);      
     }
 #endif
     return true;
@@ -594,7 +594,7 @@ bool TMenu::ScrollDown(bool playsound) {
     scrollpos++;
 #ifdef SOUND_ON
     if (playsound) {
-      sound_play(names_to_nums["data/sounds/menu_deselect.raw"]);      
+      sound_play(names_to_nums[THX_DATADIR "/sounds/menu_deselect.raw"]);      
     }
 #endif
     return true;

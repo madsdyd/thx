@@ -19,14 +19,14 @@
     along with this program; if not, write to the Free Software
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
 
-#ifdef SOUND_ON
 #include "sound.hh"
-#endif
-
 #include "game.hh"
 #include "player.hh"
 #include "map.hh"
@@ -368,7 +368,7 @@ bool TGame::FireProjectile() {
   
   /* Insert projectile into the entities */
 #ifdef SOUND_ON
-  sound_play(names_to_nums["data/sounds/fire.raw"]);
+  sound_play(names_to_nums[THX_DATADIR "/sounds/fire.raw"]);
 #endif
   AddEntity(current_player->inventory->FireSelected(&location, &velocity));
 

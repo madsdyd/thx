@@ -19,6 +19,10 @@
     along with this program; if not, write to the Free Software
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
 #include <GL/glut.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -176,7 +180,7 @@ TDisplay::TDisplay(int argc, char** argv) {
   glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 
   /* The textrender can not be initialized until OpenGL is running */
-  textrender->Load("data/graphics/fonts/fontGray.tga");
+  textrender->Load(THX_DATADIR "/graphics/fonts/fontGray.tga");
 
   /* Testing fog */
 #ifdef NEVER

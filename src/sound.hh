@@ -19,36 +19,12 @@
     along with this program; if not, write to the Free Software
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
-/***************************************************************************
-                          sound.h  -  description
- 
-                             -------------------
- 
-    begin                : Mon Jun 21 00:55:10 CEST 1999
- 
-    copyright            : (C) 1999 by Mads Bondo Dydensborg
-                           (Parts may be (C) ECC)
- 
-    email                : madsdyd@challenge.dk
- 
- ***************************************************************************/
- 
-/***************************************************************************
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
-
-***************************************************************************/
 #ifndef __SOUND_H__
 #define __SOUND_H__
-/**
-   (Linux) Sound module for Xarman.
-   By Mads Dydensborg <madsdyd@challenge.dk> - 199906
-*/
-
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+#ifdef SOUND_ON
 /** Include stuff that is neccesary to activate the sound system. */
 //#include <sys/types.h>
 #include <sys/stat.h>
@@ -113,4 +89,5 @@ void sound_unmute();
 
 /** Remember to shut the sound system down properly */
 void sound_shutdown();
+#endif /* Sound on */
 #endif

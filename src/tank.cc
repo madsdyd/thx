@@ -19,6 +19,10 @@
     along with this program; if not, write to the Free Software
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
 #include <math.h>
 #include <GL/glut.h>
 #include <stdio.h>
@@ -29,11 +33,7 @@
 #include "display.hh"
 #include "map.hh"
 #include "player.hh"
-
-#ifdef SOUND_ON
 #include "sound.hh"
-#endif
-
 #include "types.hh"
 #include "marker.hh"
 #include "explosion.hh"
@@ -242,7 +242,7 @@ void TTank::Update(system_time_t deltatime) {
 				       3.0, 3.0, 25));
 	Display->console->AddLine(owner->name + " ran out of luck");
 #ifdef SOUND_ON
-	sound_play(names_to_nums["data/sounds/explosion2.raw"]);
+	sound_play(names_to_nums[THX_DATADIR "/sounds/explosion2.raw"]);
 #endif
 	keep = false;
 	tankstate = tankstate_rip; /* Will stop us from animating */

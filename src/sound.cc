@@ -19,29 +19,11 @@
     along with this program; if not, write to the Free Software
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
-/***************************************************************************
-                          sound.c  -  description
- 
-                             -------------------
- 
-    begin                : Mon Jun 21 00:55:10 CEST 1999
- 
-    copyright            : (C) 1999 by Mads Bondo Dydensborg
-                           (Parts may be (C) ECC)
- 
-    email                : madsdyd@challenge.dk
- 
- ***************************************************************************/
- 
-/***************************************************************************
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
 
-***************************************************************************/
+#ifdef SOUND_ON
 #include "sound.hh"
 #include <stdio.h>
 #include <string.h>  /** memset */
@@ -49,10 +31,10 @@
 #include <signal.h>  /** signal to the thread to stop.. */
 #include <stdarg.h>  /** variable list functions */
 
-/**
-   (Linux) Sound module for Xarman.
-   By Mads Dydensborg <madsdyd@challenge.dk> - 19990605.
-
+/* This sound module should not really be used for any project
+   that would like to be portable. It only supports 8 bit mono
+   and I only wrote it as an exercise (for me) in programming
+   for the OSS API. 
 */
 
 /** Module wide declarations and variables */
@@ -811,3 +793,4 @@ void* SoundThreadFunction(void * data) {
   printf("Exiting thread\n");
   pthread_exit(NULL);
 }
+#endif

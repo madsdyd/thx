@@ -19,6 +19,10 @@
     along with this program; if not, write to the Free Software
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -800,10 +804,10 @@ void TMap::InitRender() {
   if (GL_NO_ERROR != glGetError()) {
     cerr << "TMap::InitRender : GL was in error condition before texture_load" << endl;
   } 
-  texture_load("data/graphics/textures/snow.rgb", 64, 64);
-  texture_load("data/graphics/textures/ice.rgb", 64, 64);
-  // texture_load("data/maps/textures/rock_real.rgb", 64, 64);
-  texture_load("data/graphics/textures/snow_cliff5_128.rgb", 128, 128);
+  texture_load(THX_DATADIR "/graphics/textures/snow.rgb", 64, 64);
+  texture_load(THX_DATADIR "/graphics/textures/ice.rgb", 64, 64);
+  // texture_load(THX_DATADIR "/maps/textures/rock_real.rgb", 64, 64);
+  texture_load(THX_DATADIR "/graphics/textures/snow_cliff5_128.rgb", 128, 128);
   textures_loaded = true;
   if (GL_NO_ERROR != glGetError()) {
     cerr << "TMap::InitRender : GL was in error condition after texture_load" << endl;

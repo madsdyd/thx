@@ -1,6 +1,7 @@
 #include "explosion.hh"
-
+#include <GL/glut.h>
 #include "game.hh"
+
 
 /* **********************************************************************
    Initialize an explosion */

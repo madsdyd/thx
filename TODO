@@ -20,7 +20,8 @@ of playable game in version 0.3.0 that could actually be enjoyed.
   - tighten includes
   - memory check code
   - tidy code
-  
+  - Get control of the GL_LIGTH option. 
+
 ** 0.3.0 (Beta/Sourceforge)
   - Write some documentation
   - rename project to thx (DONE)

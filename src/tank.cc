@@ -197,7 +197,8 @@ void TTank::Render(TViewpoint * viewpoint) {
   glColor4fv(color.data);
   glDisable(GL_LIGHTING);
   model.draw();
-
-
   glPopMatrix();
+
+  /* MADS TODO : Fix so that it is globally known */
+  glDisable(GL_LIGHTING);
 }

@@ -1,3 +1,13 @@
+AUTOTOOLS TEMP TODO:
+- Should the documents be installed somehow? How about a man page?
+
+- Check for remaining stuff in config.h
+
+- Check that all the options for configure actually works as
+  expected.
+
+NORMAL TODO:
+
 Version schedule. 
 
 This is an overview of what features go where. This is subject to change.

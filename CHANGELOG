@@ -1,3 +1,6 @@
+20010831
+  - Finally completed (sort of) the autotools support.
+
 20010726
   - Added the first part of a "feedback" framework for the AI players, 
     so that they can figure out where their missiles hit.

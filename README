@@ -43,18 +43,49 @@ look of the game.
 ----------------------------------------------------------------------
 * COMPILING
 
-To compile:
-$cd src && make && cd ..
+THX uses the GNU autotools, and configuration and installation should
+be a piece of cake.
 
-NB: The compile can take a looong time. You may even think something is
-wrong and the compiler has hung. But, eventually it will finish.
+* BOOTSTRAPPING
 
-You may have to fix some includes and stuff, especially for
-<GL/*>. Some compilers seems to be more strict about implicit type
-conversions than others. Yes, I know about autoconf, but not about how
-to make it work. I will eventually. :-)
+If you have checked out the sources from cvs, you should run the shell 
+script "bootstrap", which will create the script "configure" for you.
 
-You will probably get some warnings. Most should be safe to ignore for
+* CONFIGURATION
+
+If you have downloaded a tar ball, the configure script should already
+be in place. Run "./configure --help" to get an overview of the options.
+
+* INSTALLATION REQUIREMENT
+
+Due to the quite silly way THX currently uses its data, you either need
+to install THX, or use the --datadir option to spcify an absolute path
+to the "data" directory. The easiest is to install THX. If you are not
+comfortable with installing into the system, or do not have root access, 
+you can configure THX to install to another directory, with the --prefix
+option, like this:
+
+./configure --prefix=/usr/tmp/thx-test
+
+Then, you can make and install, using
+
+make install
+
+You can later uninstall thx with
+
+make uninstall
+
+Please note, that if you find out that you want to permanently install THX,
+you should do a 
+make distclean && ./configure && make install
+
+In its default configuration, THX will install to /usr/local/bin/thx,
+and the data files will go to /usr/local/share/games/thx/
+
+Eventually the silly install requirement will go.
+
+Since I have yet to test THX across a wide range of system, y
+ou will probably get some warnings. Most should be safe to ignore for
 now. You should be able to compile without problems on RedHat 7.0, 
 Mandrake 7.2 and Mandrake 8.0. If you have problems, please let me
 know.
@@ -62,8 +93,8 @@ know.
 ----------------------------------------------------------------------
 * RUNNING
 
-To run:
-$./thx
+To run
+$/path/to/thx
 
 If you get a core dump, there are 3 very likely causes: 
 - you do not have rights to access your 3d hardware. 

@@ -1,3 +1,7 @@
+20010430
+  - Cleaned up a bit in objects and models, removed some memory leaks, 
+    made the tanks use a display list.
+
 20010429
   - Moved the in game menu return to game to the bottom of the menu
   - Fixed it so that the mouse do not "jump", when showing the in game menu

@@ -26,10 +26,11 @@
 #include "types.hh"
 #include "color.hh"
 
-void default_tank(TObject *model, TColor *color);
-void cube_tank(TObject *model, TColor *color);
-void pyramid_tank(TObject *model, TColor *color);
-void abrams_chassis(TObject *model, TColor *color);
-void abrams_tower(TObject *model, TColor *color);
-void abrams_barrel(TObject *model, TColor *color);
+/* Various methods to fill in a TObject */
+TObject * DefaultTank(TColor *color);
+TObject * CubeTank(TColor *color);
+TObject * PyramidTank(TColor *color);
+TObject * AbramsChassis(TColor *color);
+TObject * AbramsTower(TColor *color);
+TObject * AbramsBarrel(TColor *color);
 #endif

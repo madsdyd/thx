@@ -24,13 +24,20 @@
 #include <list>
 #include <vector>
 
+#include <GL/glut.h>
 #include "vector.hh"
 #include "triangle.hh"
 #include "point.hh"
+#include "render.hh"
+
 class TObject {
+private:
+  GLuint display_list;
+  bool changed;
+  render_type_t myrendertype;
 public:
   TObject(int numPts, int numTris);
-  TObject() {}
+  // TObject() {}
   ~TObject();
   //  TVector getVelocity();
   void setVelocity(TVector v);
@@ -54,7 +61,7 @@ public:
   void setCollision() { collision = true; }
   void clearCollision() { collision = false; }
 
-  void draw();
+  void Render();
   void drawBbox();
 
   void print();

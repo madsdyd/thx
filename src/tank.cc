@@ -80,10 +80,10 @@ void TTank::PrepareRound(TGame * game, TVector * loc) {
   cannon.force    = 15.0;
   /* This can not be setup until we know the color */
   if (!model) {
-    model  = new TObject();
-    barrel = new TObject();
-    default_tank(model, &color);
-    abrams_barrel(barrel, &color);
+    // model  = new TObject();
+    // barrel = new TObject();
+    model  = DefaultTank(&color);
+    barrel = AbramsBarrel(&color);
   }
 
   /* Level the area */
@@ -309,7 +309,7 @@ void TTank::Render(TViewpoint * viewpoint) {
   glColor4fv(color.data);
   //glPushMatrix();
   //  glScalef(2.0, 2.0, 2.0);
-  model->draw();
+  model->Render();
   //glPopMatrix();
   
   /* ************************************************** */

@@ -23,7 +23,7 @@
 #include "render.hh"
 
 /* This is how we render the map pr. default */
-render_type_t render_type = render_type_textures;
+render_type_t render_type = render_type_lines;
 
 /* This is how we shade */
 bool render_shade_smooth = true;

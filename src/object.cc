@@ -49,6 +49,11 @@ TObject::TObject(int numPts, int numTris) {
   ptsNbour.resize(maxPoints);
 
   bboxused = false;
+
+  /* Initialize the display list */
+  display_list = glGenLists(1);
+  /* Make sure we fill the display list */
+  changed = true;
 }
 
 // Retrieve the velocity vector
@@ -183,49 +188,69 @@ void TObject::addTriangle(int q0, int q1, int q2) {
 
 
 // Draw the TObject using OpenGL functions
-void TObject::draw() {
+void TObject::Render() {
   int i, j, idx[3];
   Point pts[3];
   // TVector normal,foo,bar;
-  GLfloat shininess[] = { 100.0 };
-
-  glMaterialfv(GL_FRONT, GL_SPECULAR, points[0].color);
-  glMaterialfv(GL_FRONT, GL_SHININESS, shininess);
-  glMaterialfv(GL_FRONT, GL_DIFFUSE, points[0].color);
-
-  for (i=0;i<numTriangles;i++) {
-    triangles[i].getPoints(idx);
-    for (j=0;j<3;j++) {
-      pts[j] = points[idx[j]];
+  if (changed || myrendertype != render_type) {
+    glNewList(display_list, GL_COMPILE_AND_EXECUTE);
+    if (render_shade_smooth) {
+      glShadeModel(GL_SMOOTH);
+    } else {
+      glShadeModel(GL_FLAT);
     }
 
-    /*
-      foo = pts[1].coords - pts[0].coords;
-      bar = pts[2].coords - pts[0].coords;
-      normal = foo.cross(bar);
-      normal.Normalize();
-    */
+    GLfloat shininess[] = { 100.0 };
+    
+    glMaterialfv(GL_FRONT, GL_SPECULAR, points[0].color);
+    glMaterialfv(GL_FRONT, GL_SHININESS, shininess);
+    glMaterialfv(GL_FRONT, GL_DIFFUSE, points[0].color);
+    
+      
+    if (render_type == render_type_lines) {
+      glBegin(GL_LINES);
+    } else {
+      glBegin(GL_TRIANGLES);
+    }
+    
+    for (i=0;i<numTriangles;i++) {
+      triangles[i].getPoints(idx);
+      for (j=0;j<3;j++) {
+	pts[j] = points[idx[j]];
+      }
+      
+      /*
+	foo = pts[1].coords - pts[0].coords;
+	bar = pts[2].coords - pts[0].coords;
+	normal = foo.cross(bar);
+	normal.Normalize();
+      */
 
-    glBegin(GL_TRIANGLES);
-
-    glColor4fv(pts[0].color);
-    glNormal3f(normals[i].x, normals[i].y, normals[i].z);
-    glVertex3f(pts[0].coords.x , pts[0].coords.y , pts[0].coords.z);
-
-    glColor4fv(pts[1].color);
-    glNormal3f(normals[i].x, normals[i].y, normals[i].z);
-    glVertex3f(pts[1].coords.x , pts[1].coords.y , pts[1].coords.z);
-
-    glColor4fv(pts[2].color);
-    glNormal3f(normals[i].x, normals[i].y, normals[i].z);
-    glVertex3f(pts[2].coords.x , pts[2].coords.y , pts[2].coords.z);
-
+      glColor4fv(pts[0].color);
+      glNormal3f(normals[i].x, normals[i].y, normals[i].z);
+      glVertex3f(pts[0].coords.x , pts[0].coords.y , pts[0].coords.z);
+      
+      glColor4fv(pts[1].color);
+      glNormal3f(normals[i].x, normals[i].y, normals[i].z);
+      glVertex3f(pts[1].coords.x , pts[1].coords.y , pts[1].coords.z);
+      
+      glColor4fv(pts[2].color);
+      glNormal3f(normals[i].x, normals[i].y, normals[i].z);
+      glVertex3f(pts[2].coords.x , pts[2].coords.y , pts[2].coords.z);
+      
+    } /* All triangles */
     glEnd();
-
+    changed = false;
+    myrendertype = render_type;
+    glEndList();
+    
+  } else {
+    /* Display list valid */
+    glCallList(display_list);
   }
 }
-
-void TObject::print() {
+  
+  void TObject::print() {
   int i, j, idx[3];
   Point pts[3];
 
@@ -534,5 +559,11 @@ void TObject::matrixmult(float *A, float *B, float *C) {
 
 // Destructor
 TObject::~TObject() {
-
+  /* Delete the data */
+  delete points;
+  delete triangles;
+  delete normals;
+  delete ptsnormals;
+  /* Delete our display list */
+  glDeleteLists(display_list, 1);
 }

@@ -37,27 +37,27 @@
 #endif
 
 
-void default_tank(TObject *model, TColor *color) {
+TObject * DefaultTank(TColor *color) {
   switch(TANK_MODEL) {
   case 0:
-    cube_tank(model, color);
+    return CubeTank(color);
     break;
   case 1:
-    pyramid_tank(model, color);
+    return PyramidTank(color);
     break;
   case 2:
-    abrams_chassis(model, color);
+    return AbramsChassis(color);
     break;
   default:
-    cube_tank(model, color);
+    return CubeTank(color);
     break;
   }
 }
 
-void cube_tank(TObject *model, TColor *color) {
+TObject * CubeTank(TColor *color) {
   float col[4];
-
-  (*model)  = TObject(8,12);
+  TObject * model;
+  model  = new TObject(8,12);
 
   col[0] = color->data[0];
   col[1] = color->data[1];
@@ -100,12 +100,13 @@ void cube_tank(TObject *model, TColor *color) {
   model->addTriangle( 1, 0, 5);
   model->addTriangle( 0, 4, 5);
 
+  return model;
 }
 
-void pyramid_tank(TObject *model, TColor *color) {
+TObject * PyramidTank(TColor *color) {
   float col[4];
-
-  (*model)  = TObject(8,12);
+  TObject * model;
+  model  = new TObject(8,12);
 
   col[0] = color->data[0];
   col[1] = color->data[1];
@@ -131,13 +132,14 @@ void pyramid_tank(TObject *model, TColor *color) {
   model->addTriangle( 1, 3, 2);
   model->addTriangle( 1, 4, 3);
 
+  return model;
 }
 
-void abrams_chassis(TObject *model, TColor *color) {
+TObject * AbramsChassis(TColor *color) {
   int i;
   float col[4];
-
-  (*model)  = TObject(48,74);
+  TObject * model;
+  model  = new TObject(48,74);
 
   col[0] = color->data[0];
   col[1] = color->data[1];
@@ -286,13 +288,14 @@ void abrams_chassis(TObject *model, TColor *color) {
 
   model->calcNormals();
 
+  return model;
 }
 
-void abrams_barrel(TObject *model, TColor *color) {
+TObject * AbramsBarrel(TColor *color) {
   // int i;
   float col[4];
-
-  (*model)  = TObject(16,22);
+  TObject * model;
+  model  = new TObject(16,22);
 
   col[0] = color->data[0];
   col[1] = color->data[1];
@@ -344,4 +347,5 @@ void abrams_barrel(TObject *model, TColor *color) {
 
   model->calcNormals();
 
+  return model;
 }

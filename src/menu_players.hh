@@ -34,6 +34,7 @@ public:
   string name;
   string team;
   TColor color;
+  string playerclass;
 };
 typedef vector<TPlayerSetting> TPlayerSettings;
 typedef TPlayerSettings::iterator TPlayerSettingsIterator;

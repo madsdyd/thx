@@ -2,6 +2,11 @@ Version schedule.
 
 This is an overview of what features go where. This is subject to change.
 
+cvs add aiplayer.hh aiplayer.cc
+
+- Fix baltazar til at være en lille smule sejere
+- Flyt "fire" commandoen fra TGame til TPlayer, eller lignende
+
 The text () is the focus of the "series". E.g. 0.4.0 (AI) means that
 everything starting with 0.4. is probably going to be related to AI. The 0.4.0 release
 however, is the final release of the previous series.
@@ -15,21 +20,18 @@ however, is the final release of the previous series.
 
 - Make skjalm fix the wind code.
 
+- Should money have interest?
+
 ** 0.4.0 (AI)
   - Implement wind before going AI. (Sort of done)
   - Console
-  - Team support
   - Make a ceiling?
   - Implement AI entities
   - Connect to event pipelines
 
 ** 0.4.8 (Postponed menu and controls stuff)
-  - mouse Click on multiselect should change value
   - mouse bindings to axis
-  - Variable number of players will require menu to be able to handle
-    adding players (or, maybe show/hide on individual entries?)
   - make global variables to adjust the axis on the mouse
-  - make listitems use templates, and make them more clever
 
 ** 0.4.9 (Postponed clean up)
   - Clean up dependencies between the different state variables
@@ -38,7 +40,6 @@ however, is the final release of the previous series.
   - Fix the public interface in a lot of classes.
   - a lot of files depends on vector.hh!
   - make copy constructors explicit.
-
 
 ** 0.5.0 (Ressource management)
   - make flexible path support
@@ -52,7 +53,7 @@ however, is the final release of the previous series.
   - Renderer
   - model for missiles
   - model for tanks
-  - object::draw uses immediate mode! uses more then 1/3 of my CPU.
+  - Make sure that "heavy" code uses display lists or similar
 
 ** 0.7.0 (Map)
   - Change format to allow for LOD, culling, etc.
@@ -63,10 +64,10 @@ however, is the final release of the previous series.
   - slide on a map should be optional, as well as the max steepness.
   - load landscape from file - with spawnpoints for tanks(?)
   - LOD on landscape/only render stuff in front of viewer
+  - Check up on CPU usage during normals recalculation/hole making.
 
 ** 0.8.0 (Physics and gameplay)
   - Look below for ideas and problems
-  - team support
   - simultanous mode
   - different tanks?
   - direct hit should take out a tank

@@ -44,14 +44,16 @@ TPlayer::TPlayer(TGame * ngame, string nname, string nteam) {
 }
 
 /* **********************************************************************
-   The destructor */
+ * The destructor
+ * *********************************************************************/
 TPlayer::~TPlayer() {
   cout << "TPlayer::~TPlayer() - clean up stuff?" << endl;
   delete inventory;
 }
 
 /* **********************************************************************
-   PrepareRound sets up the player for another round */
+ * PrepareRound sets up the player for another round
+ * *********************************************************************/
 void TPlayer::PrepareRound(TVector * location) {
   /* Reset the inventory */
   inventory->SelectFirst();
@@ -69,8 +71,7 @@ void TPlayer::PrepareRound(TVector * location) {
 
 /* **********************************************************************
  * Register and unregister the commands the player handle. 
- * Currently, this is commands to control the viewpoint
- * and the cannon (eventually)
+ * This is commands to control the viewpoint and the cannon
  * *********************************************************************/
 void TPlayer::RegisterCommands() {
   CommandDispatcher.RegisterConsumer("viewpoint-move", this);

@@ -29,7 +29,13 @@
 #include "viewpoint.hh"
 #include "commandconsumer.hh"
 #include "command.hh"
-/* A player is either a human or bot controlled participiant in the world */
+
+
+/* **********************************************************************
+ * A player is either a human or bot controlled participiant in the
+ * world
+ * The base TPlayer class is supposed to be controlled by a human
+ * *********************************************************************/
 
 /* This type is used to control the active commands */
 typedef map <string, TCommand> TActiveCommands;
@@ -46,9 +52,9 @@ protected:
      command, mostly when removing and inserting commands */
   TGame * game;
   map <string, TCommand> active_commands;
-  void RegisterCommands();
-  void UnregisterCommands();
-  void PerformCommandUpdate(system_time_t timenow);
+  virtual void RegisterCommands();
+  virtual void UnregisterCommands();
+  virtual void PerformCommandUpdate(system_time_t timenow);
 public:
   string name;            /* The players name */
   string team;            /* The team the player is on, if in team mode */
@@ -60,12 +66,11 @@ public:
   TViewpoint viewpoint;   /* The players viewpoint */
   TPlayer(TGame * ngame, string nname, string nteam);
   virtual ~TPlayer();
-  void PrepareRound(TVector * location);
-  void BeginTurn();       /* Called, when this players turn is about to start */
-  void EndTurn();         /* Called, when this players turn is about to end */
+  virtual void PrepareRound(TVector * location);
+  virtual void BeginTurn();       /* Called, when this players turn is about to start */
+  virtual void EndTurn();         /* Called, when this players turn is about to end */
   virtual bool CommandConsume(TCommand * Command);
   /* The update command mostly handle the movement stuff */
-  void Update(system_time_t timenow
-);
+  virtual void Update(system_time_t timenow);
 };
 #endif

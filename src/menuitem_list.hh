@@ -64,6 +64,7 @@ typedef TListMenuItem<int> TIntListMenuItem;
 typedef TListMenuItem<unsigned int> TUIntListMenuItem;
 typedef TListMenuItem<double> TDoubleListMenuItem;
 typedef TListMenuItem<bool> TBoolListMenuItem;
+typedef TListMenuItem<string> TStringListMenuItem;
 
 /* **********************************************************************
  * The TListMenuItem stuff - need to go here, because it uses templates

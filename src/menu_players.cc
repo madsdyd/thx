@@ -42,7 +42,7 @@ void TPlayerMenu::SyncPlayerSettings() {
   while(PlayerSettings->size() < *NumPlayers) {
     // cout << "Adding a playersetting" << endl;
     TPlayerSetting tmpset;
-    ostrstream tmp1, tmp2, tmp3;
+    ostrstream tmp1, tmp2, tmp3, tmp4;
     /* Set default values for name, team and color */
     tmp1.form("Player %i", PlayerSettings->size() + 1) << ends;
     tmpset.name = tmp1.str();
@@ -50,6 +50,7 @@ void TPlayerMenu::SyncPlayerSettings() {
     tmpset.color = ColorDefinitions.GetColor(tmp2.str());
     tmp3.form("team-%i", PlayerSettings->size() + 1) << ends;
     tmpset.team  = tmp3.str();
+    tmpset.playerclass = "human";
     PlayerSettings->push_back(tmpset);
   }
   while(PlayerSettings->size() > *NumPlayers) {
@@ -90,12 +91,22 @@ void TPlayerMenu::Show() {
   for (TPlayerSettingsIterator i = PlayerSettings->begin();
        i != PlayerSettings->end();
        i++) {
-    ostrstream tmp1, tmp2, tmp3, tmp4, tmp5, tmp6;
+    ostrstream tmp1, tmp2, tmp3, tmp4, tmp5, tmp6, tmp7, tmp8;
     /* fix the player names here */
     tmp1.form("Player %i name", count) << ends;
     tmp2.form("Enter the name of player %i here", count) << ends;
     AddMenuItem(new TStringMenuItem(this, tmp1.str(), tmp2.str(), 
 				    &(*i).name));
+    /* and the players type */
+    tmp7.form("Player %i type", count) << ends;
+    tmp8.form("Select the type of player %i here", count) << ends;
+    TStringListMenuItem * stmpitem
+      = new TStringListMenuItem(this, tmp7.str(), tmp8.str(),
+			    &(*i).playerclass);
+    stmpitem->AddOption("human", "human");
+    stmpitem->AddOption("AI Baltazar", "baltazar");
+    AddMenuItem(stmpitem);
+
     /* and the players team */
     if (*TeamMode) {
       tmp5.form("Player %i teamname", count) << ends;
@@ -103,6 +114,7 @@ void TPlayerMenu::Show() {
       AddMenuItem(new TStringMenuItem(this, tmp5.str(), tmp6.str(),
 				      &(*i).team));
     }
+
     /* and, the players color */
     tmp3.form("Player %i color", count) << ends;
     tmp4.form("Select the color of player %i", count) << ends;

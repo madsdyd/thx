@@ -25,6 +25,7 @@
 #include "server.hh"
 #include "tank.hh"
 #include "player.hh"
+#include "aiplayer.hh"
 
 #include "display.hh"
 #include "framerate.hh"
@@ -272,8 +273,15 @@ void GameMenu_StartFunc() {
   for (unsigned int i = 0; i < GameMenu->numplayers; i++) {
     /* cout << "adding a player; i = " << i << "numplayers" 
        << GameMenu->numplayers << endl;  */
-    player       = new TPlayer(Game, GameMenu->PlayerSettings[i].name,
+    if (GameMenu->PlayerSettings[i].playerclass == "human") {
+      player     = new TPlayer(Game, GameMenu->PlayerSettings[i].name,
 			       GameMenu->PlayerSettings[i].team);
+      cout << "Creating a TPlayer" << endl;
+    } else {
+      player     = new TAIPlayer(Game, GameMenu->PlayerSettings[i].name,
+				 GameMenu->PlayerSettings[i].team);
+      cout << "Creating a TAIPlayer" << endl;
+    }
     tank         = new TTank(Game, player);
     player->tank = tank;
     tank->color  = GameMenu->PlayerSettings[i].color;

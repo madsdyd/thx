@@ -42,10 +42,12 @@ typedef enum {mouse_none,
 
 
 /* Uniqly define a mouse event for mappings. */
-typedef struct {
+class  mouse_inputevent_event_t {
+public:
   mousebutton_action_t action;
   mousebutton_button_t button;
-} mouse_inputevent_event_t;
+  string AsString2() const; /* Return the current button going down as a string */
+};
 
 /* Use this for comparing */
 struct lt_miet

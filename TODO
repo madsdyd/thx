@@ -2,18 +2,24 @@ Version schedule.
 
 This is an overview of what features go where. This is subject to change.
 
-- Mouse stuff mappings
 - Fix it, so that we can have many menu items on a screen
 - Loosen up on registering and unregistering commands - should not keep 
   a command, if failing to release another. (Maybe registering and release should
   always work?)
 - Make the init order more explicit (needed now?)
 
+- Play with shadows
+- Make a radar
+- Make a ceiling?
 
-** 0.3.6 (Input customization)
-  - make global variables to adjust the axis on the mouse
+- Something needs to be done about the way arguments to commands are handled 
+  at the moment.
+
+
+** 0.3.5 (Input customization)
   - Make a controls menu, that allow for in game configuration of keys and 	
     mouse actions. (ALMOST DONE)
+  - make global variables to adjust the axis on the mouse
   - Save and load bindings.
 
 ** 0.3.7 (Clean up)

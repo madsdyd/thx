@@ -143,20 +143,25 @@ void TPlayer::PerformCommandUpdate(system_time_t timenow) {
   for (i = active_commands.begin(); i != end; i++) {
     /* Do any action, scale after time, update the timestamp of the command 
        Not updating the timestamp will make the display accellerate. */
-    TCommand Command = (*i).second;
-    /* TODO: This is probably some wrongly typecasting */
-    double scale_move = timenow - Command.timestamp;
-    // TODO: Lot of this scale_move is not consistent with 
-    // low FPS...
-    if (scale_move < 0) {
-      // printf("TPlayer::PerformCommandUpdate - time is %f\n", timenow);
-      /* This means that the command was entered after the last update, 
-	 which is not so weird. */
-      // printf("TPlayer::PerformCommandUpdate scale_move is negative :%f\n", 
-      // scale_move);
+    TCommand * Command = &((*i).second);
+    /* Strip the command args for anything but the first arg. */
+#ifdef NEVER
+    string myargM
+    if ("" == Command->args) {
+      cerr << "TPlayer::PerformCommandUpdate - empty arg" << endl;
+      myarg = "";
     } else {
+      istrstream tmpstr(Command->args.c_str());
+      tmpstr >> myarg;
+    }
+#endif
+    /* TODO: This is probably some wrongly typecasting */
+    double scale_move = timenow - Command->timestamp;
+    if (scale_move > 0) {
+      /* This scale_move < 0 it means that the command was entered
+	 after the last update, which is not so weird. */
       /* I originally wrote the following code:
-	 Command.timestamp = timenow;
+	 Command->timestamp = timenow;
 	 But, this does not work (no wonder, but bugs can be hard to see 
 	 I kinda like the accelaration effect - So I will leave it in! */
       if (scale_move > 5.0) { scale_move = 5.0; };
@@ -164,8 +169,8 @@ void TPlayer::PerformCommandUpdate(system_time_t timenow) {
       /* **********************************************************************
        * (viewpoint-move)
        * *********************************************************************/
-      if ("viewpoint-move" == Command.name) {
-	if ("+forward" == Command.args) {
+      if ("viewpoint-move" == Command->name) {
+	if ("+forward" == Command->args) {
 	  viewpoint.translation.x 
 	    += scale_move * sin(viewpoint.rotation.z * M_PI / 180.0);
 	  viewpoint.translation.y 
@@ -173,7 +178,7 @@ void TPlayer::PerformCommandUpdate(system_time_t timenow) {
 	  viewpoint.translation.z 
 	    -= scale_move * sin(viewpoint.rotation.x * M_PI / 180.0);
 	}
-	else if ("+backward" == Command.args) {
+	else if ("+backward" == Command->args) {
 	  viewpoint.translation.x 
 	    -= scale_move * sin(viewpoint.rotation.z * M_PI / 180.0);
 	  viewpoint.translation.y 
@@ -181,28 +186,28 @@ void TPlayer::PerformCommandUpdate(system_time_t timenow) {
 	  viewpoint.translation.z 
 	    += scale_move * sin(viewpoint.rotation.x * M_PI / 180.0);
 	}
-	else if ("+left" == Command.args) {
+	else if ("+left" == Command->args) {
 	  viewpoint.translation.x 
 	    -= scale_move * cos(viewpoint.rotation.z * M_PI / 180.0);
 	  viewpoint.translation.y 
 	    += scale_move * sin(viewpoint.rotation.z * M_PI / 180.0);
 	}
-	else if ("+right" == Command.args) {
+	else if ("+right" == Command->args) {
 	  viewpoint.translation.x 
 	    += scale_move * cos(viewpoint.rotation.z * M_PI / 180.0);
 	  viewpoint.translation.y 
 	    -= scale_move * sin(viewpoint.rotation.z * M_PI / 180.0);
 	}
-	else if ("+up" == Command.args) {
+	else if ("+up" == Command->args) {
 	  viewpoint.translation.z += scale_move;
 	}
-	else if ("+down" == Command.args) {
+	else if ("+down" == Command->args) {
 	  viewpoint.translation.z -= scale_move;
 	}    
 	else {
 	  /* Ups, not handling this */
 	  cerr << "TPlayer::PerformCommandUpdate, not handling ("
-	       << Command.name << "," << Command.args << ")" << endl;
+	       << Command->name << "," << Command->args << ")" << endl;
 	  cout << "TPlayer::PerformCommandUpdate, need to remove command?"
 	       << endl;
 	}
@@ -211,25 +216,25 @@ void TPlayer::PerformCommandUpdate(system_time_t timenow) {
       /* **********************************************************************
        * (viewpoint-rotate)
        * *********************************************************************/
-      else if ("viewpoint-rotate" == Command.name) {
-	if ("+forward" == Command.args) {
+      else if ("viewpoint-rotate" == Command->name) {
+	if ("+forward" == Command->args) {
 	  viewpoint.rotation.x-=2.0 * scale_move;
 	  if (viewpoint.rotation.x<0.0) 
 	    viewpoint.rotation.x+=360.0;
 	} 
-	else if ("+backward" == Command.args) {
+	else if ("+backward" == Command->args) {
 	  viewpoint.rotation.x+=2.0 * scale_move;
 	  if (viewpoint.rotation.x>360.0) 
 	    viewpoint.rotation.x-=360.0;
 	  
 	}
-	else if ("+left" == Command.args) {
+	else if ("+left" == Command->args) {
 	  viewpoint.rotation.z-=2.0 * scale_move;
 	  if (viewpoint.rotation.z<0.0) 
 	    viewpoint.rotation.z+=360.0;
 	  
 	} 
-	else if ("+right" == Command.args) {
+	else if ("+right" == Command->args) {
 	  viewpoint.rotation.z+=2.0 * scale_move;
 	  if (viewpoint.rotation.z>360.0) 
 	    viewpoint.rotation.z-=360.0;
@@ -237,7 +242,7 @@ void TPlayer::PerformCommandUpdate(system_time_t timenow) {
 	else {
 	  /* Ups, not handling this */
 	  cerr << "TPlayer::PerformCommandUpdate, not handling ("
-	       << Command.name << "," << Command.args << ")" << endl;
+	       << Command->name << "," << Command->args << ")" << endl;
 	  cout << "TPlayer::PerformCommandUpdate, need to remove command?"
 	       << endl;
 	}
@@ -245,34 +250,34 @@ void TPlayer::PerformCommandUpdate(system_time_t timenow) {
       /* **********************************************************************
        * cannon
        * *********************************************************************/
-      else if ("cannon" == Command.name) {
-	if ("+rotate-left" == Command.args) {
+      else if ("cannon" == Command->name) {
+	if ("+rotate-left" == Command->args) {
 	  tank->AdjustRotation(scale_move);
 	}
-	else if ("+rotate-right" == Command.args) {
+	else if ("+rotate-right" == Command->args) {
 	  tank->AdjustRotation(-scale_move);
 	}
-	else if ("+raise" == Command.args) {
+	else if ("+raise" == Command->args) {
 	  tank->AdjustAngle(scale_move);
 	}
-	else if ("+lower" == Command.args) {
+	else if ("+lower" == Command->args) {
 	  tank->AdjustAngle(-scale_move);
 	}
-	else if ("+force-increase" == Command.args) {
+	else if ("+force-increase" == Command->args) {
 	  tank->AdjustForce(scale_move);
 	}
-	else if ("+force-decrease" == Command.args) {
+	else if ("+force-decrease" == Command->args) {
 	  tank->AdjustForce(-scale_move);
 	}
 	else {
 	  /* Ups, not handling this */
 	  cerr << "TPlayer::PerformCommandUpdate, not handling ("
-	       << Command.name << "," << Command.args << ")" << endl;
+	       << Command->name << "," << Command->args << ")" << endl;
 	  cout << "TPlayer::PerformCommandUpdate, need to remove command?"
 	       << endl;
 	}
       } /* cannon */
-    } /* time_scale < 0 */
+    } /* scale_move > 0 */
   } /* Iterate over all commands */
 }
 /* **********************************************************************
@@ -301,11 +306,11 @@ bool TPlayer::CommandConsume(TCommand * Command) {
   /* Viewpoint-rotate by mouse */
   if ("viewpoint-rotate" == Command->name) {
     if ("mouse" == Command->args.substr(0, 5)) {
-      TMouseInputEvent MouseEvent(Command->args);
+      TPointerInfo * PInfo = Command->GetPointerInfo();
       double xd, yd;
       /* Get relative always */
-      xd = (MouseEvent.x - MouseEvent.oldx)*0.15;
-      yd = (MouseEvent.y - MouseEvent.oldy)*0.15;
+      xd = (PInfo->x - PInfo->oldx)*0.15;
+      yd = -(PInfo->y - PInfo->oldy)*0.15;
 
       /* Change the viewpoint */
       /* Left, right */
@@ -327,11 +332,11 @@ bool TPlayer::CommandConsume(TCommand * Command) {
   /* Viewpoint-move by mouse */
   if ("viewpoint-move" == Command->name) {
     if ("mouse" == Command->args.substr(0, 5)) {
-      TMouseInputEvent MouseEvent(Command->args);
+      TPointerInfo * PInfo = Command->GetPointerInfo();
       double xd, yd;
       /* Get relative always */
-      xd = -(MouseEvent.x - MouseEvent.oldx) * 0.15;
-      yd = -(MouseEvent.y - MouseEvent.oldy) * 0.15;
+      xd = -(PInfo->x - PInfo->oldx) * 0.15;
+      yd = (PInfo->y - PInfo->oldy) * 0.15;
 
       /* Change the viewpoint */
       /* Forward and back */
@@ -354,12 +359,12 @@ bool TPlayer::CommandConsume(TCommand * Command) {
   /* Cannon rotate by mouse */
   if ("cannon" == Command->name) {
     if ("mouse" == Command->args.substr(0, 5)) {
-      TMouseInputEvent MouseEvent(Command->args);
+      TPointerInfo * PInfo = Command->GetPointerInfo();
       double xd, yd;
 
       /* Get relative always */
-      xd = -(MouseEvent.x - MouseEvent.oldx) * 0.15;
-      yd = -(MouseEvent.y - MouseEvent.oldy) * 0.15;
+      xd = -(PInfo->x - PInfo->oldx) * 0.15;
+      yd = (PInfo->y - PInfo->oldy) * 0.15;
       
       /* Change the cannon */
       tank->AdjustRotation(xd);

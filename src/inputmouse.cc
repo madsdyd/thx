@@ -34,6 +34,25 @@
 static bool centermode = false;
 
 /* **********************************************************************
+ * Return a string description of the mouse event - actually button.
+ * *********************************************************************/
+string mouse_inputevent_event_t::AsString2() const {
+  Assert(button != mouse_none,
+	  "Can't return string description of no button pressed");
+  switch (button) {
+  case mouse_none:
+    return "";
+  case mouse_left:
+    return "MOUSE1";
+  case mouse_middle:
+    return "MOUSE3";
+  case mouse_right:
+    return "MOUSE2";
+  }
+  return ""; /* To get rid of a warning */
+}
+
+/* **********************************************************************
  * The TMouseInputEvent class (constructor) 
  * Creates an instance, sets attributes
  * *********************************************************************/
@@ -97,6 +116,8 @@ static mousebutton_button_t last_button = mouse_none;
  * MouseFunc - called when a mouse button is clicked
  * *********************************************************************/
 void MouseFunc(int button, int state, int x, int y) {
+  /* Use the same coordinate set as the menus, etc */
+  y = Display->GetHeight() - y;
   switch (button) {
   case GLUT_LEFT_BUTTON:
     last_button = mouse_left;
@@ -135,8 +156,10 @@ void MouseFunc(int button, int state, int x, int y) {
  * MouseFunc - called by both passive and motion func
  * *********************************************************************/
 static bool justwarped = false;
-void MouseFunc(int x, int y, 
+void MouseMotionFunc(int x, int y, 
 	       mousebutton_button_t button) {
+  /* Use the same coordinate set as the menus, etc */
+  y = Display->GetHeight() - y;
   bool center = centermode && Display->GrabbingPointer();
   int x2 = Display->GetWidth()/2;
   int y2 = Display->GetHeight()/2;
@@ -177,7 +200,7 @@ void MouseFunc(int x, int y,
  * buttons pressed
  * *********************************************************************/
 void PassiveMotionFunc(int x, int y) {
-  MouseFunc(x, y, mouse_none);
+  MouseMotionFunc(x, y, mouse_none);
 }
 
 /* **********************************************************************
@@ -185,7 +208,7 @@ void PassiveMotionFunc(int x, int y) {
  * Note, this function will not work with multiple buttons pressed. 
  * *********************************************************************/
 void MotionFunc(int x, int y) {
-  MouseFunc(x, y, last_button);
+  MouseMotionFunc(x, y, last_button);
 }
 
 /* **********************************************************************

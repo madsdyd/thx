@@ -55,16 +55,20 @@ public:
     /* Render everything */
     MenuTextRender.CenterLn(xlow, xhigh, 
 			    caption + " : " + 
-			    InputToCommand.GetKeyMappingsForCommand(command, args),
+			    InputToCommand.GetMappingsForCommand(command, args),
 			    ":");
   }
   /* Override {Unr,R}egisterCommands 
      We do not want the usual itemedit handling - only raw */
   bool RegisterCommands() {
-    return CommandDispatcher.RegisterConsumer("raw", this);
+    CommandDispatcher.RegisterConsumer("raw-keydown", this);
+    CommandDispatcher.RegisterConsumer("raw-mouse", this);
+    return true;
   };
   bool UnregisterCommands() {
-    return CommandDispatcher.UnregisterConsumer("raw");
+    CommandDispatcher.UnregisterConsumer("raw-mouse");
+    CommandDispatcher.UnregisterConsumer("raw-keydown");
+    return true;
   };
   /* Override enter edit state - we want the raw game mode */
   bool EnterEditState() {
@@ -87,10 +91,32 @@ public:
   /* Override CommandConsume - to handle raw, when we are selected */
   bool CommandConsume(TCommand * Command) {
     if (menuitem_state_selected == state) {
-      if ("raw" == Command->name) {
-	cout << "TControlsMenuItem::CommandConsume - got (" 
-	     << Command->name << ", " << Command->args << ")" << endl;
-	// TODO: Error checking?
+      // cout << "TControlsMenuItem::CommandConsume - got (" 
+      //<< Command->name << ", " << Command->args << ")" << endl;
+      /* Mouse down? */
+      if ("raw-mouse" == Command->name) {
+	/* Build mouse event */
+	TMouseInputEvent tmpev(Command->args);
+	/* Figure out if within */
+	if (TestHit(tmpev.x, tmpev.y)) {
+	  /* Accept this - add mapping */
+	  InputToCommand.AddMouseMapping(gamemode_game, tmpev.mouse_inputevent_event,
+					 command, args);
+#ifdef SOUND_ON
+	  sound_play(names_to_nums["data/sounds/menu_deselect.raw"]);
+#endif
+	  AcceptNewValue();
+	} else {
+	  /* Deselect this command */
+#ifdef SOUND_ON
+	  sound_play(names_to_nums["data/sounds/menu_deselect.raw"]);
+#endif
+	  DiscardNewValue();
+	}
+	return true;
+      }
+      /* Keyboard down? */
+      else if ("raw-keydown" == Command->name) {
 	istrstream tmpargs(Command->args.c_str());
 	keyboard_inputevent_event_t tmpev;
 	tmpargs >> tmpev.key;
@@ -103,7 +129,8 @@ public:
 #endif
 	AcceptNewValue();
 	return true;
-      }
+	}	  
+      /* Fall through to TValueMenuItem */
     }
     /* Not selected */
     return TValueMenuItem::CommandConsume(Command);

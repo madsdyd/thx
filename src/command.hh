@@ -25,6 +25,7 @@
 #include <string>
 #include <queue>
 #include "types.hh"
+#include "inputmouse.hh"
 
 /* This is the definition of a command. 
    Typically, commands are issued from user input - that is, 
@@ -32,14 +33,31 @@
    Commands then live in the command queue, until dispatched by the 
    command consumer, and then freed.
 */
+
+/* This class can hold pointer info */
+class TPointerInfo {
+public:
+  int x, y, oldx, oldy;
+  TPointerInfo(int nx, int ny, int noldx, int noldy);
+  TPointerInfo(TMouseInputEvent * MouseEvent);
+  TPointerInfo(TPointerInfo * nPInfo);
+  ~TPointerInfo();
+};
+
 class TCommand {
+private:
+  TPointerInfo * PointerInfo;  /* Holds info about the pointer, if non-null */
 public:
   system_time_t timestamp; /* The time when the command was created 
                               or, if originated in input, the time of input */
   string name;             /* The name of the command - used for dispatching */
   string args;             /* Optional args to the command */
+  explicit TCommand(const TCommand & cmd);
   TCommand(TCommand * cmd);
-  TCommand(system_time_t ntimestamp, string nname, string nargs = "");
+  TCommand(system_time_t ntimestamp, string nname, string nargs = "",
+	   TPointerInfo * nPointerInfo = NULL);
+  ~TCommand();
+  TPointerInfo * GetPointerInfo();
 };
 
 /* This is the type of the command queue */

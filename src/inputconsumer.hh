@@ -71,12 +71,14 @@ public:
    * Info about commands, and registering commands
    * Mostly used by the TControlsMenu and related objects.
    * *********************************************************************/
-  /* Get the keys - in a string - that are mapped to the command
+  /* Get the keys or mouse clicks - in a string - that are mapped to the command
      NOTE: Only "down" events from gamemode_game are returned by this. */
-  string GetKeyMappingsForCommand(string command, string args);
+  string GetMappingsForCommand(string command, string args);
   /* Add a translation to the commandmap - true == added */
   bool AddKeyboardMapping(gamemode_t mode, keyboard_inputevent_event_t event,
 			  string cmd, string arg);
+  bool AddMouseMapping(gamemode_t mode, mouse_inputevent_event_t event,
+		       string cmd, string arg);
 };
 
 /* The input consumer */

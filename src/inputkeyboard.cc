@@ -93,7 +93,7 @@ typedef map <int, string> TKeynameMap;
 typedef TKeynameMap::iterator TKeynameMapIterator;
 TKeynameMap keys_to_names;
 
-string keyboard_inputevent_event_t::AsString() {
+string keyboard_inputevent_event_t::AsString() const {
   /* Check if this is a normal key */
   if (key < 127 && key > 32) {
     char buf[2];

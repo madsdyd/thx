@@ -1,3 +1,15 @@
+20010423
+  - Finally figured out why we had a segfault. I hate implicit type conversion in 
+    C++.
+  - Taggin 0.3.4.2
+
+20010421
+  - Added first step towards mouse mapping support in TControlsMenuItem
+    some of it work.
+
+20010420
+  - Tagging 0.3.4.1
+
 20010419
   - Fixed erratic moves - turns out, that update Hz in TGame was too low.
   - It seems mapping ESC does indeed work.

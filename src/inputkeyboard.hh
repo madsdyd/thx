@@ -74,7 +74,7 @@ class keyboard_inputevent_event_t {
 public:
   unsigned int key;
   keypress_t type;
-  string AsString(); /* Return the current key as a string */
+  string AsString() const; /* Return the current key as a string */
 };
 
 struct lt_kiet

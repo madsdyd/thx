@@ -306,10 +306,11 @@ bool TMenu::CommandConsume(TCommand * Command) {
    * *********************************************************************/
   else if ("mouse-move" == Command->name) {
     /* First, update the mouse position */
-    TMouseInputEvent MouseEvent(Command->args);
-    mouse_x = MouseEvent.x; 
-    mouse_y = Display->GetHeight() - MouseEvent.y;
-    
+    mouse_x = Command->GetPointerInfo()->x; 
+    mouse_y = Command->GetPointerInfo()->y; 
+#if (DEBUG_MENU)
+    cout << "mouse-move " << mouse_x << ", " << mouse_y << endl;
+#endif    
     /* Now, check if any hits... */
     TMenuItemsIterator End = menuitems.end();
     int count = 0;
@@ -360,10 +361,11 @@ bool TMenu::CommandConsume(TCommand * Command) {
        mouse-move to this position, and then a down. If another item
        is in editing, however, we want this state to be left */
     /* First, update the mouse position */
-    TMouseInputEvent MouseEvent(Command->args);
-    mouse_x = MouseEvent.x; 
-    mouse_y = Display->GetHeight() - MouseEvent.y;
-    
+    mouse_x = Command->GetPointerInfo()->x; 
+    mouse_y = Command->GetPointerInfo()->y; 
+#if (DEBUG_MENU)
+    cout << "mouse-down " << mouse_x << ", " << mouse_y << endl;
+#endif
     /* Now, check if any hits... */
     TMenuItemsIterator End = menuitems.end();
     int count = 0;

@@ -41,9 +41,6 @@ TInGameMenu::TInGameMenu(string title,
 			 TAction AbortGameFunc, 
 			 TAction AbortRoundFunc, 
 			 TAction CancelFunc) : TMenu(title) {
-  AddCancelMenuItem(new TActionMenuItem(this, "Resume game", 
-					"Press return to resume game", 
-					CancelFunc));
   AddMenuItem(new TSubMenuItem(this, "Controls", 
 			       "Setup the controls", 
 			       ControlsMenu));
@@ -53,4 +50,7 @@ TInGameMenu::TInGameMenu(string title,
   AddMenuItem(new TActionMenuItem(this, "Abort game", 
 				  "Press return to abort current game", 
 				  AbortGameFunc));
+  AddCancelMenuItem(new TActionMenuItem(this, "Resume game", 
+					"Press return to resume game", 
+					CancelFunc));
 }

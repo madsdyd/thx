@@ -44,21 +44,23 @@ protected:
   /* These are the commands that are active for the 
      current client. The string is used to identify the 
      command, mostly when removing and inserting commands */
+  TGame * game;
   map <string, TCommand> active_commands;
   void RegisterCommands();
   void UnregisterCommands();
   void PerformCommandUpdate(system_time_t timenow);
 public:
   string name;            /* The players name */
+  string team;            /* The team the player is on, if in team mode */
   TInventory * inventory; /* Used to hold and create projectiles */
   int money;              /* The money the player have */
   int score;              /* The score */
   TTank * tank;           /* The players tank */
   TColor color;           /* Used at all? */
   TViewpoint viewpoint;   /* The players viewpoint */
-  TPlayer(string nname);
+  TPlayer(TGame * ngame, string nname, string nteam);
   virtual ~TPlayer();
-  void PrepareRound(TGame * game, TVector * location);
+  void PrepareRound(TVector * location);
   void BeginTurn();       /* Called, when this players turn is about to start */
   void EndTurn();         /* Called, when this players turn is about to end */
   virtual bool CommandConsume(TCommand * Command);

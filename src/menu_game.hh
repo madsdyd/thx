@@ -43,6 +43,10 @@ public:
   unsigned int numplayers;
   unsigned int numrounds;
   double maptype;
+  bool teammode;
+
+  /* Callback to let the menu update, if the playernumbber changes */
+  virtual void MenuItemChange(int code);
 
   /* This is the storage for the information about players. 
      This list only changes while the TPlayerMenu is shown */

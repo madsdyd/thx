@@ -79,6 +79,7 @@ protected:
   /* Set the menuitem size. Used when we do not want to override
      all of render ... */
   virtual void SetItemSize();
+  /* Callback function to notify of e.g. menuitem changes */
 public:
   /* **********************************************************************
    * Construct and destroy the menu
@@ -122,6 +123,12 @@ public:
   bool ScrollUp(bool playsound); 
   bool ScrollDown(bool playsound);
 
+  /* **********************************************************************
+   * Various stuff
+   * *********************************************************************/
+  /* Callback for menu item changes - code is interprented by each
+     class */
+  virtual void MenuItemChange(int code) {};
   /* This is to get the current menu - which is a hack */
   TMenu * GetCurrentMenu();
   /* Handle commands */

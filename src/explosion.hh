@@ -38,8 +38,9 @@ private:
 public:
   TVector location;
   float maxradius, damage;
-  TExplosion(TPlayer * owner, TVector loc, float mradius, float espeed, float edamage);
-  virtual void Update(TGame * game, system_time_t deltatime);
+  TExplosion(TGame * game, TPlayer * owner, 
+	     TVector loc, float mradius, float espeed, float edamage);
+  virtual void Update(system_time_t deltatime);
   virtual void Render(TViewpoint * viewpoint);
   virtual void TakeDamage(TEntity * other_entity) {
     cout << "TExplosion::TakeDamage" << endl;

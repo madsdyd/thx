@@ -50,6 +50,9 @@ TColorDefinitions::TColorDefinitions() {
   Colors["cyan"]    = TColor(0.0, 1.0, 1.0);
   Colors["magenta"] = TColor(1.0, 0.0, 1.0);
 
+  Colors["navy"]    = TColor(0.0, 0.0, 0.5);
+  
+
   Colors["gray"]  = TColor(0.75, 0.75, 0.75);
   
   /* Menu colors */
@@ -65,6 +68,16 @@ TColorDefinitions::TColorDefinitions() {
   Colors["menu-item-selected"] = Colors["red"];
   Colors["menu-item-info"]     = Colors["white"];
 	
+  Colors["player-1"]           = Colors["blue"];
+  Colors["player-2"]           = Colors["red"];
+  Colors["player-3"]           = Colors["green"];
+  Colors["player-4"]           = Colors["yellow"];
+  Colors["player-5"]           = Colors["cyan"];
+  Colors["player-6"]           = Colors["magenta"];
+  Colors["player-7"]           = Colors["black"];
+  Colors["player-8"]           = Colors["navy"];
+  
+
 
 }
 /* **********************************************************************
@@ -75,6 +88,33 @@ TColor TColorDefinitions::GetColor(string color) {
   if (loc != Colors.end()) {
     return (*loc).second; 
   } else {
+    cerr << "TColorDefinitions::GetColor(" << color << ") - not found" 
+	 << endl;
     return TColor(1.0, 1.0, 1.0);
+  }
+}
+
+/* **********************************************************************
+ * Test for equality
+ * *********************************************************************/
+bool TColor::Equal(TColor & cref) {
+  /*  cout << "TColor::Equal, comparing ("
+       << data[0] << ", "
+       << data[1] << ", "
+       << data[2] << ", "
+       << data[3] << ") to ("
+       << cref.data[0] << ", "
+       << cref.data[1] << ", "
+       << cref.data[2] << ", "
+       << cref.data[3] << ") - they "; */
+  if (data[0] == cref.data[0] &&
+      data[1] == cref.data[1] &&
+      data[2] == cref.data[2] &&	
+      data[3] == cref.data[3]) {
+    // cout << "are equal" << endl;
+    return true;
+  } else {
+    // cout << "differ" << endl;
+    return false;
   }
 }

@@ -40,16 +40,17 @@ bool spawn_markers = false;
 /* **********************************************************************
  * Constructors
  * *********************************************************************/
-TProjectile::TProjectile(TPlayer * owner, float rad, float str) 
-  : TEntity(owner) {
+TProjectile::TProjectile(TGame * game, TPlayer * owner, 
+			 float rad, float str) : TEntity(game, owner) {
   radius   = rad;
   strength = str;
   /* We affect turn changing */
   affect_turn = true;
 };
 
-TProjectile::TProjectile(TPlayer * owner, float rad, float str, 
-			 TVector loc, TVector vel) : TEntity(owner) {
+TProjectile::TProjectile(TGame * game, TPlayer * owner, 
+			 float rad, float str, 
+			 TVector loc, TVector vel) : TEntity(game, owner) {
   radius   = rad;
   strength = str;
   location = loc;
@@ -62,7 +63,7 @@ TProjectile::TProjectile(TPlayer * owner, float rad, float str,
  * CopyThis method
  * *********************************************************************/
 TProjectile * TProjectile::CopyThis() {
-  return new TProjectile(owner, radius, strength);
+  return new TProjectile(game, owner, radius, strength);
 }
 
 /* **********************************************************************
@@ -78,10 +79,10 @@ TProjectile * TProjectile::Fire(TVector * loc, TVector * vel) {
 /* **********************************************************************
  * OnOrbit - default spawns little explosion
  * *********************************************************************/
-void TProjectile::OnOrbit(TGame * game, system_time_t deltatime) {
+void TProjectile::OnOrbit(system_time_t deltatime) {
   Display->console->AddLine("Projectile went into orbit");
   /* Insert small delay */
-  game->AddEntity(new TDelay(owner, 1)); 
+  game->AddEntity(new TDelay(game, owner, 1)); 
   /* Insert small explosion entity */
   /*  game->AddEntity(new TExplosion(owner, location, radius/4.0, 1.0, strength/4.0));
 #ifdef SOUND_ON
@@ -95,10 +96,10 @@ void TProjectile::OnOrbit(TGame * game, system_time_t deltatime) {
 /* **********************************************************************
  * OnCollision - default spawns explosion
  * *********************************************************************/
-void TProjectile::OnCollision(TGame * game, system_time_t deltatime, 
+void TProjectile::OnCollision(system_time_t deltatime, 
 			      TVector loc) {
   // cout << "TProjectile impact detected" << endl;
-  game->AddEntity(new TExplosion(owner, loc, radius, 6.0, strength));
+  game->AddEntity(new TExplosion(game, owner, loc, radius, 6.0, strength));
 #ifdef SOUND_ON
   sound_play(names_to_nums["data/sounds/explosion.raw"]);
 #endif
@@ -109,14 +110,14 @@ void TProjectile::OnCollision(TGame * game, system_time_t deltatime,
  * OnPosUpdate - called on succesfull update. The position _has_ been
  * changed, velocity updated
  * *********************************************************************/
-void TProjectile::OnPosUpdate(TGame * game, system_time_t deltatime) {
+void TProjectile::OnPosUpdate(system_time_t deltatime) {
   /* Do nothing */
 }
 
 /* **********************************************************************
  * Update - explanation goes here
  * *********************************************************************/
-void TProjectile::Update(TGame * game, system_time_t deltatime) {
+void TProjectile::Update(system_time_t deltatime) {
   TVector new_location = location;
   
   /* We update the location according to the time spend */
@@ -127,7 +128,7 @@ void TProjectile::Update(TGame * game, system_time_t deltatime) {
   /* Checking within map is done by calling map */
   if (!game->GetMap()->Within(&(new_location))) {
     /* Oops, outside map, call OnOrbit */
-    OnOrbit(game, deltatime);
+    OnOrbit(deltatime);
     return;
   }
   
@@ -147,7 +148,7 @@ void TProjectile::Update(TGame * game, system_time_t deltatime) {
   /* Impact checking is done by calling the map. */
   if (game->GetMap()->CollisionDetect(&(location), &new_location)) {
     /* IMPACT! - call OnImpact */
-    OnCollision(game, deltatime, new_location);
+    OnCollision(deltatime, new_location);
     return;
   };
 
@@ -160,9 +161,9 @@ void TProjectile::Update(TGame * game, system_time_t deltatime) {
 
   /* Set a marker if the option is on. */
   if (spawn_markers)
-    game->AddEntity(new TMarker(owner, location, 0.05, 2.0));
+    game->AddEntity(new TMarker(game, owner, location, 0.05, 2.0));
   /* Call OnPosUpdate */
-  OnPosUpdate(game, deltatime);
+  OnPosUpdate(deltatime);
 }
 
 /* **********************************************************************
@@ -185,10 +186,10 @@ void TProjectile::Render(TViewpoint * viewpoint) {
  * **********************************************************************
  * *********************************************************************/
 TProjectile * TSpawnProjectile::CopyThis() {
-  return new TSpawnProjectile(owner, radius, strength);
+  return new TSpawnProjectile(game, owner, radius, strength);
 }
 
-void TSpawnProjectile::OnCollision(TGame * game, system_time_t deltatime, 
+void TSpawnProjectile::OnCollision(system_time_t deltatime, 
 				   TVector loc) {
   TVector vel;
   vel.x = 1.0;
@@ -199,15 +200,20 @@ void TSpawnProjectile::OnCollision(TGame * game, system_time_t deltatime,
      explode on the first round
      When the collision detection is fixed, this should probably go. */
   loc.z += 1.5;
-  game->AddEntity(new TProjectile(owner, radius, strength/4.0, loc, vel));
+  game->AddEntity(new TProjectile(game, owner, radius, 
+				  strength/4.0, loc, vel));
   vel.x = -vel.x;
-  game->AddEntity(new TProjectile(owner, radius, strength/4.0, loc, vel));
+  game->AddEntity(new TProjectile(game, owner, radius, 
+				  strength/4.0, loc, vel));
   vel.y = -vel.y;
-  game->AddEntity(new TProjectile(owner, radius, strength/4.0, loc, vel));
+  game->AddEntity(new TProjectile(game, owner, radius, 
+				  strength/4.0, loc, vel));
   vel.x = -vel.x;
-  game->AddEntity(new TProjectile(owner, radius, strength/4.0, loc, vel));
+  game->AddEntity(new TProjectile(game, owner, radius, 
+				  strength/4.0, loc, vel));
   /* Add a minor explosion */
-  game->AddEntity(new TExplosion(owner, loc, radius/4.0, 6.0, strength/4.0));
+  game->AddEntity(new TExplosion(game, owner, loc, 
+				 radius/4.0, 6.0, strength/4.0));
 #ifdef SOUND_ON
   sound_play(names_to_nums["data/sounds/explosion.raw"]);
 #endif
@@ -221,10 +227,10 @@ void TSpawnProjectile::OnCollision(TGame * game, system_time_t deltatime,
  * **********************************************************************
  * *********************************************************************/
 TProjectile * TMirvProjectile::CopyThis() {
-  return new TMirvProjectile(owner, radius, strength);
+  return new TMirvProjectile(game, owner, radius, strength);
 }
 
-void TMirvProjectile::OnPosUpdate(TGame * game, system_time_t deltatime) {
+void TMirvProjectile::OnPosUpdate(system_time_t deltatime) {
   /* if vel.z < 0, spawn, do not keep */
   if (velocity.z <= 0) {
     TVector vel;
@@ -232,26 +238,26 @@ void TMirvProjectile::OnPosUpdate(TGame * game, system_time_t deltatime) {
     vel.y = velocity.y;
     vel.z = 0.0;
     /* Add projectile that continues same track */
-    game->AddEntity(new TProjectile(owner, radius, strength/4.0, 
+    game->AddEntity(new TProjectile(game, owner, radius, strength/4.0, 
 				    location, vel));
 
     /* Add front, left, behind and back */
     vel = vel*0.8F;
-    game->AddEntity(new TProjectile(owner, radius, strength/4.0, 
+    game->AddEntity(new TProjectile(game, owner, radius, strength/4.0, 
 				    location, vel));
     vel = vel*1.25F*1.25F;
-    game->AddEntity(new TProjectile(owner, radius, strength/4.0, 
+    game->AddEntity(new TProjectile(game, owner, radius, strength/4.0, 
 				    location, vel));
     vel = vel*0.8F;
     vel.rotatexy(M_PI/8.0);
-    game->AddEntity(new TProjectile(owner, radius, strength/4.0, 
+    game->AddEntity(new TProjectile(game, owner, radius, strength/4.0, 
 				    location, vel));
     vel.rotatexy(2.0*M_PI-M_PI/4.0);
-    game->AddEntity(new TProjectile(owner, radius, strength/4.0, 
+    game->AddEntity(new TProjectile(game, owner, radius, strength/4.0, 
 				    location, vel)); 
 
     /* Add a minor explosion */
-    game->AddEntity(new TExplosion(owner, location, 
+    game->AddEntity(new TExplosion(game, owner, location, 
 				   radius/4.0, 6.0, strength/4.0)); 
 #ifdef SOUND_ON
     sound_play(names_to_nums["data/sounds/explosion.raw"]);

@@ -99,6 +99,7 @@ private:
   TMap * map;
   int width, lenght;
   float mapsteepness;
+  bool teammode;
   void SetMap();             /* Creates a new map and stores it in map */
 
   /* Wind related stuff - temporary location */
@@ -138,7 +139,8 @@ private:
   void UpdateGameDone(system_time_t updatetime);
 
 public:
-  TGame(int nwidth, int nlenght, int nnum_rounds, float nmapsteepness);
+  TGame(int nwidth, int nlenght, int nnum_rounds, 
+	float nmapsteepness, bool nteammode);
   virtual ~TGame();
   /* Get a pointer to the map */
   TMap * GetMap();

@@ -261,37 +261,20 @@ void GameMenu_StartFunc() {
   /* ************************************************************
      Initialize the game. This should maybe go somewhere else */
   
-  /* Initialize stuff as selected from the menu system */
-  int game_numrounds       = GameMenu->numrounds;
-  int game_mapsize         = GameMenu->mapsize;
-  double game_mapsteepness = GameMenu->maptype;
-  
+  /* Setup a game, with values from the GameMenu */
+  Game = new TGame(GameMenu->mapsize, GameMenu->mapsize, 
+		   GameMenu->numrounds, GameMenu->maptype,
+		   GameMenu->teammode);
 
-  /* Setup a game. This is pretty simple at this point. 
-     max 4 players allowed */
-  Game = new TGame(game_mapsize, game_mapsize, 
-		   game_numrounds, game_mapsteepness);
-
+  /* Add the players to the game */
   TTank * tank;
   TPlayer * player;
-
-  /* TODO: Remove this ugly hack
-     This hack makes sure that we have enough playersettings, if
-     the player never visited the playersettings menu. It will not 
-     remain like this, but I need to check in some code. */
-  
-  while(GameMenu->PlayerSettings.size() < GameMenu->numplayers) {
-    cout << "Gamestart, TODO: REMOVE, Adding a playersetting" << endl;
-    TPlayerSetting tmpset;
-    ostrstream tmp1;
-    tmp1.form("Player %i", GameMenu->PlayerSettings.size() + 1) << ends;
-    tmpset.name = tmp1.str();
-    GameMenu->PlayerSettings.push_back(tmpset);
-  }
-  
   for (unsigned int i = 0; i < GameMenu->numplayers; i++) {
-    player       = new TPlayer(GameMenu->PlayerSettings[i].name);
-    tank         = new TTank(player);
+    /* cout << "adding a player; i = " << i << "numplayers" 
+       << GameMenu->numplayers << endl;  */
+    player       = new TPlayer(Game, GameMenu->PlayerSettings[i].name,
+			       GameMenu->PlayerSettings[i].team);
+    tank         = new TTank(Game, player);
     player->tank = tank;
     tank->color  = GameMenu->PlayerSettings[i].color;
     if (!Game->AddPlayer(player)) {
@@ -302,7 +285,7 @@ void GameMenu_StartFunc() {
 
   /* Initialize framerate counter */
   framerate_init();
-
+  
   if (GL_NO_ERROR != glGetError()) {
     cerr 
       << "GameMenu_StartFunc() : GL was in error condition before Game->RoundStart" 

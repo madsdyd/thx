@@ -26,9 +26,9 @@
 
 /* **********************************************************************
    Initialize an explosion */
-TExplosion::TExplosion(TPlayer * owner, TVector loc, 
+TExplosion::TExplosion(TGame * game, TPlayer * owner, TVector loc, 
 		       float mradius, float espeed, float edamage) 
-  : TEntity(owner) {
+  : TEntity(game, owner) {
   location    = loc;
   radius      = 0;
   maxradius   = mradius;
@@ -40,7 +40,7 @@ TExplosion::TExplosion(TPlayer * owner, TVector loc,
 
 /* **********************************************************************
    Update a explosion */
-void TExplosion::Update(TGame * game, system_time_t deltatime) {
+void TExplosion::Update(system_time_t deltatime) {
   /* We start at minimum, add speed, until above max, then reverse 
      speed */
   //  printf("explosion updated\n");
@@ -61,7 +61,7 @@ void TExplosion::Update(TGame * game, system_time_t deltatime) {
     /* We do not need further updates */
     keep = false;
     /* Delay round changes for a second */
-    game->AddEntity(new TDelay(owner, 1));
+    game->AddEntity(new TDelay(game, owner, 1));
   } 
 }
 

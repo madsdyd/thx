@@ -45,11 +45,18 @@ TGameMenu::TGameMenu(string title,
 		     TAction GameEndFunc) : TMenu(title) {
   NewGameMenu = new TMenu("New Game");
   PlayerMenu  = new TPlayerMenu("Player Settings", &numplayers, 
-				&PlayerSettings);
+				&teammode, &PlayerSettings);
   HelpMenu    = new TMenu("Help");
   AboutMenu   = new TMenu("About Tank Hill eXtreme");
   ExitMenu    = new TMenu("Really Exit?");
 
+  /* Initialize default values */
+  numplayers = 3;
+  numrounds  = 3;
+  mapsize    = 32;
+  maptype    = 1.4;
+  teammode   = false;
+  
   /* ************************************************************
      The Main menu (this) */
   {
@@ -85,11 +92,28 @@ TGameMenu::TGameMenu(string title,
     TUIntListMenuItem * tmpitem 
       = new TUIntListMenuItem(NewGameMenu, "Number of players", 
 			      "Set the number of players",
-			      &numplayers); 
+			      &numplayers, this, 42); 
     tmpitem->AddOption("2", 2);
     tmpitem->AddOption("3", 3);
     tmpitem->AddOption("4", 4);
+    tmpitem->AddOption("5", 5);
+    tmpitem->AddOption("6", 6);
+    tmpitem->AddOption("7", 7);
+    tmpitem->AddOption("8", 8);
     NewGameMenu->AddMenuItem(tmpitem);
+    /* Make sure we are synced */
+    PlayerMenu->SyncPlayerSettings();
+
+    /* Team option */
+    TBoolListMenuItem * btmpitem 
+      = new TBoolListMenuItem(NewGameMenu, 
+			      "Team mode", 
+			      "Enable or disable team mode",
+			      &teammode);
+    btmpitem->AddOption("on", true);
+    btmpitem->AddOption("off", false);
+    NewGameMenu->AddMenuItem(btmpitem);
+      
     NewGameMenu->AddMenuItem(new TSubMenuItem(NewGameMenu, 
 					      "Player Settings", 
 					      "Set name, color, etc for "
@@ -101,9 +125,9 @@ TGameMenu::TGameMenu(string title,
       = new TUIntListMenuItem (NewGameMenu, "Map size", 
 			       "Change the size of the map",
 			       &mapsize);
+    tmpitem->AddOption("small", 16);
     tmpitem->AddOption("medium", 32);
     tmpitem->AddOption("large", 64);
-    tmpitem->AddOption("small", 16);
     NewGameMenu->AddMenuItem(tmpitem);
 
     /* The Map steepness - decides its type */
@@ -112,10 +136,10 @@ TGameMenu::TGameMenu(string title,
       new TDoubleListMenuItem(NewGameMenu, "Map type", 
 			      "Select the topology of the map", 
 			      &maptype);
-    dtmpitem->AddOption("highlands", 1.4);
-    dtmpitem->AddOption("mountains", 2.0);
     dtmpitem->AddOption("flatlands", 0.2);
     dtmpitem->AddOption("bumby", 0.8);
+    dtmpitem->AddOption("highlands", 1.4);
+    dtmpitem->AddOption("mountains", 2.0);
     NewGameMenu->AddMenuItem(dtmpitem);
 
     /* Number of rounds */
@@ -207,3 +231,11 @@ TGameMenu::TGameMenu(string title,
 					      GameEndFunc));
   }
 };
+
+/* **********************************************************************
+ * Callback override
+ * *********************************************************************/
+void TGameMenu::MenuItemChange(int code) {
+  /* This is only called when the number of players are changed */
+  PlayerMenu->SyncPlayerSettings();
+}

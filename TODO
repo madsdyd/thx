@@ -2,13 +2,11 @@ Version schedule.
 
 This is an overview of what features go where. This is subject to change.
 
-cvs add menuitem_color.hh menuitem_color.cc menu_player.hh menu_player.cc
-
-- Fix ColorMenuItem to use initial value, make a list of possible player
-  colors.
-- Fix adding playersettings, without having to show the playersettings
-  menu...
-
+- Adding team support to TGameMenu.
+  Now, each player can be assigned a team - somehow change the score
+  to reflect this? Teammode, combi score of players on team?
+  How are team scores to be calculated? How about hitting one from your
+  own team? Etc????
 The text () is the focus of the "series". E.g. 0.4.0 (AI) means that
 everything starting with 0.4. is probably going to be related to AI. The 0.4.0 release
 however, is the final release of the previous series.
@@ -26,7 +24,7 @@ Team support - Teams should be defined when a game is created.
 
 
 ** 0.4.0 (AI)
-  - Implement wind before going AI.
+  - Implement wind before going AI. (Sort of done)
   - Console
   - Team support
   - Make a ceiling?
@@ -98,7 +96,8 @@ Team support - Teams should be defined when a game is created.
 ** 0.8.5 (Customization)
   - make real console
   - support for storing a number of viewpoints for each player
-  - config/variable/alias/console system
+  - config/variable/alias/console system that is global for the game.
+    Maybe each entity should know its game?
   - console
   - controles
   - configuration files
@@ -156,12 +155,10 @@ Team support - Teams should be defined when a game is created.
  -------------------------------------------------------------------------------
 
 * Menu system
-  - Make menuitem color
   - Make a menuitem that issues a command
   - Make the menu system smarter, wrt the way it uses variables from the
     gamestate
   - Render nice background image?
-  - Make provisions for setting stuff about the players, like colors, etc.
 
 * Design
   - all references from display to the current map, should go through the 

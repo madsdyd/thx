@@ -47,13 +47,13 @@ public:
 typedef vector<TInventoryElement *> TInventoryElements;
 typedef TInventoryElements::iterator TInventoryElementsIterator;
 
+class TGame;
 class TInventory {
 private:
   TInventoryElements data;
   int selected;
-  TPlayer * owner;
 public:
-  TInventory(TPlayer * Owner);
+  TInventory(TGame * Game, TPlayer * Owner);
   ~TInventory();
   /* Selection routines - only selects projectiles that the player
      actually have*/

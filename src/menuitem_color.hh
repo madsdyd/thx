@@ -23,6 +23,7 @@
 #define __MENUITEM_COLOR_HH__
 
 #include "menuitem.hh"
+#include "menuitem_list.hh"
 #include "color.hh"
 
 /* A menuitem that is used to select colors with.

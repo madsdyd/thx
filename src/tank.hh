@@ -55,10 +55,10 @@ public:
   TVector location;
   cannon_t cannon;
   float health;
-  TTank(TPlayer * owner);
+  TTank(TGame * game, TPlayer * owner);
   ~TTank();
   /* Prepare a tank for a new round, updates location, health, etc */
-  void PrepareRound(TGame * game, TVector * loc);
+  void PrepareRound(TVector * loc);
   /* Adjust the force of the cannon */
   void AdjustForce(double adjust);
   /* Adjust the angle of the cannon */
@@ -66,7 +66,7 @@ public:
   /* Adjust the rotation of the cannon */
   void AdjustRotation(double adjust);
   /* Update the tank. */
-  virtual void Update(TGame * game, system_time_t deltatime);
+  virtual void Update(system_time_t deltatime);
   /* Render the tank */
   virtual void Render(TViewpoint * viewpoint);
   /* Take damage from another entity */
@@ -75,7 +75,7 @@ public:
   }; 
   /* Register a hit by an explosion 
      TODO: Should use TakeDamage?*/
-  void Explosion(TMap * map, TExplosion * Explosion);
+  void Explosion(TExplosion * Explosion);
 
 };
 #endif

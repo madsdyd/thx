@@ -31,8 +31,8 @@ class TDelay : public TEntity {
 protected:
   float timeleft;
 public:
-  TDelay(TPlayer * owner, float ttl);
-  virtual void Update(TGame * game, system_time_t deltatime);
+  TDelay(TGame * game, TPlayer * owner, float ttl);
+  virtual void Update(system_time_t deltatime);
   virtual void Render(TViewpoint * viewpoint) {};
   virtual void TakeDamage(TEntity * other_entity) {};
 };
@@ -44,7 +44,7 @@ private:
   float radius;
   float timeleft;
 public:
-  TMarker(TPlayer * owner, TVector loc, 
+  TMarker(TGame * game, TPlayer * owner, TVector loc, 
 	  float nradius, float ttl);
   virtual void Render(TViewpoint * viewpoint);
   virtual void TakeDamage(TEntity * other_entity) {}; 

@@ -29,13 +29,15 @@
 class TColor {
 public:
   GLfloat data[4];
-  TColor(GLfloat r = 1.0, GLfloat g = 1.0, GLfloat b = 1.0, GLfloat a = 1.0) {
+  TColor(GLfloat r = 1.0, GLfloat g = 1.0, 
+	 GLfloat b = 1.0, GLfloat a = 1.0) {
     data[0] = r;
     data[1] = g;
     data[2] = b;
     data[3] = a;
   }
-  void Set(GLfloat r = 1.0, GLfloat g = 1.0, GLfloat b = 1.0, GLfloat a = 1.0) {
+  void Set(GLfloat r = 1.0, GLfloat g = 1.0, 
+	   GLfloat b = 1.0, GLfloat a = 1.0) {
     data[0] = r;
     data[1] = g;
     data[2] = b;
@@ -55,6 +57,11 @@ public:
   }
   /* Scale the color by a double */
   void SetIntensity(double intensity);
+  /* Test for Equal */
+  bool Equal(TColor & cref);
+  bool operator==(TColor & cref) {
+    return Equal(cref);
+  }
 };
 
 typedef std::map<string, TColor> TColors;

@@ -46,16 +46,20 @@ public:
   /* Used when we want to figure out who hit us, and stuff */
   TPlayer * owner; /* ALWAYS check this for null, as entities not
 		      owned by players will have this set to NULL */
+  /* Used, when updating and eventually for accessing the global 
+     environment */
+  TGame * game;
   /* Default is that we should be kept, but freed when done */
-  TEntity(TPlayer * nowner) {
+  TEntity(TGame * ngame, TPlayer * nowner) {
     keep        = true;
     free        = true;
     affect_turn = false;
     owner       = nowner;
+    game        = ngame;
   };
   virtual ~TEntity() {};
   /* The operations on an entity is declared pure virtual */
-  virtual void Update(TGame * game, system_time_t deltatime) = 0;
+  virtual void Update(system_time_t deltatime) = 0;
   virtual void Render(TViewpoint * viewpoint) = 0;
   virtual void TakeDamage(TEntity * other_entity) = 0;
 };

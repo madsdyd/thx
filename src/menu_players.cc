@@ -25,17 +25,44 @@
  * TPlayerMenu constructor - sets variables
  * *********************************************************************/
 TPlayerMenu::TPlayerMenu(string title, unsigned int * num_players, 
+			 bool * teammode, 
 			 TPlayerSettings * nplayer_settings) 
   : TMenu(title) {
   NumPlayers     = num_players;
+  TeamMode       = teammode;
   PlayerSettings = nplayer_settings;
 
 }
 
 /* **********************************************************************
+ * SyncPlayerSettings - makes sure that we have enough playersettings
+ * init names, etc.
+ * *********************************************************************/
+void TPlayerMenu::SyncPlayerSettings() {
+  while(PlayerSettings->size() < *NumPlayers) {
+    // cout << "Adding a playersetting" << endl;
+    TPlayerSetting tmpset;
+    ostrstream tmp1, tmp2, tmp3;
+    /* Set default values for name, team and color */
+    tmp1.form("Player %i", PlayerSettings->size() + 1) << ends;
+    tmpset.name = tmp1.str();
+    tmp2.form("player-%i", PlayerSettings->size() + 1) << ends;
+    tmpset.color = ColorDefinitions.GetColor(tmp2.str());
+    tmp3.form("team-%i", PlayerSettings->size() + 1) << ends;
+    tmpset.team  = tmp3.str();
+    PlayerSettings->push_back(tmpset);
+  }
+  while(PlayerSettings->size() > *NumPlayers) {
+    // cout << "Removing a playersetting" << endl;
+    PlayerSettings->pop_back();
+  }
+}
+
+
+/* **********************************************************************
  * Show - Add neccesary playersettings to the list of menuitems.
  * *********************************************************************/
-void TPlayerMenu::Show(){
+void TPlayerMenu::Show() {
   /* The menuitems are added in here - first, they are all removed */
   cout << "TPlayerMenu::Show - memory leak right here" << endl;
   menuitems.clear();
@@ -56,40 +83,40 @@ void TPlayerMenu::Show(){
      of elemets.
      Then, add/remove the neccesary menu items to the list of menu items
      The layout is fixed, and setup in the constructor */
-  while(PlayerSettings->size() < *NumPlayers) {
-    cout << "Adding a playersetting" << endl;
-    TPlayerSetting tmpset;
-    ostrstream tmp1;
-    tmp1.form("Player %i", PlayerSettings->size() + 1) << ends;
-    tmpset.name = tmp1.str();
-    PlayerSettings->push_back(tmpset);
-  }
-  while(PlayerSettings->size() > *NumPlayers) {
-    cout << "Removing a playersetting" << endl;
-    PlayerSettings->pop_back();
-  }
+  SyncPlayerSettings();
+  
   /* Create and associate a menu item with each playersetting */
   int count = 1;
   for (TPlayerSettingsIterator i = PlayerSettings->begin();
        i != PlayerSettings->end();
        i++) {
-    ostrstream tmp1, tmp2;
+    ostrstream tmp1, tmp2, tmp3, tmp4, tmp5, tmp6;
     /* fix the player names here */
     tmp1.form("Player %i name", count) << ends;
     tmp2.form("Enter the name of player %i here", count) << ends;
-    AddMenuItem(new TStringMenuItem(this, 
-				    tmp1.str(), tmp2.str(), 
+    AddMenuItem(new TStringMenuItem(this, tmp1.str(), tmp2.str(), 
 				    &(*i).name));
+    /* and the players team */
+    if (*TeamMode) {
+      tmp5.form("Player %i teamname", count) << ends;
+      tmp6.form("Enter the team of player %i here", count) << ends;
+      AddMenuItem(new TStringMenuItem(this, tmp5.str(), tmp6.str(),
+				      &(*i).team));
+    }
     /* and, the players color */
-    tmp1.form("Player %i color", count) << ends;
-    tmp2.form("Select the color of player %i", count) << ends;
+    tmp3.form("Player %i color", count) << ends;
+    tmp4.form("Select the color of player %i", count) << ends;
     TColorMenuItem * ctmpitem
-      = new TColorMenuItem(this, tmp1.str(), tmp2.str(),
+      = new TColorMenuItem(this, tmp3.str(), tmp3.str(),
 			   &(*i).color);
-    ctmpitem->AddOption("Yellow", ColorDefinitions.GetColor("yellow"));
-    ctmpitem->AddOption("Blue",   ColorDefinitions.GetColor("blue"));
-    ctmpitem->AddOption("Red",    ColorDefinitions.GetColor("red"));
-    ctmpitem->AddOption("Green",  ColorDefinitions.GetColor("green"));
+    ctmpitem->AddOption("", ColorDefinitions.GetColor("player-1"));
+    ctmpitem->AddOption("", ColorDefinitions.GetColor("player-2"));
+    ctmpitem->AddOption("", ColorDefinitions.GetColor("player-3"));
+    ctmpitem->AddOption("", ColorDefinitions.GetColor("player-4"));
+    ctmpitem->AddOption("", ColorDefinitions.GetColor("player-5"));
+    ctmpitem->AddOption("", ColorDefinitions.GetColor("player-6"));
+    ctmpitem->AddOption("", ColorDefinitions.GetColor("player-7"));
+    ctmpitem->AddOption("", ColorDefinitions.GetColor("player-8"));
     AddMenuItem(ctmpitem);
 
     /* Count to the next player */

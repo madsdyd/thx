@@ -25,9 +25,13 @@ void TColorMenuItem::Render(int xlow, int xhigh) {
   /* Sets the render color */
   SetRenderColor(); 
   /* Render everything */
-  char buf[2];
+  char buf[6];
   buf[0] = 4;
-  buf[1] = 0; // xlow, xhigh, 
+  buf[1] = 4;
+  buf[2] = 4;
+  buf[3] = 4;
+  buf[4] = 4;
+  buf[5] = 0; // xlow, xhigh, 
   /* MenuTextRender.PrintLn(
 			 buf + caption + ":" 
 			 + options[selected_value].caption); */
@@ -35,10 +39,8 @@ void TColorMenuItem::Render(int xlow, int xhigh) {
 			caption + ":" , ":");
   TColor tmp = MenuTextRender.color;
   MenuTextRender.color = options[selected_value].value; 
-  MenuTextRender.Print(buf);
-  MenuTextRender.Print(buf);
-  MenuTextRender.Print(buf);
+  MenuTextRender.PrintLn(buf);
   MenuTextRender.color = tmp;
-  MenuTextRender.PrintLn(" (" + options[selected_value].caption + ")");
-  MenuTextRender.color = tmp;
+  // MenuTextRender.PrintLn(" (" + options[selected_value].caption + ")");
+  // MenuTextRender.color = tmp;
 }

@@ -1,3 +1,25 @@
+20010605
+  - Modified all entities to carry around a reference to the game they
+    belong too.
+
+20010604
+  - Fixed the colormathing, and List matching in general. Please note, 
+    that a default value for any list item should be set now, ie, the list
+    menuitem will not initialize the option, and will only set the value
+    of the option, if the selected item is changed, or "rechoosen".
+  - Moved the TListMenuItem to its own file to reduce dependencies
+  - Made the TListMenuItem toggle values on "select", which makes 
+    mouse changes easier.
+  - Starting to add team support.
+
+20010603
+  - Added a number of default colors for the players, used during init,
+    added possible up to 8 players.
+
+20010602
+  - Added code to make sure that player are initialized when a game starts.
+    Still sucks somewhat, but hey.
+
 20010528
   - Checked in stuff that allows for more dynamic configuration of players.
     Lots of details still missing.

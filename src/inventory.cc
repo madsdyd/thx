@@ -56,28 +56,33 @@ void TInventoryElement::Buy(int * money) {
 
 /* **********************************************************************
    Constructor and destructor */
-TInventory::TInventory(TPlayer * Owner) {
-  owner    = Owner;
+TInventory::TInventory(TGame * Game, TPlayer * Owner) {
   /* This is where the projectile types that are available to the players
      are created. Every inventory gets initialized the same way. */
   data.push_back(new TInventoryElement("Baby Missile", 
-				       new TProjectile(owner, 2.0, 40.0),     
+				       new TProjectile(Game, Owner, 
+						       2.0, 40.0),     
 				       10, 400, 99));
 #define NUM_PROJ_TEST 0
   data.push_back(new TInventoryElement("Missile", 
-				       new TProjectile(owner, 4.0, 45.0),     
+				       new TProjectile(Game, Owner, 
+						       4.0, 45.0),     
 				       5, 1875, NUM_PROJ_TEST));
   data.push_back(new TInventoryElement("Baby Nuke", 
-				       new TProjectile(owner, 6.0, 50.0),     
+				       new TProjectile(Game, Owner, 
+						       6.0, 50.0),     
 				       3, 1000, NUM_PROJ_TEST));
   data.push_back(new TInventoryElement("Nuke", 
-				       new TProjectile(owner, 8.0, 55.0),     
+				       new TProjectile(Game, Owner, 
+						       8.0, 55.0),     
 				       1, 1200, NUM_PROJ_TEST));
   data.push_back(new TInventoryElement("Funky Bomb", 
-				       new TSpawnProjectile(owner, 4.0, 100.0),
+				       new TSpawnProjectile(Game, Owner, 
+							    4.0, 100.0),
 				       2, 700, NUM_PROJ_TEST));
   data.push_back(new TInventoryElement("MIRV",  
-				       new TMirvProjectile(owner, 4.0, 100.0),  
+				       new TMirvProjectile(Game, Owner, 
+							   4.0, 100.0),  
 				       3, 1000, NUM_PROJ_TEST));
   selected = 0; /* Always assume that baby missiles are present */
 }

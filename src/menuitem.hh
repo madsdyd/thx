@@ -205,6 +205,11 @@ public:
 
 class TValueMenuItem : public TMenuItem {
 protected:
+  /* If a callback is needed when the value is commited, then this is
+     the menu that will be notificated. If NULL, nothing happens. */
+  TMenu * NotifyTarget;
+  /* This is used to store an associated action code in. */
+  int code;
   /* Used to store the mode in, when we go into editing. 
      This will probably always be menu, but better safe than sorry */
   gamemode_t StoredMode;
@@ -228,53 +233,18 @@ protected:
   virtual void UnregisterCommands();
 
 public:
-  TValueMenuItem(TMenu * owner, string cap, string desc) 
-    : TMenuItem(owner, cap, desc) {};  
+  TValueMenuItem(TMenu * owner, string cap, string desc, 
+		 TMenu * ntarget = NULL, int ncode = -1) 
+    : TMenuItem(owner, cap, desc) {
+    NotifyTarget = ntarget;
+    code         = ncode;
+  };  
   /* Special cancel for this class */
   virtual void Cancel();
   /* Returns true if the key has been handled, false otherwise */
   virtual bool CommandConsume(TCommand * Command); 
 };
   
-/* **********************************************************************
- * TListMenuItem
- * **********************************************************************
- This menuitem can select a value from a list. */
-template <typename value_t> 
-class TListMenuItem : public TValueMenuItem {
-protected:
-  class storage_t {
-  public:
-    string caption;
-    value_t value;
-    storage_t(string ncap, value_t nval) {
-      caption = ncap;
-      value   = nval;
-    }
-  };
-  std::vector<storage_t> options;
-  int selected_value;
-  value_t * storage; /* the place where the value can be read */
-  virtual void RegisterCommands();
-  virtual void UnregisterCommands();
-public:
-  TListMenuItem(TMenu * owner, string cap, string desc, value_t * store) 
-    : TValueMenuItem(owner, cap, desc) {
-    selected_value = -1;
-    storage = store;
-  };
-  ~TListMenuItem();
-  virtual bool CommandConsume(TCommand * Command);
-  /* Add a value to be shown to the list */
-  void AddOption(string ncaption, value_t nvalue);
-  /* Renders both the menu entry and value */
-  virtual void Render(int xlow, int xhigh);
-};
-
-typedef TListMenuItem<int> TIntListMenuItem;
-typedef TListMenuItem<unsigned int> TUIntListMenuItem;
-typedef TListMenuItem<double> TDoubleListMenuItem;
-
 /* **********************************************************************
  * TStringMenuItem
  * **********************************************************************
@@ -303,95 +273,5 @@ public:
   virtual bool CommandConsume(TCommand * Command);
 };
 
-/* **********************************************************************
- * The TListMenuItem stuff - need to go here, because it uses templates
- * *********************************************************************/
-/* **********************************************************************
- * **********************************************************************
- *  TListMenuItem 
- * **********************************************************************
- * *********************************************************************/
-
-/* **********************************************************************
- * Desctructor
- * *********************************************************************/
-template <typename value_t>
-TListMenuItem <value_t> ::~TListMenuItem() {
-  cout << "~TListMenuItem - Gotta clean up some stuff" << endl;
-}
-
-/* **********************************************************************
- * Add a value
- * **********************************************************************/
-template <typename value_t>
-void TListMenuItem <value_t> ::AddOption(string ncaption, 
-					 value_t nvalue) {
-  /* Defaults to first added value is selected */
-  options.push_back(storage_t(ncaption, nvalue));
-  selected_value = 0;
-  *storage = options[selected_value].value;
-};
-/* **********************************************************************
- * Register and unregister commands.
- * **********************************************************************/
-template <typename value_t>
-void TListMenuItem <value_t>::RegisterCommands() {
-  TValueMenuItem::RegisterCommands();
-
-
-  CommandDispatcher.RegisterConsumer("list", this);
-};
-
-template <typename value_t>
-void TListMenuItem <value_t>::UnregisterCommands() {
-  TValueMenuItem::UnregisterCommands();
-  CommandDispatcher.UnregisterConsumer("list");
-};
-
-/* **********************************************************************
- * TListMenuItem::CommandConsume
- * This handles the list up and down commands, but rely on
- * TValueMenuItem to handle the rest of the commands
- * *********************************************************************/
-template <typename value_t>
-bool TListMenuItem <value_t>::CommandConsume(TCommand * Command) {
-  if (state == menuitem_state_selected) {
-    if ("list" == Command->name) {
-      /* Handle up and down */
-      if ("previous" == Command->args) {
-	selected_value 
-	  = (selected_value - 1 + options.size()) % options.size();
-	*storage = options[selected_value].value;
-#ifdef SOUND_ON
-	sound_play(names_to_nums["data/sounds/menu_move.raw"]);
-#endif    
-	return true;
-      }
-      if ("next" == Command->args) {
-	selected_value = (selected_value + 1) % options.size();
-	*storage = options[selected_value].value;
-#ifdef SOUND_ON
-	sound_play(names_to_nums["data/sounds/menu_move.raw"]);
-#endif    
-	return true;
-      }
-    }
-  }
-  /* Errors and unhandled fall to here */
-  return TValueMenuItem::CommandConsume(Command);
-}
-
-/* **********************************************************************
- * The render for TListMenuItem render both the string and the value
- * *********************************************************************/
-template <typename value_t>
-void TListMenuItem<value_t>::Render(int xlow, int xhigh) {
-  /* Sets the render color */
-  SetRenderColor(); 
-  /* Render everything */
-  MenuTextRender.CenterLn(xlow, xhigh, 
-			  caption + ":" + options[selected_value].caption,
-			  ":");
-}
 
 #endif

@@ -43,7 +43,7 @@
 /* **********************************************************************
  * Initialize a tank
  * *********************************************************************/
-TTank::TTank(TPlayer * owner) : TEntity(owner) {
+TTank::TTank(TGame * game, TPlayer * owner) : TEntity(game, owner) {
   /* Setup the models */
   model  = NULL;
   barrel = NULL;
@@ -66,7 +66,7 @@ TTank::~TTank() {
 /* **********************************************************************
  * Set the location of a tank and prepare it for a new round
  * *********************************************************************/
-void TTank::PrepareRound(TGame * game, TVector * loc) {
+void TTank::PrepareRound(TVector * loc) {
   keep            = true;
   location        = *loc;
   velocity.x      = 0;
@@ -132,7 +132,7 @@ void TTank::AdjustRotation(double adjust) {
 /* **********************************************************************
  * Handle an explosion
  * *********************************************************************/
-void TTank::Explosion(TMap * map, TExplosion * Explosion) {
+void TTank::Explosion(TExplosion * Explosion) {
   /* Only matters if the tank is alive */
   if (tankstate_alive != tankstate) {
     return;
@@ -176,7 +176,7 @@ void TTank::Explosion(TMap * map, TExplosion * Explosion) {
  * If we are alive, we may need to fall down
  * If we are dead, we float for a while, then explode...
  * *********************************************************************/
-void TTank::Update(TGame * game, system_time_t deltatime) {
+void TTank::Update(system_time_t deltatime) {
 
   /* If alive, check if we need to fall down 
      NOTE; This is down _only_ */
@@ -214,7 +214,7 @@ void TTank::Update(TGame * game, system_time_t deltatime) {
       }
       /* Make sure that we are not used for round, but add a sligth delay */
       game->RemoveAffectTurn(this);
-      game->AddEntity(new TDelay(owner, 1)); 
+      game->AddEntity(new TDelay(game, owner, 1)); 
     }
   }
 
@@ -233,7 +233,8 @@ void TTank::Update(TGame * game, system_time_t deltatime) {
       location.z += 2.0*deltatime; /* Lift a little faster */
     } else {
       if (levitation >= 5.0) {
-	game->AddEntity(new TExplosion(owner, location, 3.0, 3.0, 25));
+	game->AddEntity(new TExplosion(game, owner, location, 
+				       3.0, 3.0, 25));
 #ifdef SOUND_ON
 	sound_play(names_to_nums["data/sounds/explosion2.raw"]);
 #endif

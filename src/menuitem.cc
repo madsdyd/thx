@@ -408,11 +408,12 @@ bool TValueMenuItem::LeaveEditState() {
   UnregisterCommands();
   if (!GameMode.SetMode(StoredMode)) {
     RegisterCommands();
-    cerr << "TValueMenuItem::LeaveEditState - unable to change gamemode" << endl;
+    cerr << "TValueMenuItem::LeaveEditState - unable to change gamemode" 
+	 << endl;
     return false;
   }
   state = menuitem_state_focused;
-  return false;
+  return true;
 }
 
 /* **********************************************************************
@@ -430,7 +431,14 @@ bool TValueMenuItem::AcceptNewValue() {
     return false;
   }
   /* In here, validation and copying back should take place */
-  return LeaveEditState();
+  if (LeaveEditState()) {
+    if (NotifyTarget) {
+      NotifyTarget->MenuItemChange(code);
+    }
+    return true;
+  } else {
+    return false;
+  }
 };
 
 void TValueMenuItem::DiscardNewValue() {
@@ -449,8 +457,10 @@ void TValueMenuItem::DiscardNewValue() {
  * *********************************************************************/
 bool TValueMenuItem::CommandConsume(TCommand * Command) {
   /* Only handle Commands if we have the focus */
-  if (!(menuitem_state_focused == state || menuitem_state_selected == state)) {
-    cerr << "TValueMenuItem::CommandConsume not in focus/selected!" << endl;
+  if (!(menuitem_state_focused == state 
+	|| menuitem_state_selected == state)) {
+    cerr << "TValueMenuItem::CommandConsume not in focus/selected!" 
+	 << endl;
     return false;
   };
 

@@ -24,13 +24,14 @@
 
 /* **********************************************************************
    Delay */
-TDelay::TDelay(TPlayer * owner, float ttl) : TEntity(owner) {
+TDelay::TDelay(TGame * game, TPlayer * owner, float ttl) 
+  : TEntity(game, owner) {
   timeleft    = ttl;
   /* We wish for no turn change to happen while we are present */
   affect_turn = true;
 }
 
-void TDelay::Update(TGame * game, system_time_t deltatime) {
+void TDelay::Update(system_time_t deltatime) {
   timeleft -= deltatime;
   if (timeleft <= 0.0) {
     keep = false;
@@ -39,10 +40,10 @@ void TDelay::Update(TGame * game, system_time_t deltatime) {
 
 /* **********************************************************************
    Marker - like delay, but have "presence" */
-TMarker::TMarker(TPlayer * owner, 
+TMarker::TMarker(TGame * game, TPlayer * owner, 
 		 TVector loc, 
 		 float nradius, 
-		 float ttl) : TDelay(owner, ttl) {
+		 float ttl) : TDelay(game, owner, ttl) {
   location = loc;
   radius   = nradius;
 };

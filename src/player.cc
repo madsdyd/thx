@@ -34,11 +34,13 @@
 /* **********************************************************************
  * The constructor 
  * *********************************************************************/
-TPlayer::TPlayer(string nname) { 
-  name  = nname;
-  money = 500;
-  score = 0;
-  inventory = new TInventory(this);
+TPlayer::TPlayer(TGame * ngame, string nname, string nteam) { 
+  name      = nname;
+  team      = nteam;
+  game      = ngame;
+  money     = 500;
+  score     = 0;
+  inventory = new TInventory(game, this);
 }
 
 /* **********************************************************************
@@ -50,11 +52,11 @@ TPlayer::~TPlayer() {
 
 /* **********************************************************************
    PrepareRound sets up the player for another round */
-void TPlayer::PrepareRound(TGame * game, TVector * location) {
+void TPlayer::PrepareRound(TVector * location) {
   /* Reset the inventory */
   inventory->SelectFirst();
   /* Prepare the tank */
-  tank->PrepareRound(game, location);
+  tank->PrepareRound(location);
   /* Reset the viewpoint */
   viewpoint.Reset(location);
   /* Adjust a bit, to better see our tank - this backs up a little, and looks
@@ -62,6 +64,7 @@ void TPlayer::PrepareRound(TGame * game, TVector * location) {
   viewpoint.translation.y--;
   viewpoint.translation.y--;
   viewpoint.rotation.x = 45;
+  viewpoint.translation.z++;
 }
 
 /* **********************************************************************

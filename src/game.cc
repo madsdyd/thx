@@ -74,11 +74,13 @@ float min_deltatime = 1.0/100.0; /* 100 Hz */
 
 /* **********************************************************************
    Constructor. Initializes everything, including roundstate, etc. */
-TGame::TGame(int nwidth, int nlenght, int nnum_rounds, float nmapsteepness) {
+TGame::TGame(int nwidth, int nlenght, int nnum_rounds, 
+	     float nmapsteepness, bool nteammode) {
   /* Setup the game state */
   width               = nwidth;
   lenght              = nlenght;
-  mapsteepness       = nmapsteepness;
+  mapsteepness        = nmapsteepness;
+  teammode            = nteammode;
   gamestate           = gamestate_joining;
   num_players         = 0;
   current_player      = NULL;
@@ -159,7 +161,7 @@ void TGame::DoUpdateRoundRunning(system_time_t deltatime) {
     /* If we keep it, update it, otherwise remove it */
     if ((*i)->keep) {
       // cout << "Calling update on TEntity" << endl;
-      (*i)->Update(this, deltatime);
+      (*i)->Update(deltatime);
       i++;
     } else {
       tmp = i;
@@ -416,7 +418,7 @@ void TGame::Explosion(TExplosion * Explosion) {
   /* Apply effect of explosion to each tank, then lower its position to 
      the landscape */
   for (i = 0; i < num_players; i++) {
-    playerInfos[i]->player->tank->Explosion(map, Explosion);
+    playerInfos[i]->player->tank->Explosion(Explosion);
   }
 }
 
@@ -471,7 +473,7 @@ bool TGame::RoundStart() {
     for(TPlayerInfosIterator i = playerInfos.begin(); i != End; i++) {
       (*i)->active         = true;
       (*i)->num_turn_fired = 0;
-      (*i)->player->PrepareRound(this, &(*spot));
+      (*i)->player->PrepareRound(&(*spot));
       /* (Re)add the tanks to the game */
       AddEntity((*i)->player->tank);
       spot++;

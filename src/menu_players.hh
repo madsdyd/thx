@@ -32,6 +32,7 @@
 class TPlayerSetting {
 public:
   string name;
+  string team;
   TColor color;
 };
 typedef vector<TPlayerSetting> TPlayerSettings;
@@ -41,12 +42,16 @@ typedef TPlayerSettings::iterator TPlayerSettingsIterator;
 class TPlayerMenu : public TMenu {
 private:
   unsigned int * NumPlayers;
+  bool * TeamMode;
   TPlayerSettings * PlayerSettings;
 public:
   /* Override the constructor to take a list of TPlayerSettings */
   TPlayerMenu(string title, unsigned int * num_players, 
+	      bool * teammode,
 	      TPlayerSettings * nplayer_settings);
   /* Override show to make it dynamically insert a number of menuitems */
   virtual void Show();
+  /* Allow to sync the playersettings with the number of players */
+  void SyncPlayerSettings();
 };
 #endif

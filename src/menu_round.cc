@@ -20,6 +20,7 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 #include "menu_round.hh"
+#include "menu_controls.hh"
 
 TContinueMenu * RoundOverMenu;
 TContinueMenu * GameOverMenu;
@@ -43,6 +44,9 @@ TInGameMenu::TInGameMenu(string title,
   AddCancelMenuItem(new TActionMenuItem(this, "Resume game", 
 					"Press return to resume game", 
 					CancelFunc));
+  AddMenuItem(new TSubMenuItem(this, "Controls", 
+			       "Setup the controls", 
+			       ControlsMenu));
   AddMenuItem(new TActionMenuItem(this, "Abort round", 
 				  "Press return to abort current round", 
 				  AbortRoundFunc));

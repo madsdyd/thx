@@ -87,4 +87,7 @@ TControlsMenu::TControlsMenu(string title) : TMenu(title) {
 				    "Change what key fires the cannon",
 				    "fire", ""));
   /* TODO: Need a dynamic way to return to the correct menu */
+  AddCancelMenuItem(new TReturnMenuItem(this, "Return", 
+					"Return to previous "
+					"menu"));
 }

@@ -32,6 +32,7 @@
 #include "textures.hh"
 
 #include "types.hh"
+#include "debug.hh"
 #include "color.hh"
 
 #include "collision.hh"
@@ -524,31 +525,77 @@ void TMap::Slide(int x, int y) {
  * *********************************************************************/
 void TMap::LowerPoint(int x, int y, TVector * location, float radius) {
   /* First, figure out if x,y is to far away from the location to be 
-     touched */
+     touched. This takes place in the xy plane, since we lower stuff 
+     that is way above us. */
+  /* cout << "-----------------" << endl;
+     cout << "TMap::LowerPoint (" << x << ", " << y << ", " 
+     << PointAt(x, y)->z << ")" << endl;
+  */
   float dx2 = (x - location->x) * (x - location->x); 
   float dy2 = (y - location->y) * (y - location->y); 
   /* Use <= since that will give 2 z values always */
-  if (sqrt(dx2 + dy2) >= radius) { 
+  if (sqrt(dx2 + dy2) > radius) { 
     // cout << "ignoring " << x << ", " << y << endl;
     return; 
   };
   // cout << "lowering " << x << ", " << y << endl;
-  /* We now must find 2 z values where the radius matches */
-  float zm = sqrt(radius*radius - dx2 - dy2);
-  // cout << "sqrt(" << radius*radius - dx2 - dy2 << ")" << endl;
-  float z1 = location->z + zm;
-  float z2 = location->z - zm;
-  // cout << "Found " << zm << ", " << z1 << ", " << z2 << endl;
+  /* We now must find 2 z values where the radius matches 
+     This needs to be done in 3D. 
+     It is written completly out in the following, since I have a bug
+     somewhere, and I want to make completly sure it is not in here.
+     We need to find 2 z values, where 
+     (z-location.z)² + dx2 + dy2 = radius² 
+     => 
+     z²-2*location.z*z+location.z²+dx2+dy2-radius²=0
+     so, in ax²+bx+c=0, 
+     a = 1
+     b = -2*location.z
+     c = location.z²+dx2+dy2-radius²
+     D = b²-(4*a*c) 
+       = 4*location.z²-4*1*(location.z²+dx2+dy2-radius²)
+       = 4*location.z²-4*(location.z²+dx2+dy2-radius²)
+       = 4*(location.z²-(location.z²+dx2+dy2-radius²))
+       = 4*(location.z²-location.z²-dx2-dy2+radius²)
+       = 4*(radius²-dx2-dy2)
+     and, solutions are 
+     z = (-b +/- sqrt(d))/2*a */
+  double mb = 2*location->z;
+  double D = 4*(radius*radius-dx2-dy2);
+  /*cout << "TMap::LowerPoint, loc: ";
+  location->display();
+  cout << ", radius: " << radius 
+  << ", D: " << D << endl; */
+  if (D < 0.0) {
+    /* No solutions, probably explosion way above map */
+    //cout << "TMap::LowerPoint - no solutions, above map?" << endl;
+    return;
+  }
+  /* These may be equal, but that wont matter 
+     They are now the interception points. 
+     (Actually, if they are equal, it means the explosion 
+     touches the map at this point, and should not be used. */
+  double zm1 = (mb - sqrt(D))/2.0;
+  double zm2 = (mb + sqrt(D))/2.0;
+  // cout << "zm1: " << zm1 << ", zm2: " << zm2 << endl;
+  Assert(zm1 <= zm2, "TMap::LowerPoint - zm1 > zm2");
   float zo = PointAt(x, y)->z;
-  // cout << "Lowering first max " << mymax(0, zo-z2) << " second "
-  // << mymax(0, zo-z1) << endl;
-  // cout << "Lowering " << zo << " to " << zo -  mymax(0, zo-z2) + mymax(0, zo-z1) << endl;
-  PointAt(x, y)->z = zo -  mymax(0, zo-z2) + mymax(0, zo-z1);
+  /* Lower apropiate 
+     Use the original locations z value (zo), and remove the 
+     area touched by the explosions. If one or both is above the 
+     original, dont use it (actually, if both is above, we should have 
+     returned). */
+  /*
+  cout << "TMap::LowerPoint (" << x << ", " << y << ", " << zo << ") -> ("
+       << x << ", " << y << ", " 
+       << zo +  mymax(0, zo-zm2) - mymax(0, zo-zm1)
+       << ")" << endl; */
+  PointAt(x, y)->z = zo +  mymax(0, zo-zm2) - mymax(0, zo-zm1);
 }
 
 /* **********************************************************************
-   Calls lower for each point with in the radius.
-   Actually it is called in a square, but it just wont matter. */
+ * Calls lower for each point with in the radius.   
+ * Actually it is called in a square, but it just wont matter.
+ * *********************************************************************/
   /* Lowers a lot of map points */
 void TMap::LowerAll(TVector * location, float radius) {
   // cout << "Lowering all" << endl;
@@ -622,9 +669,11 @@ void TMap::LevelArea(TVector * location) {
  * *********************************************************************/
 
 /* **********************************************************************
-   Check for a collision with the map. 
-   TODO: I think there are problems with the solution below, since sorting
-   by "triangletime" is not the same as sorting by absolute time. */
+ * Check for a collision with the map.  
+ * TODO: I think there are problems with the solution below, since
+ * sorting by "triangletime" is not the same as sorting by absolute
+ * time.
+ * *********************************************************************/
 bool TMap::CollisionDetect(TVector * old_location, TVector * new_location) {
 
   int xmin, xmax, ymin, ymax;
@@ -713,7 +762,8 @@ bool TMap::CollisionDetect(TVector * old_location, TVector * new_location) {
 }
 
 /* **********************************************************************
-   Check if an location is within the map */
+ * Check if an location is within the map
+ * *********************************************************************/
 bool TMap::Within(TVector * location) {
   /* Offsets are due to the "sloppy" way we render the map */
   if (location->x >= 1 && location->x < width-3 
@@ -732,8 +782,8 @@ bool TMap::Within(TVector * location) {
  * *********************************************************************/
 
 /* **********************************************************************
-   InitRender - set up some variables, load some texture */
-
+ * InitRender - set up some variables, load some texture
+ * *********************************************************************/
 static bool textures_loaded = false;
 
 void TMap::InitRender() {
@@ -763,7 +813,8 @@ void TMap::InitRender() {
 }
 
 /* **********************************************************************
-   Set the texture */
+ * Set the texture
+ * *********************************************************************/
 void TMap::SetTexture(float h) {
   if (h < -4.0) { 
     texture_set(2);
@@ -776,9 +827,10 @@ void TMap::SetTexture(float h) {
   }
 }
 
-/* ************************************************************
-   This function renders the map. I am not sure this is the
-   way to do it, but... */
+/* **********************************************************************
+ * This function renders the map. 
+ * I am not sure this is the way to do it, but...
+ * *********************************************************************/
 void TMap::Render(TViewpoint * viewpoint) {
   int x, y;
   GLfloat mat_specular[] = { 0.0, 0.0, 0.0, 1.0 };

@@ -27,7 +27,7 @@
  * The TKeyboardInputEvent class (constructor) 
  * Creates an instance, sets attributes
  * *********************************************************************/
-TKeyboardInputEvent::TKeyboardInputEvent(keyboard_inputevent_type_t nkeyboard_inputevent,
+TKeyboardInputEvent::TKeyboardInputEvent(keypress_t nkeyboard_inputevent,
 					 unsigned int nkey) 
   : TInputEvent(inputevent_type_keyboard) {
   keyboard_inputevent_event.key = nkey;
@@ -42,12 +42,12 @@ TKeyboardInputEvent::TKeyboardInputEvent(keyboard_inputevent_type_t nkeyboard_in
  * Note that x,y is thrown away here. This may be stupid
  * *********************************************************************/
 void KeyboardFunc(unsigned char key, int x, int y) {
-  Inputs.Events.push(new TKeyboardInputEvent(keyboard_inputevent_type_down,
+  Inputs.Events.push(new TKeyboardInputEvent(keydown,
 					     key));
 }
 
 void KeyboardUpFunc(unsigned char key, int x, int y) {
-  Inputs.Events.push(new TKeyboardInputEvent(keyboard_inputevent_type_up,
+  Inputs.Events.push(new TKeyboardInputEvent(keyup,
 					     key));
 }
 
@@ -98,7 +98,7 @@ void SpecialFunc(int key, int x, int y) {
   TIntIntMapIterator loc = glutkey_to_thxkeys.find(key);
   if (loc != glutkey_to_thxkeys.end()) {
     //    cout << "Sending " << (*loc).second << " down" << endl;
-    Inputs.Events.push(new TKeyboardInputEvent(keyboard_inputevent_type_down,
+    Inputs.Events.push(new TKeyboardInputEvent(keydown,
 					       (*loc).second));
   } else {
     cerr << "SpecialFunc - key " << key << " can not be mapped!" << endl;
@@ -110,7 +110,7 @@ void SpecialUpFunc(int key, int x, int y) {
   TIntIntMapIterator loc = glutkey_to_thxkeys.find(key);
   if (loc != glutkey_to_thxkeys.end()) {
     // cout << "Sending " << (*loc).second << " up" << endl;
-    Inputs.Events.push(new TKeyboardInputEvent(keyboard_inputevent_type_up,
+    Inputs.Events.push(new TKeyboardInputEvent(keyup,
 					       (*loc).second));
   } else {
     cerr << "SpecialFunc - key " << key << " can not be mapped!" << endl;

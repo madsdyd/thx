@@ -24,9 +24,9 @@
 /* This is for input events generated from the keyboard */
 #include "inputevent.hh"
 /* Subtype of event */
-typedef enum {keyboard_inputevent_type_down, /* Key pressed */
-	      keyboard_inputevent_type_up    /* Key released */
-} keyboard_inputevent_type_t;
+typedef enum {keydown, /* Key pressed */
+	      keyup    /* Key released */
+} keypress_t;
 
 /* A list of "normal" keys, that are hard to type */
 #define KEY_CTRLA 1
@@ -69,7 +69,7 @@ typedef enum {keyboard_inputevent_type_down, /* Key pressed */
 /* Uniqly define a keyboard event */
 typedef struct {
   unsigned int key;
-  keyboard_inputevent_type_t type;
+  keypress_t type;
 } keyboard_inputevent_event_t;
 
 struct lt_kiet
@@ -79,8 +79,8 @@ struct lt_kiet
   {
     return ((k1.key < k2.key) 
       || (k1.key == k2.key 
-	  && (k1.type == keyboard_inputevent_type_down 
-	      &&  k2.type == keyboard_inputevent_type_up)));
+	  && (k1.type == keydown 
+	      &&  k2.type == keyup)));
   }
 };
 
@@ -89,7 +89,7 @@ class TKeyboardInputEvent : public TInputEvent {
 public:
   keyboard_inputevent_event_t keyboard_inputevent_event;
   /* Constructor takes keyboard event type and key that it relates to */
-  TKeyboardInputEvent(keyboard_inputevent_type_t nkeyboard_inputevent,
+  TKeyboardInputEvent(keypress_t nkeyboard_inputevent,
 		      unsigned int nkey);
 };
 /* Declare a global keyboardxo handling setup function

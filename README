@@ -61,36 +61,33 @@ loose control.
 ----------------------------------------------------------------------
 * CONTROLS DURING GAME
 
-Controls for controlling the menu: The arrow keys and enter should
-work. Please use the help option in the menu for additional key
-support.
+(Subject to change, please check inputconsumer.cc)
 
-Controls during the game (subject to change, check src/keyboard.cc):
-
+* General
 quit the game     : q
 in game menu      : esc
 
+* Controlling your viewpoint
 move view         : d,g,r,f,t,b
 rotate view       : h,k
 tilt view         : u,j
-reset view        : e
 
-flymode           : y
-clipmode          : i
-test refreshrate  : c 
-
-tilt kanon        : a,z
-adjust force      : o,p
-rotate kanon      : n,m
-(combine with shift for faster changing)
+* Controlling your canon
+tilt kanon        : up,down
+rotate kanon      : left,right
+adjust force      : +,-
 change projectile : tab
-fire              : space
+fire              : space or enter
 
-rendermodes:
-lines             : 1
-polys             : 2
-texture           : 3
+* Controlling various options
+render lines      : 1
+render polys      : 2
+render textures   : 3
 toogle lights     : 4
 toogle shademode  : 5
 toogle normals    : 6
 toogle markers    : 7
+flymode           : 8
+clipmode          : 9
+test refreshrate  : 0 
+

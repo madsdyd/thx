@@ -2,14 +2,12 @@ Version schedule.
 
 This is an overview of what features go where. This is subject to change.
 
-- Make tab work
-- Make the render selection, etc. work
 - Probably convert all angle, force, etc. stuff to doubles.
 - The keyrepeat is not enabled, when quitting.
 - Make the map fall down be more smooth
-- Fix the rest of the commands.
-- Finish command structure.
+- Do some mouse stuff?
 - The inputmappings need to be aware of the mode (not?)
+- Clean away old keyboard handling code.
 
 ** 0.3.1 (Input control)
   - Define input pipeline
@@ -26,6 +24,9 @@ This is an overview of what features go where. This is subject to change.
   - Make command structure
   - Make TGame aware of command structure
   - Forward events from pipeline to command structure
+  - Clean up dependencies between the different state variables
+    especially the menu stuff and TGame stuff.
+  - Remove dead code.
 
 ** 0.4.0 (AI)
   - Implement AI entities

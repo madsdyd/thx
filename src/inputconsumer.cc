@@ -48,99 +48,112 @@ struct keymap_t {
 keymap_t key_map_std_keys_down[] =
 {
   /* GENERAL */
-  {gamemode_any,  {KEY_CTRLC,     keyboard_inputevent_type_down}, "quit", ""},
+  {gamemode_any,  {KEY_CTRLC,     keydown}, "quit", ""},
   // TODO: Remove q?
-  {gamemode_any,  {'q',           keyboard_inputevent_type_down}, "quit", ""},
+  {gamemode_any,  {'q',           keydown}, "quit", ""},
   
   /* MENU */
-  {gamemode_menu, {KEY_UP,        keyboard_inputevent_type_down}, "focus-change", "up"},
-  {gamemode_menu, {KEY_DOWN,      keyboard_inputevent_type_down}, "focus-change", "down"},
-  {gamemode_menu, {KEY_ESCAPE,    keyboard_inputevent_type_down}, "focus-change", "escape"},
-  {gamemode_menu, {KEY_ENTER,     keyboard_inputevent_type_down}, "menuitem", "select"},
-  {gamemode_menu, {' ',           keyboard_inputevent_type_down}, "menuitem", "select"},
+  {gamemode_menu, {KEY_UP,        keydown}, "focus-change", "up"},
+  {gamemode_menu, {KEY_DOWN,      keydown}, "focus-change", "down"},
+  {gamemode_menu, {KEY_ESCAPE,    keydown}, "focus-change", "escape"},
+  {gamemode_menu, {KEY_ENTER,     keydown}, "menuitem", "select"},
+  {gamemode_menu, {' ',           keydown}, "menuitem", "select"},
 
   /* EDIT */
   /* itemedit - used to accept/cancel an editing operation */
-  {gamemode_edit, {KEY_ENTER,     keyboard_inputevent_type_down}, "itemedit", "accept"},
-  {gamemode_edit, {KEY_ESCAPE,    keyboard_inputevent_type_down}, "itemedit", "cancel"},
+  {gamemode_edit, {KEY_ENTER,     keydown}, "itemedit", "accept"},
+  {gamemode_edit, {KEY_ESCAPE,    keydown}, "itemedit", "cancel"},
   /* list is used to control a TListMenuItem */
-  {gamemode_edit, {KEY_UP,        keyboard_inputevent_type_down}, "list", "previous"},
-  {gamemode_edit, {KEY_DOWN,      keyboard_inputevent_type_down}, "list", "next"},
+  {gamemode_edit, {KEY_UP,        keydown}, "list", "previous"},
+  {gamemode_edit, {KEY_DOWN,      keydown}, "list", "next"},
   /* These are for TStringMenuItem */
   /* 1=Ctrl+A, 2=Ctrl+B, 5=Ctrl+E, 6=Ctrl+F */
-  {gamemode_edit, {KEY_CTRLB,     keyboard_inputevent_type_down}, "point-move", "backward-char"},
-  {gamemode_edit, {KEY_LEFT,      keyboard_inputevent_type_down}, "point-move", "backward-char"},
-  {gamemode_edit, {KEY_CTRLF,     keyboard_inputevent_type_down}, "point-move", "forward-char"},
-  {gamemode_edit, {KEY_RIGHT,     keyboard_inputevent_type_down}, "point-move", "forward-char"},
-  {gamemode_edit, {KEY_CTRLA,     keyboard_inputevent_type_down}, "point-move", "beginning-of-line"},
-  {gamemode_edit, {KEY_HOME,      keyboard_inputevent_type_down}, "point-move", "beginning-of-line"},
-  {gamemode_edit, {KEY_CTRLE,     keyboard_inputevent_type_down}, "point-move", "end-of-line"},
-  {gamemode_edit, {KEY_END,       keyboard_inputevent_type_down}, "point-move", "end-of-line"},
+  {gamemode_edit, {KEY_CTRLB,     keydown}, "point-move", "backward-char"},
+  {gamemode_edit, {KEY_LEFT,      keydown}, "point-move", "backward-char"},
+  {gamemode_edit, {KEY_CTRLF,     keydown}, "point-move", "forward-char"},
+  {gamemode_edit, {KEY_RIGHT,     keydown}, "point-move", "forward-char"},
+  {gamemode_edit, {KEY_CTRLA,     keydown}, "point-move", "beginning-of-line"},
+  {gamemode_edit, {KEY_HOME,      keydown}, "point-move", "beginning-of-line"},
+  {gamemode_edit, {KEY_CTRLE,     keydown}, "point-move", "end-of-line"},
+  {gamemode_edit, {KEY_END,       keydown}, "point-move", "end-of-line"},
 
-  {gamemode_edit, {KEY_BACKSPACE, keyboard_inputevent_type_down}, "edit", "delete-backward-char"},
-  {gamemode_edit, {KEY_CTRLD,     keyboard_inputevent_type_down}, "edit", "delete-char"},
-  {gamemode_edit, {KEY_DELETE,    keyboard_inputevent_type_down}, "edit", "delete-char"},
-  {gamemode_edit, {KEY_CTRLK,     keyboard_inputevent_type_down}, "edit", "kill-line"},
-  {gamemode_edit, {KEY_CTRLY,     keyboard_inputevent_type_down}, "edit", "yank"},
-  {gamemode_edit, {KEY_CTRLT,     keyboard_inputevent_type_down}, "edit", "transpose-chars"},
+  {gamemode_edit, {KEY_BACKSPACE, keydown}, "edit", "delete-backward-char"},
+  {gamemode_edit, {KEY_CTRLD,     keydown}, "edit", "delete-char"},
+  {gamemode_edit, {KEY_DELETE,    keydown}, "edit", "delete-char"},
+  {gamemode_edit, {KEY_CTRLK,     keydown}, "edit", "kill-line"},
+  {gamemode_edit, {KEY_CTRLY,     keydown}, "edit", "yank"},
+  {gamemode_edit, {KEY_CTRLT,     keydown}, "edit", "transpose-chars"},
 
   /* GAME */
-  {gamemode_game, {' ',           keyboard_inputevent_type_down}, "fire", ""},
-  {gamemode_game, {KEY_ESCAPE,    keyboard_inputevent_type_down}, "in-game-menu-show", ""},
+  {gamemode_game, {' ',           keydown}, "fire", ""},
+  {gamemode_game, {'\r',          keydown}, "fire", ""},
+  {gamemode_game, {KEY_ESCAPE,    keydown}, "in-game-menu-show", ""},
   /* Viewpoint-move manipulation commands */
-  {gamemode_game, {'r',           keyboard_inputevent_type_down}, "viewpoint-move", "+forward"},
-  {gamemode_game, {'r',           keyboard_inputevent_type_up},   "viewpoint-move", "-forward"},
-  {gamemode_game, {'f',           keyboard_inputevent_type_down}, "viewpoint-move", "+backward"},
-  {gamemode_game, {'f',           keyboard_inputevent_type_up},   "viewpoint-move", "-backward"},
-  {gamemode_game, {'d',           keyboard_inputevent_type_down}, "viewpoint-move", "+left"},
-  {gamemode_game, {'d',           keyboard_inputevent_type_up},   "viewpoint-move", "-left"},
-  {gamemode_game, {'g',           keyboard_inputevent_type_down}, "viewpoint-move", "+right"},
-  {gamemode_game, {'g',           keyboard_inputevent_type_up},   "viewpoint-move", "-right"},
-  {gamemode_game, {'t',           keyboard_inputevent_type_down}, "viewpoint-move", "+up"},
-  {gamemode_game, {'t',           keyboard_inputevent_type_up},   "viewpoint-move", "-up"},
-  {gamemode_game, {'b',           keyboard_inputevent_type_down}, "viewpoint-move", "+down"},
-  {gamemode_game, {'b',           keyboard_inputevent_type_up},   "viewpoint-move", "-down"},
+  {gamemode_game, {'r',           keydown}, "viewpoint-move", "+forward"},
+  {gamemode_game, {'r',           keyup},   "viewpoint-move", "-forward"},
+  {gamemode_game, {'f',           keydown}, "viewpoint-move", "+backward"},
+  {gamemode_game, {'f',           keyup},   "viewpoint-move", "-backward"},
+  {gamemode_game, {'d',           keydown}, "viewpoint-move", "+left"},
+  {gamemode_game, {'d',           keyup},   "viewpoint-move", "-left"},
+  {gamemode_game, {'g',           keydown}, "viewpoint-move", "+right"},
+  {gamemode_game, {'g',           keyup},   "viewpoint-move", "-right"},
+  {gamemode_game, {'t',           keydown}, "viewpoint-move", "+up"},
+  {gamemode_game, {'t',           keyup},   "viewpoint-move", "-up"},
+  {gamemode_game, {'b',           keydown}, "viewpoint-move", "+down"},
+  {gamemode_game, {'b',           keyup},   "viewpoint-move", "-down"},
   /* Viewpoint-rotate manipulation commands */
-  {gamemode_game, {'u',           keyboard_inputevent_type_down}, "viewpoint-rotate", "+forward"},
-  {gamemode_game, {'u',           keyboard_inputevent_type_up},   "viewpoint-rotate", "-forward"},
-  {gamemode_game, {'j',           keyboard_inputevent_type_down}, "viewpoint-rotate", "+backward"},
-  {gamemode_game, {'j',           keyboard_inputevent_type_up},   "viewpoint-rotate", "-backward"},
-  {gamemode_game, {'h',           keyboard_inputevent_type_down}, "viewpoint-rotate", "+left"},
-  {gamemode_game, {'h',           keyboard_inputevent_type_up},   "viewpoint-rotate", "-left"},
-  {gamemode_game, {'k',           keyboard_inputevent_type_down}, "viewpoint-rotate", "+right"},
-  {gamemode_game, {'k',           keyboard_inputevent_type_up},   "viewpoint-rotate", "-right"},
+  {gamemode_game, {'u',           keydown}, "viewpoint-rotate", "+forward"},
+  {gamemode_game, {'u',           keyup},   "viewpoint-rotate", "-forward"},
+  {gamemode_game, {'j',           keydown}, "viewpoint-rotate", "+backward"},
+  {gamemode_game, {'j',           keyup},   "viewpoint-rotate", "-backward"},
+  {gamemode_game, {'h',           keydown}, "viewpoint-rotate", "+left"},
+  {gamemode_game, {'h',           keyup},   "viewpoint-rotate", "-left"},
+  {gamemode_game, {'k',           keydown}, "viewpoint-rotate", "+right"},
+  {gamemode_game, {'k',           keyup},   "viewpoint-rotate", "-right"},
   // keyboard.cc : e == viewpoint->Reset(..);
   /* Tank manipulation stuff */
-  {gamemode_game, {'n',           keyboard_inputevent_type_down}, "canon", "+rotate-left"},
-  {gamemode_game, {'n',           keyboard_inputevent_type_up},   "canon", "-rotate-left"},
-  {gamemode_game, {'m',           keyboard_inputevent_type_down}, "canon", "+rotate-right"},
-  {gamemode_game, {'m',           keyboard_inputevent_type_up},   "canon", "-rotate-right"},
-  {gamemode_game, {'a',           keyboard_inputevent_type_down}, "canon", "+raise"},
-  {gamemode_game, {'a',           keyboard_inputevent_type_up},   "canon", "-raise"},
-  {gamemode_game, {'z',           keyboard_inputevent_type_down}, "canon", "+lower"},
-  {gamemode_game, {'z',           keyboard_inputevent_type_up},   "canon", "-lower"},
-  {gamemode_game, {KEY_LEFT,      keyboard_inputevent_type_down}, "canon", "+rotate-left"},
-  {gamemode_game, {KEY_LEFT,      keyboard_inputevent_type_up},   "canon", "-rotate-left"},
-  {gamemode_game, {KEY_RIGHT,     keyboard_inputevent_type_down}, "canon", "+rotate-right"},
-  {gamemode_game, {KEY_RIGHT,     keyboard_inputevent_type_up},   "canon", "-rotate-right"},
-  {gamemode_game, {KEY_UP,        keyboard_inputevent_type_down}, "canon", "+raise"},
-  {gamemode_game, {KEY_UP,        keyboard_inputevent_type_up},   "canon", "-raise"},
-  {gamemode_game, {KEY_DOWN,      keyboard_inputevent_type_down}, "canon", "+lower"},
-  {gamemode_game, {KEY_DOWN,      keyboard_inputevent_type_up},   "canon", "-lower"},
+  {gamemode_game, {'n',           keydown}, "canon", "+rotate-left"},
+  {gamemode_game, {'n',           keyup},   "canon", "-rotate-left"},
+  {gamemode_game, {'m',           keydown}, "canon", "+rotate-right"},
+  {gamemode_game, {'m',           keyup},   "canon", "-rotate-right"},
+  {gamemode_game, {'a',           keydown}, "canon", "+raise"},
+  {gamemode_game, {'a',           keyup},   "canon", "-raise"},
+  {gamemode_game, {'z',           keydown}, "canon", "+lower"},
+  {gamemode_game, {'z',           keyup},   "canon", "-lower"},
+  {gamemode_game, {KEY_LEFT,      keydown}, "canon", "+rotate-left"},
+  {gamemode_game, {KEY_LEFT,      keyup},   "canon", "-rotate-left"},
+  {gamemode_game, {KEY_RIGHT,     keydown}, "canon", "+rotate-right"},
+  {gamemode_game, {KEY_RIGHT,     keyup},   "canon", "-rotate-right"},
+  {gamemode_game, {KEY_UP,        keydown}, "canon", "+raise"},
+  {gamemode_game, {KEY_UP,        keyup},   "canon", "-raise"},
+  {gamemode_game, {KEY_DOWN,      keydown}, "canon", "+lower"},
+  {gamemode_game, {KEY_DOWN,      keyup},   "canon", "-lower"},
   /* Force */
-  {gamemode_game, {'p',           keyboard_inputevent_type_down}, "canon", "+force-increase"},
-  {gamemode_game, {'p',           keyboard_inputevent_type_up},   "canon", "-force-increase"},
-  {gamemode_game, {'o',           keyboard_inputevent_type_down}, "canon", "+force-decrease"},
-  {gamemode_game, {'o',           keyboard_inputevent_type_up},   "canon", "-force-decrease"},
-  {gamemode_game, {'+',           keyboard_inputevent_type_down}, "canon", "+force-increase"},
-  {gamemode_game, {'+',           keyboard_inputevent_type_up},   "canon", "-force-increase"},
-  {gamemode_game, {'-',           keyboard_inputevent_type_down}, "canon", "+force-decrease"},
-  {gamemode_game, {'-',           keyboard_inputevent_type_up},   "canon", "-force-decrease"},
-  // Selection of projectile.
-
+  {gamemode_game, {'p',           keydown}, "canon", "+force-increase"},
+  {gamemode_game, {'p',           keyup},   "canon", "-force-increase"},
+  {gamemode_game, {'o',           keydown}, "canon", "+force-decrease"},
+  {gamemode_game, {'o',           keyup},   "canon", "-force-decrease"},
+  {gamemode_game, {'+',           keydown}, "canon", "+force-increase"},
+  {gamemode_game, {'+',           keyup},   "canon", "-force-increase"},
+  {gamemode_game, {'-',           keydown}, "canon", "+force-decrease"},
+  {gamemode_game, {'-',           keyup},   "canon", "-force-decrease"},
+  /* Selection of projectile */
+  {gamemode_game, {'\t',          keydown},   "inventory", "next-weapon"},
+  /* Render and display stuff - misplaced? */
+  {gamemode_game, {'1',           keydown},   "render", "lines"},
+  {gamemode_game, {'2',           keydown},   "render", "polygons"},
+  {gamemode_game, {'3',           keydown},   "render", "textures"},
+  {gamemode_game, {'4',           keydown},   "render", "toggle-lights"},
+  {gamemode_game, {'5',           keydown},   "render", "toggle-shademode"},
+  {gamemode_game, {'6',           keydown},   "render", "toggle-normals"},
+  {gamemode_game, {'7',           keydown},   "render", "toggle-markers"},
+  {gamemode_game, {'8',           keydown},   "display", "toggle-flymode"},
+  {gamemode_game, {'9',           keydown},   "display", "toggle-clipmode"},
+  {gamemode_game, {'0',           keydown},   "display", "refreshrate"},
+  
 
   /* FINAL */
-  {gamemode_any, {0, keyboard_inputevent_type_down}, "", ""}
+  {gamemode_any, {0, keydown}, "", ""}
 };
 
 TInputToCommand::TInputToCommand() {
@@ -209,7 +222,7 @@ int TInputToCommand::Consume() {
 	     with key < 256 
 	     generate a command that has the name of the key 
 	     if the key is within a certain range. */
-	  if (keyboard_inputevent_type_down 
+	  if (keydown 
 	      == KeyEvent->keyboard_inputevent_event.type 
 	      && KeyEvent->keyboard_inputevent_event.key < 256) {
 #if(INPUT_DEBUG)
@@ -231,7 +244,7 @@ int TInputToCommand::Consume() {
 		 << ((TKeyboardInputEvent *) 
 		     InputEvent)->keyboard_inputevent_event.key;
 	    if (KeyEvent->keyboard_inputevent_event.type == 
-		keyboard_inputevent_type_down) {
+		keydown) {
 	      cout << " down";
 	    } else {
 	      cout << " up";

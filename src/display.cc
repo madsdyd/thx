@@ -38,6 +38,11 @@
 #include "framerate.hh"
 #include "server.hh"
 
+#include "command.hh"
+#include "commandconsumer.hh"
+#include "render.hh"
+#include "projectile.hh"
+
 TDisplay * Display;
 
 #define BITMAP_FONT GLUT_BITMAP_9_BY_15
@@ -68,12 +73,11 @@ TDisplay::TDisplay(int argc, char** argv) {
 #ifdef INPUTCMD
   width  = 800;
   height = 600;
-  flymode    = true; 
 #else  
   width  = 640;
   height = 480;
-  flymode    = false; 
 #endif
+  flymode    = true; 
   clipmode   = false;
   num_frames = 0;
   viewpoint  = NULL;
@@ -158,6 +162,14 @@ TDisplay::TDisplay(int argc, char** argv) {
   if (GL_NO_ERROR != glGetError()) {
     cerr << "TDisplay::TDisplay: GL was in error condition on exit" << endl;
   } 
+
+  /* Register our commands */
+  if (!CommandDispatcher.RegisterConsumer("display", this)) {
+    cerr << "TDisplay::TDisplay - could not register (display) command" << endl;
+  }
+  if (!CommandDispatcher.RegisterConsumer("render", this)) {
+    cerr << "TDisplay::TDisplay - could not register (render) command" << endl;
+  }
 }
 
 
@@ -165,6 +177,12 @@ TDisplay::TDisplay(int argc, char** argv) {
 /* **********************************************************************
    Clean up */
 TDisplay::~TDisplay() {
+  if (!CommandDispatcher.UnregisterConsumer("display")) {
+    cerr << "TDisplay::~TDisplay - could not unregister (display) commands" << endl;
+  }
+  if (!CommandDispatcher.UnregisterConsumer("render")) {
+    cerr << "TDisplay::~TDisplay - could not unregister (display) commands" << endl;
+  }
   delete textrender;
 }
 
@@ -464,4 +482,94 @@ void TDisplay::RefreshRate() {
   otmp << ends;
   console->AddLine(otmp.str(), total);
   // cout << otmp.str() << endl;
+}
+/* **********************************************************************
+ * Handling our commands
+ * *********************************************************************/
+bool TDisplay::CommandConsume(TCommand * Command) {
+  if ("display" == Command->name) {
+    if ("toggle-flymode" == Command->args) {
+      if(flymode) {
+	console->AddLine("Flymode off");
+      } else {
+	console->AddLine("Flymode on");
+      }
+      flymode = !flymode;
+      return true;
+    } 
+    else if ("toggle-clipmode" == Command->args) {
+      if(clipmode) {
+	console->AddLine("Clipmode off");
+      } else {
+	console->AddLine("Clipmode on");
+      }
+      clipmode = !clipmode;
+      return true;
+    } 
+    else if ("refreshrate" == Command->args) {
+      RefreshRate();
+      return true;
+    } 
+  } /* (display) */
+  else if ("render" == Command->name) {
+    if ("lines" == Command->args) {
+      render_type = render_type_lines;
+      Game->GetMap()->has_changed = true;
+      return true;
+    }
+    else if ("polygons" == Command->args) {
+      render_type = render_type_triangles;
+      Game->GetMap()->has_changed = true;
+      return true;
+    }
+    else if ("textures" == Command->args) {
+      render_type = render_type_textures;
+      Game->GetMap()->has_changed = true;
+      return true;
+    }
+    else if ("toggle-lights" == Command->args) {
+      render_light = !render_light;
+      if (render_light) {
+	console->AddLine("Lights ON");
+      } else {
+	console->AddLine("Lights OFF");
+      }
+      Game->GetMap()->has_changed = true;
+      return true;
+    }
+    else if ("toggle-shademode" == Command->args) {
+      render_shade_smooth = !render_shade_smooth;
+      if (render_shade_smooth) {
+	console->AddLine("Shademode : smooth");
+      } else {
+	console->AddLine("Shademode : flat");
+      }
+      Game->GetMap()->has_changed = true;
+      return true;
+    }
+    else if ("toggle-normals" == Command->args) {
+      render_normals = !render_normals;
+      if (render_normals) {
+	console->AddLine("Normals ON");
+      } else {
+	console->AddLine("Normals OFF");
+      }
+      Game->GetMap()->has_changed = true;
+      return true;
+    }
+    else if ("toggle-markers" == Command->args) {
+      spawn_markers = !spawn_markers;
+      if (spawn_markers) {
+	console->AddLine("Markers ON");
+      } else {
+	console->AddLine("Markers OFF");
+      }
+      return true;
+    // Game->GetMap()->has_changed = true;
+    }
+  } /* (render) */
+
+  cerr << "TDisplay::CommandConsumer, not handling ("
+       << Command->name << "," << Command->args << ")" << endl;
+  return false;
 }

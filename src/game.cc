@@ -437,9 +437,9 @@ bool TGame::RoundStart() {
     /* Increase the round number */
     num_this_round++;
     
-    /* Register the commands the game wants to consume */
+    /* Register the commands the game wants to consume 
+       These are unregistered in the ~TGame function */
     CommandDispatcher.RegisterConsumer("fire", this);
-    // TODO: unregister this, when relevant! (Argh, where is that)
     return true;
   } else {
     cerr << "TGame::RoundStart() : Wrong state for starting" << endl;

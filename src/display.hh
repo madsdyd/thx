@@ -25,13 +25,14 @@
 #include <math.h>
 #include <GL/glut.h>
 #include "types.hh"
+#include "commandconsumer.hh"
 /* The display class - this is kind of an abstraction of the screen or
    window we render into, and have control over the various elements
    that are on screen */
 class TViewpoint;
 class TConsole;
 class TTextRender;
-class TDisplay {
+class TDisplay : public TCommandConsumer {
 public:
   TTextRender * textrender;
   unsigned int num_frames;
@@ -44,13 +45,14 @@ public:
   TConsole * console;
   
   TDisplay(int argc, char** argv);
-  ~TDisplay();
+  virtual ~TDisplay();
   void Update(system_time_t deltatime); 
   void Reshape(int w, int h);
   void NormalMode();
   void FlatMode();
   void Render();
   void RefreshRate();
+  virtual bool CommandConsume(TCommand * Command);
 };
 extern TDisplay * Display;
 #endif

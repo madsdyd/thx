@@ -24,7 +24,7 @@
 #include "commandconsumer.hh"
 
 /* Set to 0 to avoid messages about dispatching stuff */
-#define DISPATCH_DEBUG 0
+#define DISPATCH_DEBUG 1
 
 /* This is our CommandDispatcher */
 TCommandDispatcher CommandDispatcher;

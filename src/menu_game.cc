@@ -137,13 +137,15 @@ TGameMenu::TGameMenu(string title,
   {
     TInfoMenuItem * tmpinfo = new TInfoMenuItem(HelpMenu, "Info", 
 						"Use the arrow keys to select");
-    tmpinfo->AddLine("and change values.");
-    tmpinfo->AddLine("Use the standard unix readline");
-    tmpinfo->AddLine("keys to modify values:");
-    tmpinfo->AddLine("Ctrl+b back, Ctrl+f forward,");
-    tmpinfo->AddLine("Ctrl+k cut, Ctrl+y yank");
-    tmpinfo->AddLine("Backspace, delete and Ctrl+d deletes");
-    tmpinfo->AddLine("Enter accepts, escape cancels.");
+    tmpinfo->AddLine("and change values in menus.");
+    tmpinfo->AddLine("In the game, default controls");
+    tmpinfo->AddLine("are d, g,f,r,t,b for moving");
+    tmpinfo->AddLine("your viewpoint, and h,j,k,u for");
+    tmpinfo->AddLine("rotating your viewpoint.");
+    tmpinfo->AddLine("The canon is controlled with");
+    tmpinfo->AddLine("the arrow keys,+,-, and ENTER.");
+    tmpinfo->AddLine("Escape shows the in game menu.");
+    tmpinfo->AddLine("q will quit the game at any point.");
     HelpMenu->AddMenuItem(tmpinfo);    
     HelpMenu->AddMenuItem(new TSpaceMenuItem(this));
     HelpMenu->AddCancelMenuItem(new TReturnMenuItem(HelpMenu, "Return", 

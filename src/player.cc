@@ -72,7 +72,10 @@ bool TPlayer::RegisterCommands() {
   if (CommandDispatcher.RegisterConsumer("viewpoint-move", this)) {
     if (CommandDispatcher.RegisterConsumer("viewpoint-rotate", this)) {
       if (CommandDispatcher.RegisterConsumer("canon", this)) {
-	return true;
+	if (CommandDispatcher.RegisterConsumer("inventory", this)) {
+	  return true;
+	}
+	CommandDispatcher.UnregisterConsumer("canon");
       }
       CommandDispatcher.UnregisterConsumer("viewpoint-rotate");
     }
@@ -85,7 +88,10 @@ bool TPlayer::UnregisterCommands() {
   if (CommandDispatcher.UnregisterConsumer("viewpoint-move")) {
     if (CommandDispatcher.UnregisterConsumer("viewpoint-rotate")) {
       if (CommandDispatcher.UnregisterConsumer("canon")) {
-	return true;
+	if (CommandDispatcher.UnregisterConsumer("inventory")) {
+	  return true;
+	}
+	CommandDispatcher.RegisterConsumer("canon", this);
       }
       CommandDispatcher.RegisterConsumer("viewpoint-rotate", this);
     }
@@ -255,34 +261,43 @@ void TPlayer::Update(system_time_t timenow) {
  * *********************************************************************/
 bool TPlayer::CommandConsume(TCommand * Command) {
   // TODO: Some state checking?
-
-  // Check if this is one we handle, check for +/-, 
-  // Remove/insert into active commands, PerformCommandUpdate
-  /* Check the first character in the args */
-  string plus_minus = Command->args.substr(0, 1);
-  string cmd_key    = Command->name + "%" + Command->args.substr(1,Command->args.size()-1);
-  if ("+" == plus_minus) {
-    /* This command needs to be added, unless it is a duplicate */
-    TActiveCommandsIterator i = active_commands.find(cmd_key);
-    if (i == active_commands.end()) {
-      /* No duplicates 
-	 This should use the copy constructor */
-      active_commands.insert(TActiveCommandsElement(cmd_key, Command));
-      cout << "CommandConsume - inserting " << cmd_key << " into active " << endl;
+  
+  /* Handle inventory commands */
+  if ("inventory" == Command->name) {
+    if ("next-weapon" == Command->args) {
+      inventory->SelectNext();
+      return true;
     }
-    return true;
-  }
-  else if ("-" == plus_minus) {
-    /* Remove this command from the active map */
-    TActiveCommandsIterator i = active_commands.find(cmd_key);
-    if (i != active_commands.end()) {
-      /* Found one - remove it 
-	 First make sure that the time is current - that is, update all commands */
-      PerformCommandUpdate(Command->timestamp);
-      active_commands.erase(i);
-      cout << "CommandConsume - removing " << cmd_key << " from active " << endl;
+  } else {
+    /* Handle commands that have a +/- stuff */
+    // Check if this is one we handle, check for +/-, 
+    // Remove/insert into active commands, PerformCommandUpdate
+    /* Check the first character in the args */
+    string plus_minus = Command->args.substr(0, 1);
+    string cmd_key    = Command->name + "%" + Command->args.substr(1,Command->args.size()-1);
+    if ("+" == plus_minus) {
+      /* This command needs to be added, unless it is a duplicate */
+      TActiveCommandsIterator i = active_commands.find(cmd_key);
+      if (i == active_commands.end()) {
+	/* No duplicates 
+	   This should use the copy constructor */
+	active_commands.insert(TActiveCommandsElement(cmd_key, Command));
+	cout << "CommandConsume - inserting " << cmd_key << " into active " << endl;
+      }
+      return true;
     }
-    return true;
+    else if ("-" == plus_minus) {
+      /* Remove this command from the active map */
+      TActiveCommandsIterator i = active_commands.find(cmd_key);
+      if (i != active_commands.end()) {
+	/* Found one - remove it 
+	   First make sure that the time is current - that is, update all commands */
+	PerformCommandUpdate(Command->timestamp);
+	active_commands.erase(i);
+	cout << "CommandConsume - removing " << cmd_key << " from active " << endl;
+      }
+      return true;
+    }
   }
   cerr << "TPlayer::CommandConsumer, not handling ("
        << Command->name << "," << Command->args << ")" << endl;

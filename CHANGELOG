@@ -1,3 +1,10 @@
+20010326
+  - Added the tab key to allow for weapon changes.
+  - Fixed the missing "enter is fire" button.
+  - Updated the help menu entry.
+  - Added the flymode, clipmode and refreshrate buttons.
+  - Added the various rendermode options
+
 20010325
   - Restored most of the functionality needed to play the game.
 

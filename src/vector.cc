@@ -43,6 +43,13 @@ float TVector::Distance(TVector &b) {
   return sqrt(xd*xd + yd*yd + zd*zd);
 }
 
+float TVector::Distance(TVector *b) {
+  float xd = x-b->x;
+  float yd = y-b->y;
+  float zd = z-b->z;
+  return sqrt(xd*xd + yd*yd + zd*zd);
+}
+
 void TVector::display() {
   cout << "("
        << x << " , " 

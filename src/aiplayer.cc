@@ -26,7 +26,9 @@
  * Constructors and destructors
  * *********************************************************************/
 TAIPlayer::TAIPlayer(TGame * ngame, string nname, string nteam) 
-  : TPlayer(ngame, nname, nteam) {};
+  : TPlayer(ngame, nname, nteam) {
+  Target = NULL;
+};
 
 TAIPlayer::~TAIPlayer() {};
 
@@ -43,6 +45,16 @@ void TAIPlayer::UnregisterCommands() {
   CommandDispatcher.UnregisterConsumer("viewpoint-move");
   CommandDispatcher.UnregisterConsumer("viewpoint-rotate");
 }
+
+/* **********************************************************************
+ * NeedsInteraction returns true, if the player needs local interaction
+ * AI's do not, and eventually, networked players will neither
+ * *********************************************************************/
+
+bool TAIPlayer::NeedsInteraction() {
+  return false;
+}
+
 
 /* **********************************************************************
  * Round and turn commands - the meat of this object
@@ -101,85 +113,92 @@ void TAIPlayer::Update(system_time_t timenow) {
     CommandConsume(new TCommand(timenow, "cannon", "-rotate-right"));
     cr = true;
   } else {
-    // TODO: This goes "the wrong way" across 360->0 and 0->360 degree border.
-    if (cannon_target.rotation < tank->cannon.rotation) {
-      // cout << "TAIPlayer::Cannon rotate too large " 
-      // << tank->cannon.rotation << endl;
+    /* We need to rotate: If the normalized difference between 
+       destination and source is greater then 180 degrees, we should
+       turn right, otherwise left. */
+    float tmprot = cannon_target.rotation - tank->cannon.rotation;
+    while (tmprot < 0.0) {
+      tmprot += 360;
+    }
+    if (tmprot > 180.0) {
       /* Stop any pending raises, insert lower (duplicates will not
 	 be inserted) */
       CommandConsume(new TCommand(timenow, "cannon", "-rotate-left"));
       CommandConsume(new TCommand(timenow, "cannon", "+rotate-right"));
     } else {
-      // cout << "TAIPlayer::Cannon rotate too small: " 
-      // << tank->cannon.rotation << endl;
       /* Stop any pending lowers, insert raise (duplicates will not
 	 be inserted */
       CommandConsume(new TCommand(timenow, "cannon", "-rotate-right"));
       CommandConsume(new TCommand(timenow, "cannon", "+rotate-left"));
     }
     cr = false;
+    UpdateViewpoint();
     return;
   }
-
-  /* Adjust to the correct angle */
+  
+  /* Adjust to the correct angle - same as rotation, really */
   if (fabs(cannon_target.angle - tank->cannon.angle) < 1.0) {
-    // cout << "TAIPlayer::Update - goal met" << endl;
-    /* If we are close enough, stop adjusting the cannon 
-       This should work, since we are on simulated time */
     CommandConsume(new TCommand(timenow, "cannon", "-lower"));
     CommandConsume(new TCommand(timenow, "cannon", "-raise"));
     ca = true;
   } else {
     if (cannon_target.angle < tank->cannon.angle) {
-      // cout << "TAIPlayer::Cannon too high " << tank->cannon.angle << endl;
-      /* Stop any pending raises, insert lower (duplicates will not
-	 be inserted) */
       CommandConsume(new TCommand(timenow, "cannon", "-raise"));
       CommandConsume(new TCommand(timenow, "cannon", "+lower"));
     } else {
-      // cout << "TAIPlayer::Cannon too low: " << tank->cannon.angle << endl;
-      /* Stop any pending lowers, insert raise (duplicates will not
-	 be inserted */
       CommandConsume(new TCommand(timenow, "cannon", "-lower"));
       CommandConsume(new TCommand(timenow, "cannon", "+raise"));
     }
     ca = false;
+    UpdateViewpoint();
     return;
   }
   
-
-  /* Adjust the force */
+  /* Adjust the force - same as rotation, really */
   if (fabs(cannon_target.force - tank->cannon.force) < 1.0) {
-    // cout << "TAIPlayer::Update - goal met" << endl;
-    /* If we are close enough, stop adjusting the cannon 
-       This should work, since we are on simulated time */
     CommandConsume(new TCommand(timenow, "cannon", "-force-increase"));
     CommandConsume(new TCommand(timenow, "cannon", "-force-decrease"));
     cf = true;
   } else {
-    // TODO: This goes "the wrong way" across 360->0 and 0->360 degree border.
     if (cannon_target.force < tank->cannon.force) {
-      // cout << "TAIPlayer::Cannon force too large " 
-      // << tank->cannon.force << endl;
-      /* Stop any pending raises, insert lower (duplicates will not
-	 be inserted) */
       CommandConsume(new TCommand(timenow, "cannon", "-force-increase"));
       CommandConsume(new TCommand(timenow, "cannon", "+force-decrease"));
     } else {
-      // cout << "TAIPlayer::Cannon force too small: " 
-      // << tank->cannon.force << endl;
-      /* Stop any pending lowers, insert raise (duplicates will not
-	 be inserted */
       CommandConsume(new TCommand(timenow, "cannon", "-force-decrease"));
       CommandConsume(new TCommand(timenow, "cannon", "+force-increase"));
     }
     cf = false;
+    UpdateViewpoint();
     return;
   }
 
-  /* If all our objectives are meet, fire the projectile. */
-  if (ca && cr && cf) {
+  UpdateViewpoint();
+  /* If all our objectives are meet, fire the projectile. 
+     Caveat: We do need to have a target... */
+  if (ca && cr && cf && Target) {
     game->FireProjectile();
   }
 }
 
+/* **********************************************************************
+ * This updates the viewpoint, to allow us to follow the cannon
+ * *********************************************************************/
+
+void TAIPlayer::UpdateViewpoint() {
+  // viewpoint.rotation.x = tank->cannon.angle;
+  viewpoint.rotation.x = 20;
+  viewpoint.rotation.z = -tank->cannon.rotation + 90.0;
+  
+  viewpoint.translation = tank->location;
+  double scale_move = 3.0;
+  viewpoint.translation.x 
+    -= scale_move * sin(viewpoint.rotation.z * M_PI / 180.0);
+  viewpoint.translation.y 
+    -= scale_move * cos(viewpoint.rotation.z * M_PI / 180.0);
+  viewpoint.translation.z 
+    += scale_move * sin(viewpoint.rotation.x * M_PI / 180.0);
+
+  /* TODO : Adjust further, based on */
+  Display->UpdateViewpoint();
+
+}

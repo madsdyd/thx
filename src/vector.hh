@@ -21,10 +21,13 @@
 */
 #ifndef __VECTOR_HH__
 #define __VECTOR_HH__
-/* Defined a vector of 3 floats. */
 
 #include <list>
 
+/* This seemed to be an OK place to put this declaration */
+#define RadToDegree(r) ((r)/M_PI*180.0)
+
+/* Defined a vector of 3 floats. */
 class TVector {
 public:
   TVector() {}
@@ -33,6 +36,7 @@ public:
   void Normalize();
   /* The distance between two points expressed as vectors */
   float Distance(TVector &b);
+  float Distance(TVector *b);
   void display();
 
   float inner(TVector a);

@@ -474,9 +474,13 @@ bool TGame::RoundStart() {
     /* Set each player to "active" and reset their round counts 
        Also set their tanks position */
     TPlayerInfosIterator End = playerInfos.end();
+    /* first, make all players active, and reset other data */
     for(TPlayerInfosIterator i = playerInfos.begin(); i != End; i++) {
       (*i)->active         = true;
       (*i)->num_turn_fired = 0;
+    }
+    /* Then, let each player prepare for the round */
+    for(TPlayerInfosIterator i = playerInfos.begin(); i != End; i++) {
       (*i)->player->PrepareRound(&(*spot));
       /* (Re)add the tanks to the game */
       AddEntity((*i)->player->tank);
@@ -669,7 +673,7 @@ void TGame::SetWind() {
  * *********************************************************************/
 void TGame::ApplyWind(TVector &vel, system_time_t deltatime) {
   /* This is a hack at the moment */
-  vel.x += wind.x * deltatime;
+  /* vel.x += wind.x * deltatime;
   vel.y += wind.y * deltatime;
-  vel.z += wind.z * deltatime;
+  vel.z += wind.z * deltatime; */
 }

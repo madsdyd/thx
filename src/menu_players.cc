@@ -50,7 +50,7 @@ void TPlayerMenu::SyncPlayerSettings() {
     tmpset.color = ColorDefinitions.GetColor(tmp2.str());
     tmp3.form("team-%i", PlayerSettings->size() + 1) << ends;
     tmpset.team  = tmp3.str();
-    if (0 == PlayerSettings->size()) {
+    if (3 >= PlayerSettings->size()) {
       // tmpset.name        = "Baltazar";
       // tmpset.playerclass = "baltazar";
       tmpset.name        = "Casper";

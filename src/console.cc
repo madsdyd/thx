@@ -26,17 +26,27 @@
 
 #define FADE_DELTA 5.0 /* Every line is on screen for this long */
 #define NUM_LINES_SHOW 4
-#define DELTA_POS 50
+/* The speed when moving up/down */
+#define DELTA_POS 100
+
 
 /* **********************************************************************
- * Constructor
+ * Constructor & destructor
  * *********************************************************************/
 TConsole::TConsole(int num_lines) {
   max_num_lines = num_lines;
   fade_time     = 0;
   position      = 0;
+  dposition     = 0.0;
   delta_pos     = 0;
-  max_pos       = 240;
+  state         = is_up;
+  max_pos       = 0;
+  /* Register the command we handle */
+  CommandDispatcher.RegisterConsumer("console-toggle-display", this);
+}
+
+TConsole::~TConsole() {
+  CommandDispatcher.UnregisterConsumer("console-toggle-display");
 }
 
 /* **********************************************************************
@@ -44,19 +54,35 @@ TConsole::TConsole(int num_lines) {
  * or move the
  * *********************************************************************/
 void TConsole::Update(system_time_t deltatime) {
+  /*  cout << "enter: deltatime: " << deltatime << ", position : " << position << ", delta_pos : " << delta_pos 
+      << ", dposition : " << dposition << endl; */
   /* Control the fade time */
   fade_time = mymax(0, fade_time - deltatime);
   /* And the position of the console */
   if (delta_pos != 0) { /* We need to move the background */
+    state = is_moving;
     if (delta_pos < 0) {
-      position = mymin (0, position+delta_pos);
+      /* Moving up */
+      dposition = mymax (0, dposition+delta_pos*deltatime);
+      position = (int) floor(dposition);
+      if (0 == position) {
+	dposition = 0.0;
+	delta_pos = 0;
+	state = is_up;
+      }
     } else {
-      position = mymax (max_pos, position+delta_pos);
-    }
-    if (0 == position || max_pos) {
-      delta_pos = 0;
+      /* Moving down */
+      dposition = mymin (max_pos, dposition+delta_pos*deltatime);
+      position = (int) floor(dposition);
+      if (max_pos == position) {
+	dposition = max_pos;
+	delta_pos = 0;
+	state = is_down;
+      }
     }
   }
+  /*  cout << "exit: position : " << position << ", delta_pos : " << delta_pos 
+      << ", dposition : " << dposition << endl; */
 }
 
 /* **********************************************************************
@@ -65,18 +91,31 @@ void TConsole::Update(system_time_t deltatime) {
  * lines with no background or a background with several lines of text
  * *********************************************************************/
 void TConsole::Render(TDisplay * display) {
+  /* Update maxpos */
+  max_pos = display->GetHeight()/2;
+  int i = 0;
   if (0 != position) {
     /* render with background */
-    cout << "TConsole::Render with background" << endl;
+    i = mymin((unsigned int) position / display->textrender->size, 
+	      lines.size());
+    /* Start printing from the top of the screen, or lower, if fewer lines
+     */
+    display->textrender->Pos(0, display->GetHeight() 
+			     - position
+			     + i*display->textrender->size);
   } else {
     /* render without background */
-    int i   = mymin((int) lines.size(), 
-		    (int) rint(fade_time/FADE_DELTA));
-    // cout << "TConsole::Render without background i = " << i << endl;
-    display->textrender->Pos(0, display->GetHeight()-display->textrender->size);
-    while(i > 0) {
-      display->textrender->PrintLn(lines[lines.size()-i--]);
-    }
+    i   = mymin((int) lines.size(), 
+		(int) rint(fade_time/FADE_DELTA));
+    /* Start printing from the top of the screen */
+    display->textrender->Pos(0, display->GetHeight() 
+			     - display->textrender->size);
+  }
+  while(i > 0) {
+    display->textrender->PrintLn(lines[lines.size()-i--]);
+  }
+  if (0 != position) {
+    display->textrender->PrintLn("--------------------------------------------------------");
   }
 }
 
@@ -85,7 +124,7 @@ void TConsole::Render(TDisplay * display) {
  * *********************************************************************/
 void TConsole::AddLine(string line) {
   /* Check if we need to remove a line */
-  if (lines.size() >= max_num_lines) {
+  while (lines.size() >= max_num_lines) {
     lines.erase(lines.begin());
   }
   /* Add it */
@@ -93,6 +132,9 @@ void TConsole::AddLine(string line) {
   /* Update the timer */
   fade_time += FADE_DELTA;
   fade_time  = mymin(fade_time, NUM_LINES_SHOW * FADE_DELTA);  
+#ifdef DEBUG
+  cout << "Coonsole: " << line << endl;
+#endif
 }
 
 void TConsole::AddLine(string line, system_time_t extratime) {
@@ -105,10 +147,12 @@ void TConsole::AddLine(string line, system_time_t extratime) {
  * Up and down
  * *********************************************************************/
 void TConsole::Down() {
+  // AddLine("Going down");
   delta_pos = DELTA_POS;
 }
 
 void TConsole::Up() {
+  // AddLine("Going up");
   delta_pos = -DELTA_POS;
 }
 
@@ -117,4 +161,22 @@ void TConsole::Up() {
  * *********************************************************************/
 void TConsole::Clear() {
   fade_time = 0;
+}
+
+/* **********************************************************************
+ * Handling commands
+ * *********************************************************************/
+bool TConsole::CommandConsume(TCommand * Command) {
+  if ("console-toggle-display" == Command->name) {
+    if (is_up == state) {
+      Down();
+    } else if (is_down == state) {
+      Up();
+    } else {
+      // AddLine("Toogling delta");
+      delta_pos = -delta_pos;
+    }
+    return true;
+  }
+  return false;
 }

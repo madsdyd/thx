@@ -51,7 +51,7 @@ TGameMenu::TGameMenu(string title,
   ExitMenu    = new TMenu("Really Exit?");
 
   /* Initialize default values */
-  numplayers = 2;
+  numplayers = 4;
   numrounds  = 3;
   mapsize    = 32;
   maptype    = 1.4;
@@ -136,7 +136,10 @@ TGameMenu::TGameMenu(string title,
       new TDoubleListMenuItem(NewGameMenu, "Map type", 
 			      "Select the topology of the map", 
 			      &maptype);
-    dtmpitem->AddOption("flatlands", 0.2);
+#ifdef DEBUG
+    dtmpitem->AddOption("plane", 0.0);
+#endif
+   dtmpitem->AddOption("flatlands", 0.2);
     dtmpitem->AddOption("bumby", 0.8);
     dtmpitem->AddOption("highlands", 1.4);
     dtmpitem->AddOption("mountains", 2.0);

@@ -323,24 +323,12 @@ void TDisplay::NormalMode() {
 }  
 
 /* **********************************************************************
- * Called each frame to actually draw the stuff the display knows about
+ * Enforce rules onto the viewpoint
  * *********************************************************************/
-void TDisplay::Render(void) {
-  if (!viewpoint) {
-    cerr << "display_display with NULL viewpoint" << endl;
-    return;
-  } 
-  if (GL_NO_ERROR != glGetError()) {
-    cerr << "TDisplay::Render: GL was in error condition" << endl;
-  } 
-  //  GLenum gl_error;
-
-  /*Push the current (ie normal viewing) matrix so
-    we get the _correct_ rotation */
-  glPushMatrix();
-
-  /* Rotate scene according to user input
-     clamp xrotate so that it is never between 80-100 or 260-280  */
+void TDisplay::UpdateViewpoint() {
+  
+  /* clamp xrotate so that it is never between 80-100 or 260-280  */
+  /* TODO: Does this actually work as intended? */
   if (260 < viewpoint->rotation.x && viewpoint->rotation.x < 280) {
     if (viewpoint->rotation.x < 270) {
       viewpoint->rotation.x = 260;
@@ -355,9 +343,8 @@ void TDisplay::Render(void) {
       viewpoint->rotation.x = 100;
     }
   }
-  glRotatef(viewpoint->rotation.x, 1.0, 0.0, 0.0);
-  glRotatef(viewpoint->rotation.z, 0.0, 0.0, 1.0);
-  /* Force us to be inside and above the map.
+  
+    /* Force us to be inside and above the map.
      The viewpoint is otherwise changed by the TPlayer class */
 #define TRANSOFFSET 3
 #define ZOFFSET 3.0
@@ -392,12 +379,35 @@ void TDisplay::Render(void) {
       }
     }
   }
-  
-  /* Translate to our viewpoint. The world is translated to this place, so we
-     use -translate. */
+}
+
+
+/* **********************************************************************
+ * Called each frame to actually draw the stuff the display knows about
+ * *********************************************************************/
+void TDisplay::Render(void) {
+  if (!viewpoint) {
+    cerr << "display_display with NULL viewpoint" << endl;
+    return;
+  } 
+  if (GL_NO_ERROR != glGetError()) {
+    cerr << "TDisplay::Render: GL was in error condition" << endl;
+  } 
+  //  GLenum gl_error;
+
+  /*Push the current (ie normal viewing) matrix so
+    we get the _correct_ rotation */
+  glPushMatrix();
+  UpdateViewpoint();
+  /* Do rotations */
+  glRotatef(viewpoint->rotation.x, 1.0, 0.0, 0.0);
+  glRotatef(viewpoint->rotation.z, 0.0, 0.0, 1.0);
+  /* Translate to our viewpoint. The world is translated to this
+     place, so we use -translate. */
   glTranslatef(-viewpoint->translation.x, 
 	       -viewpoint->translation.y, 
 	       -viewpoint->translation.z);
+
 
   /* Draw map */
   Game->GetMap()->Render(viewpoint);

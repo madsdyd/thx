@@ -62,6 +62,13 @@ public:
   unsigned int GetHeight();
   unsigned int GetNumFrames();
   bool GrabbingPointer();
+
+  /* **********************************************************************
+   * This can be used be the players to enforce rules about viewpoint 
+   * placement, onto the current viewpoint. 
+   * *********************************************************************/
+  void UpdateViewpoint();
+
   /* **********************************************************************
    * Call backs
    * *********************************************************************/

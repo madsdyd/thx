@@ -26,6 +26,12 @@
    - try to obtain a target in PrepareRound
    - try to hit the target in each turn
    - accept feedback and try to adjust to it 
+
+   Casper will not/is not
+   - a teamplayer
+   - able to buy or use different weapons
+   - sensitive to wind
+
 */
 
 #include "aiplayer.hh"
@@ -33,16 +39,23 @@
 class TAIPlayerCasper : public TAIPlayer {
 protected:
   /* Variables that tracks the "best" settings so far. */
-  TPlayer * Target;
+  bool best_valid; /* True if the best_location is valid */
   TVector best_location; /* Used to keep track of current best location for hitting
 			    target - updated each turn */
   float lowest_dist; /* Used to keep track of the impact that gave the most damage */
+  /* Update the best_location, if apropiate */
+  void UpdateBest(TVector * Hit);
 public:
   TAIPlayerCasper(TGame * ngame, string nname, string nteam);
   virtual ~TAIPlayerCasper();
   void PrepareRound(TVector * location);
   void BeginTurn(); /* Called, when this players turn is about to start */
   void EndTurn();   /* Called, when this players turn is about to end */
-  
+
+  /* Called when we have an explosion */
+  void Explosion(TExplosion * Explosion);   
+  /* Called when we have a hit on a tank */
+  void RegisterHit(TTank * Tank, TExplosion * Explosion, 
+		   float dist, float damage);   
 };
 #endif

@@ -27,19 +27,26 @@
 #include <string>
 #include <vector>
 #include "types.hh"  /* system_time */
+#include "commandconsumer.hh"
+#include "command.hh"
 
+
+typedef enum {is_up, is_down, is_moving} tconsole_state;
 class TDisplay;
-class TConsole {
+class TConsole : public TCommandConsumer{
 private:
   unsigned int max_num_lines;
   vector<string> lines;
   system_time_t fade_time;
-  int position;  /* The current position of the console - 0 if not down */
-  int delta_pos; /* The way we move the console */
+  int position;  /* The y current position of the console - 0 if up */
+  double dposition; /* Used to scale the position, when animating */
+  int delta_pos; /* The way we move the console - 0 if not moving */
+  tconsole_state state;
   int max_pos;   /* The max position  - updated from Render, to the middle 
 		    of the y position */
 public:
   TConsole(int num_lines);
+  virtual ~TConsole();
   void Update(system_time_t deltatime);
   /* Render assumes that the display is in flat mode */
   void Render(TDisplay * display);
@@ -54,5 +61,7 @@ public:
   void Up();
   /* Clear the console */
   void Clear();
+  virtual bool CommandConsume(TCommand * Command);
+  /* The update command mostly handle the movement stuff */
 };
 #endif

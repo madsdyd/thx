@@ -89,7 +89,9 @@ keymap_t key_map_std[] =
   // {gamemode_edit, {'q',           keydown}, "keydown", "q"},
   {gamemode_any,  {'a',           keydown}, "toggle-pointer-grab", ""},
   //{gamemode_edit, {'a',           keydown}, "keydown", "a"},
-  
+  {gamemode_any, {KEY_F3,         keydown}, "console-toggle-display", ""},
+
+
   /* MENU */
   {gamemode_menu, {KEY_UP,        keydown}, "focus-change", "up"},
   {gamemode_menu, {KEY_DOWN,      keydown}, "focus-change", "down"},

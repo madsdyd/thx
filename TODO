@@ -8,16 +8,24 @@ AUTOTOOLS TEMP TODO:
 
 NORMAL TODO:
 
+- Better viewpoint following. Make sure key event are visible; missile, 
+  explosions. Maybe "follow-missile-mode".
+
+- Client_Idle can not change mode when aborting a round????
+- We need to encapsulate the canon parameters.
+- For reasons I do not know, the ais seems to want to fire at the start
+  of the second round, and may fail nastily.
+
+- Need to think of ways to test and debug the AI code.
+
+Also, look in AI.txt.
+
 Version schedule. 
 
 This is an overview of what features go where. This is subject to change.
 
 - FIX: Rotation can loop, when speed is to high to be caught. Need to fix,
   probably by figuring out the shortest distance to target, and use that.
-
-- The AI players need to 
-  - figure out feedback
-  - buy weapons
 
 The text () is the focus of the "series". E.g. 0.4.0 (AI) means that
 everything starting with 0.4. is probably going to be related to AI. The 0.4.0 release
@@ -40,6 +48,13 @@ however, is the final release of the previous series.
   - Make a ceiling?
   - Implement AI entities
   - Connect to event pipelines
+
+  - Preconditiona for relasing version 0.4.0:
+    - Controls and saving state of 
+      - Video
+      - Effects
+    - Make tanks rotation different from each other
+    - menu_players need to work better.
 
 ** 0.4.8 (Postponed menu and controls stuff)
   - mouse bindings to axis

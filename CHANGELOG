@@ -1,3 +1,19 @@
+20010906
+  - Casper will figure out if an enemy dies, and try to get a new target.
+  - The buymenu will not show for players that does not need "interaction".
+  - The viewpoint will follow non interactive players automatically, 
+    but still needs a lot of work.
+
+20010905
+  - Casper can now aim at people - admittedly, that is cheating, but he 
+    can....
+
+20010904
+  - Console dropping option now kindof works.
+
+20010903
+  - Added option to drop down a console. 
+
 20010902
   - Some minor stuff added to AICasper - still no sense in what it does.
 

@@ -73,6 +73,23 @@ void TPlayer::PrepareRound(TVector * location) {
 }
 
 /* **********************************************************************
+ * Active returns true, if the players tank is still alive....
+ * *********************************************************************/
+bool TPlayer::IsActive() {
+  return tank->health > 0.0;
+}
+
+/* **********************************************************************
+ * NeedsInteraction returns true, if the player needs local interaction
+ * AI's do not, and eventually, networked players will neither
+ * *********************************************************************/
+
+bool TPlayer::NeedsInteraction() {
+  return true;
+}
+
+
+/* **********************************************************************
  * Register and unregister the commands the player handle. 
  * This is commands to control the viewpoint and the cannon
  * *********************************************************************/
@@ -168,9 +185,6 @@ void TPlayer::PerformCommandUpdate(system_time_t timenow) {
 	else if ("+backward" == Command->args) {
 	  viewpoint.translation.x 
 	    -= scale_move * sin(viewpoint.rotation.z * M_PI / 180.0);
-
-
-
 	  viewpoint.translation.y 
 	    -= scale_move * cos(viewpoint.rotation.z * M_PI / 180.0);
 	  viewpoint.translation.z 

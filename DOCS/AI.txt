@@ -52,3 +52,23 @@ Depending on cleverness, the AI player may adjust angles, cannon,
 etc. very finely or very coarse. A clever AI may take into
 consideration wind, etc. Feedback is given from the projectile,
 explosions, and other players. 
+
+** Various notes
+
+* Baltazar
+
+- Works, I would say ;-)
+
+* Casper
+
+- Should change target, if someone goes after him?
+- When changing the cannon_target, should use distance in 
+  best_valid
+- Good hit == use the exact same in next round
+- Make sure that tanks can actually move (adjust rotation)
+- Add random variations
+- Add wind
+- Make sure that teammode works
+- Buying weapon
+- Change between different weapons
+- 

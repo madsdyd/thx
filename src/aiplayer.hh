@@ -28,14 +28,19 @@
 
 class TAIPlayer : public TPlayer {
 protected:
+  /* The Target is another player, if set */
+  TPlayer * Target;
   /* variable used to store the target for cannon */
   cannon_t cannon_target;
   void RegisterCommands();
   void UnregisterCommands();
+  /* Used to follow the cannon around with */
+  virtual void UpdateViewpoint();
   // void PerformCommandUpdate(system_time_t timenow);
 public:
   TAIPlayer(TGame * ngame, string nname, string nteam);
   virtual ~TAIPlayer();
+  virtual bool NeedsInteraction(); /* True if this player needs local interaction */
   virtual void PrepareRound(TVector * location);
   virtual void BeginTurn(); /* Called, when this players turn is about to start */
   virtual void EndTurn();   /* Called, when this players turn is about to end */

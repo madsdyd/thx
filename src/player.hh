@@ -68,6 +68,8 @@ public:
   TPlayer(TGame * ngame, string nname, string nteam);
   virtual ~TPlayer();
   virtual void PrepareRound(TVector * location);
+  virtual bool IsActive();        /* True if tank is alive */
+  virtual bool NeedsInteraction(); /* True if this player needs local interaction */
   virtual void BeginTurn();       /* Called, when this players turn is about to 
 				     start */
   virtual void EndTurn();         /* Called, when this players turn is about to end */

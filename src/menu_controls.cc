@@ -210,6 +210,9 @@ TControlsMenu::TControlsMenu(string title) : TMenu(title) {
   AddMenuItem(new TControlsMenuItem(this, "Toggle grabbing", 
 				    "Change what key toggles grabbing the mouse",
 				    "toggle-pointer-grab", "", gamemode_any));
+  AddMenuItem(new TControlsMenuItem(this, "Display console", 
+				    "Change what key toggles displaying the console",
+				    "console-toggle-display", "", gamemode_any));
   AddMenuItem(new TControlsMenuItem(this, "Render lines", 
 				    "Change what key select line render mode",
 				    "render", "lines"));

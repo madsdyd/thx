@@ -165,6 +165,8 @@ void TTank::Explosion(TExplosion * Explosion) {
 	Explosion->owner->money += (int) rint(taken_damage * 100) / 2;
 	Explosion->owner->score += (int) rint(taken_damage * 100) / 2;
       }
+      /* Let the owner of the missile know we had a hit */
+      Explosion->owner->RegisterHit(this, Explosion, dist, taken_damage); 
     }
     // cout << endl;
   }

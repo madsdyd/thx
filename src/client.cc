@@ -366,6 +366,12 @@ void BuyMenu_Continue() {
   } else {
     FirstDone = true;
   }
+  /* Only show stuff for interactive players */
+  while ((PlayerInfosIterator != Game->GetPlayerInfos()->end())
+	 &&  (!(*PlayerInfosIterator)->player->NeedsInteraction())) {
+    PlayerInfosIterator++;
+  }
+  
   if (PlayerInfosIterator != Game->GetPlayerInfos()->end()) {
     /* Create new BuyMenu, based on player information */
     ostrstream tmp;

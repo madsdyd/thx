@@ -64,28 +64,28 @@ static struct {
   {30, "RS"},
   {31, "US"},
   {32, "SPACE"},
-  {128, "DEL"},
-  {KEY_UP, "KEY_UP"},
-  {KEY_DOWN, "KEY_DOWN"},
-  {KEY_LEFT, "KEY_LEFT"},
-  {KEY_RIGHT, "KEY_RIGHT"},
-  {KEY_HOME, "KEY_HOME"},
-  {KEY_END, "KEY_END"},
-  {KEY_PAGEUP, "KEY_PAGEUP"},
-  {KEY_PAGEDOWN, "KEY_PAGEDOWN"},
-  {KEY_INSERT, "KEY_INSERT"},
-  {KEY_F1, "KEY_F1"},
-  {KEY_F2, "KEY_F2"},
-  {KEY_F3, "KEY_F3"},
-  {KEY_F4, "KEY_F4"},
-  {KEY_F5, "KEY_F5"},
-  {KEY_F6, "KEY_F6"},
-  {KEY_F7, "KEY_F7"},
-  {KEY_F8, "KEY_F8"},
-  {KEY_F9, "KEY_F9"},
-  {KEY_F10, "KEY_F10"},
-  {KEY_F11, "KEY_F11"},
-  {KEY_F12, "KEY_F12"},
+  {127, "DEL"},
+  {KEY_UP, "UP"},
+  {KEY_DOWN, "DOWN"},
+  {KEY_LEFT, "LEFT"},
+  {KEY_RIGHT, "RIGHT"},
+  {KEY_HOME, "HOME"},
+  {KEY_END, "END"},
+  {KEY_PAGEUP, "PAGEUP"},
+  {KEY_PAGEDOWN, "PAGEDOWN"},
+  {KEY_INSERT, "INSERT"},
+  {KEY_F1, "F1"},
+  {KEY_F2, "F2"},
+  {KEY_F3, "F3"},
+  {KEY_F4, "F4"},
+  {KEY_F5, "F5"},
+  {KEY_F6, "F6"},
+  {KEY_F7, "F7"},
+  {KEY_F8, "F8"},
+  {KEY_F9, "F9"},
+  {KEY_F10, "F10"},
+  {KEY_F11, "F11"},
+  {KEY_F12, "F12"},
   {0, 0}
 };
 
@@ -101,7 +101,7 @@ string keyboard_inputevent_event_t::AsString() {
     buf[1] = 0;
     return string(buf);
   } 
-  else if (key <= 32 || (key >= KEY_FIRST && key < KEY_LAST)) {
+  else if (key <= 32 || (127 == key) || (key >= KEY_FIRST && key < KEY_LAST)) {
     return string(keys_to_names[key]);
   }
   else return string("??");

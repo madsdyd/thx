@@ -1,5 +1,8 @@
 20010329
   - Tagging version_0_3_1
+  - Removed keyboard.hh and keyboard.cc
+  - Fixed the keyrepeat problem
+  - Removed a lot of dead keyhandling code.
 
 20010326
   - Added the tab key to allow for weapon changes.

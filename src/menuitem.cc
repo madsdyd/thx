@@ -157,31 +157,6 @@ bool TSimpleActionMenuItem::CommandConsume(TCommand * Command) {
  * *********************************************************************/
 
 /* **********************************************************************
-   The basic keyboard handler for TSubMenuItem looks for space or enter
-   to do a "Owner->ShowChild(SubMenu)"*/
-bool TSubMenuItem::KeyboardHandler(unsigned char key) {
-  /* Only handle keypresses if we have the focus */
-  if (menuitem_state_focused != state) {
-    cerr << "TSubMenuItem::KeyboardHandler not in focus!" << endl;
-    return false;
-  };
-  if (key == 10 || key == 13 || key == 32) {
-    // cout << "TSubMenuItem wants to show child " << endl;
-    if (SubMenu) {
-#ifdef SOUND_ON
-      sound_play(names_to_nums["data/sounds/menu_forward_menu.raw"]);
-#endif
-      Owner->ShowChild(SubMenu);
-    } else {
-      cerr << "TSubMenuItem has no SubMenu!" << endl;
-    }
-    return true;
-  } else {
-    return false;
-  } 
-}
-
-/* **********************************************************************
  * TSubMenuItem::DoAction
  * *********************************************************************/
 void TSubMenuItem::DoAction() {
@@ -203,13 +178,15 @@ void TSubMenuItem::DoAction() {
  * *********************************************************************/
 
 /* **********************************************************************
-   Add a line of text to be displayed */
+ * Add a line of text to be displayed
+ * *********************************************************************/
 void TInfoMenuItem::AddLine(string line) {
   lines.push_back(line);
 }
 
 /* **********************************************************************
-   Render the text over multiple lines */
+ * Render the text over multiple lines
+ * *********************************************************************/
 void TInfoMenuItem::Render(int xlow, int xhigh) {
   MenuTextRender.color = ColorDefinitions.Colors["white"];
   MenuTextRender.CenterLn(xlow, xhigh, description);
@@ -224,26 +201,6 @@ void TInfoMenuItem::Render(int xlow, int xhigh) {
  * **********************************************************************
  * *********************************************************************/
 
-/* **********************************************************************
-   The basic keyboard handler for TReturnMenuItem looks for space or enter
-   to do a "Owner->ShowParent()"*/
-bool TReturnMenuItem::KeyboardHandler(unsigned char key) {
-  /* Only handle keypresses if we have the focus */
-  if (menuitem_state_focused != state) {
-    cerr << "TReturnMenuItem::KeyboardHandler not in focus!" << endl;
-    return false;
-  };
-  if (key == 10 || key == 13 || key == 32) {
-    // cout << "TReturnMenuItem wants to return " << endl;
-#ifdef SOUND_ON
-      sound_play(names_to_nums["data/sounds/menu_back_menu.raw"]);
-#endif
-    Owner->ShowParent();
-    return true;
-  } else {
-    return false;
-  } 
-}
 /* **********************************************************************
  * TReturnMenuItem::DoAction
  * *********************************************************************/
@@ -261,27 +218,6 @@ void TReturnMenuItem::DoAction() {
  * **********************************************************************
  * *********************************************************************/
 
-/* **********************************************************************
-   The basic keyboard handler for TReturnMenuItem looks for space or enter
-   to do a "Owner->ShowParent()"*/
-bool TActionMenuItem::KeyboardHandler(unsigned char key) {
-  /* Only handle keypresses if we have the focus */
-  if (menuitem_state_focused != state) {
-    cerr << "TActionMenuItem::KeyboardHandler not in focus!" << endl;
-    return false;
-  };
-  if (key == 10 || key == 13 || key == 32) {
-    if (function) {
-#ifdef SOUND_ON
-      sound_play(names_to_nums["data/sounds/menu_select.raw"]);
-#endif
-      function();
-    }
-    return true;
-  } else {
-    return false;
-  } 
-}
 /* **********************************************************************
  * TActionMenuItem::DoAction
  * *********************************************************************/
@@ -375,56 +311,6 @@ void TValueMenuItem::DiscardNewValue() {
   LeaveEditState();
 };
 
-/* **********************************************************************
-   The basic keyboard handler for TValueMenuItem will handle some state 
-   changes */
-bool TValueMenuItem::KeyboardHandler(unsigned char key) {
-  // cout << endl << "TValueMenuItem::KeyboardHandler(" << key << ")" << endl; 
-  /* Only handle keypresses if we have the focus */
-  if (!(menuitem_state_focused == state || menuitem_state_selected == state)) {
-    cerr << "TValueMenuItem::KeyboardHandler not in focus/selected!" << endl;
-    return false;
-  };
-  /* By default, ENTER or SPACE will change from focus to editing
-     Note: This behavoir will be overriden by "submenus". */
-  if (menuitem_state_focused == state 
-      && (key == 13 || key == 10 || key == ' ')) {
-    // cout << "  TValueMenuItem going into edit state" << endl;
-#ifdef SOUND_ON
-      sound_play(names_to_nums["data/sounds/menu_select.raw"]);
-#endif
-    EnterEditState();
-    return true;
-  }
-  /* Also by default, we leave the editing state by hitting enter (accept)
-     or esc, which will simply drop the value */
-  if (menuitem_state_selected == state) {
-    // cout << "  TValueMenuItem is in edit state" << endl;
-    switch (key) {
-    case 13:   /* Ctrl+M */
-    case 10: { /* Ctrl+J */
-#ifdef SOUND_ON
-      sound_play(names_to_nums["data/sounds/menu_deselect.raw"]);
-#endif
-      AcceptNewValue();
-      return true;
-    }
-    case 3:  /* Ctrl+C */
-    case 27: { /* Esc */
-#ifdef SOUND_ON
-      sound_play(names_to_nums["data/sounds/menu_deselect.raw"]);
-#endif
-      DiscardNewValue();
-      return true;
-    }
-    default:
-      return false;
-    }
-  }
-  /* Unhandled */
-  // cout << "  TValueMenuItem::KeyboardHandler not handling -" << key << "-" << endl; 
-  return false;
-}
 
 /* **********************************************************************
  * TValueMenuItem::CommandConsume
@@ -533,44 +419,6 @@ bool TListMenuItem::UnregisterCommands() {
 };
 
 /* **********************************************************************
-   The basic keyboard handler for TListMenuItem will handle up and down 
-*/
-bool TListMenuItem::KeyboardHandler(unsigned char key) {
-  // cout << "TStringMenuItem::KeyboardHandler(" << key << ")" << endl; 
-  if (!TValueMenuItem::KeyboardHandler(key)) {
-    if (state == menuitem_state_selected) {
-      /* Handle delete and backspace */
-      switch(key) {
-      case 'a': { /* Previous value */
-	selected_value = (selected_value - 1 + values.size()) % values.size();
-	*storage = values[selected_value];
-#ifdef SOUND_ON
-  sound_play(names_to_nums["data/sounds/menu_move.raw"]);
-#endif    
-	return true;
-      }
-      case 'z': { /* Next value */
-	selected_value = (selected_value + 1) % values.size();
-	*storage = values[selected_value];
-#ifdef SOUND_ON
-  sound_play(names_to_nums["data/sounds/menu_move.raw"]);
-#endif    
-	return true;
-      }
-      default:
-	/* We consider everything handled in this situation */
-	return true;
-      }
-    }
-    /* We are not in editing state, and not handled by TValueMenuItem - ie, not
-       handled */
-    return false;
-  } else {
-    /* It was handled by our inherited */
-    return true;
-  }
-}
-/* **********************************************************************
  * TListMenuItem::CommandConsume
  * This handles the list up and down commands, but rely on
  * TValueMenuItem to handle the rest of the commands
@@ -602,7 +450,8 @@ bool TListMenuItem::CommandConsume(TCommand * Command) {
 }
 
 /* **********************************************************************
-   The render for TStringMenuItem render both the string and the value */
+ * The render for TStringMenuItem render both the string and the value
+ * *********************************************************************/
 void TListMenuItem::Render(int xlow, int xhigh) {
   /* Sets the render color */
   SetRenderColor(); 
@@ -618,89 +467,6 @@ void TListMenuItem::Render(int xlow, int xhigh) {
  * *********************************************************************/
 
 string TStringMenuItem::killed = "";
-
-/* **********************************************************************
-   The basic keyboard handler for TStringMenuItem will handle some 
-   editing changes */
-bool TStringMenuItem::KeyboardHandler(unsigned char key) {
-  // cout << "TStringMenuItem::KeyboardHandler(" << key << ")" << endl; 
-  if (!TValueMenuItem::KeyboardHandler(key)) {
-    if (state == menuitem_state_selected) {
-      /* Make sure that the cursor is never out of bounds */
-      cursorpos = mymax(0, cursorpos);
-      cursorpos = mymin(cursorpos, new_value.size());
-      /* Handle delete and backspace */
-      switch(key) {
-      case 8: { /* Backspace */
-	/* If the cursor is a 0, nothing can be deleted */
-	if (0 == cursorpos) {
-	  return true;
-	}
-	/* Backspace deletes the character to the left of the cursor
-	   It must be there, because otherwise it would have to be 0 */
-	new_value.erase(--cursorpos, 1);
-	return true;
-      }
-      case 4: /* Ctrl+D */
-      case 127: { /* Delete */
-	/* If the cursor is at the end of the string, no delete */
-	if (new_value.size() == cursorpos) {
-	  return true;
-	}
-	/* We delete rigth of the cursor */
-	new_value.erase(cursorpos, 1);
-	return true;
-      }
-      case 1: { /* Ctrl+A - Beginning of line */
-	cursorpos = 0;
-	return true;
-      }	
-      case 5: { /* Ctrl+E - End of line */
-	cursorpos = new_value.size();
-	return true;
-      }	
-      case 2: { /* Ctrl+B - Back char */
-	cursorpos = mymax(0, ((int) cursorpos) - 1);
-	return true;
-      }
-      case 6: { /* Ctrl+F - Forward char */
-	cursorpos = mymin(cursorpos + 1, new_value.size());
-	return true;
-      }
-      case 11: { /* Ctrl+K - Delete to end of line */
-	killed = new_value.substr(cursorpos, new_value.size()-cursorpos);
-	new_value.erase(cursorpos, new_value.size()-cursorpos);
-	return true;
-      }
-      case 25: { /* Ctrl+Y - Insert at cursorposition */
-	new_value.insert(cursorpos, killed);
-	cursorpos += killed.size();
-	return true;
-      }
-      
-      default: {
-	/* Characters between ' ' and '~' are just added at the cursor point*/
-	if (key >= ' ' && key <= '~') {
-	  char tmp[2];
-	  tmp[0] = key;
-	  tmp[1] = 0;
-	  new_value.insert(cursorpos, tmp);
-	  cursorpos++;
-	}
-      }
-      }
-      /* We consider everything handled in this situation */
-      return true;
-    }
-    /* We are not in editing state, and not handled by TValueMenuItem - ie, not
-       handled */
-    return false;
-  } else {
-  // cout << "TStringMenuItem::KeyboardHandler not handling -" << key << "-" << endl; 
-  /* It was handled by our inherited */
-    return true;
-  }
-}
 
 
 /* **********************************************************************
@@ -822,7 +588,8 @@ bool TStringMenuItem::CommandConsume(TCommand * Command) {
 }
 
 /* **********************************************************************
-   The render for TStringMenuItem render both the string and the value */
+ * The render for TStringMenuItem render both the string and the value
+ * *********************************************************************/
 void TStringMenuItem::Render(int xlow, int xhigh) {
   /* Sets the render color */
   SetRenderColor(); 
@@ -854,7 +621,8 @@ void TStringMenuItem::Render(int xlow, int xhigh) {
 }
 
 /* **********************************************************************
-   Entering Edit state should copy the value */
+ * Entering Edit state should copy the value
+ * *********************************************************************/
 bool TStringMenuItem::EnterEditState() {
   new_value = *value;
   cursorpos = new_value.size();
@@ -862,7 +630,8 @@ bool TStringMenuItem::EnterEditState() {
 }
 
 /* **********************************************************************
-   Accept is ok, just copying */
+ * Accept is ok, just copying
+ * *********************************************************************/
 bool TStringMenuItem::AcceptNewValue() {
   *value = new_value;
   return TValueMenuItem::AcceptNewValue();

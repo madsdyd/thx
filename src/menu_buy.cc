@@ -55,24 +55,6 @@ public:
     function = nbuyaction;
     SetCaption();
   };
-  virtual bool KeyboardHandler(unsigned char key) {
-    /* Only handle keypresses if we have the focus */
-    if (menuitem_state_focused != state) {
-      cerr << "TBuyMenuItem::KeyboardHandler not in focus!" << endl;
-      return false;
-    };
-    if (key == 10 || key == 13 || key == 32) {
-      if (function && element) {
-	/* But it */
-	element->Buy(money);
-	/* Force an update */
-	function();
-      }
-      return true;
-    } else {
-      return false;
-    } 
-  }
   virtual void DoAction() {
     if (function && element) {
       /* But it */

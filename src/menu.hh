@@ -28,8 +28,9 @@
 
 #include "menuitem.hh"
 #include "commandconsumer.hh"
-
 #include "text.hh"
+
+/* This renders text for the menus - also used by menu items */
 extern TTextRender MenuTextRender;
 
 class TMenu : public TCommandConsumer{
@@ -37,9 +38,9 @@ protected:
   string Title;
   /* The menuitems */
   TMenuItems menuitems;
-  /* The number of the menuitem with focus.
-     Keyboard events go to this item */
+  /* The number of the menuitem with focus. */
   int focuseditem;
+  /* Wheter or not the menu is visible */
   bool visible;
   /* The Menu that needs to know, when this menu looses focus.
      This entry is updated with the ShowParent method */
@@ -51,6 +52,10 @@ protected:
   int cancelitem;
   /* This is a hack, because the way I do menus are borken */
   static TMenu * CurrentMenu;
+  /* Enable showing and setting parent */
+  void Show(TMenu * nParent);
+  /* Our Child will stop showing it selv at some point */
+  void HideChild(TMenu * oChild); 
 public:
   /* Construct and destruct the menu */
   TMenu(string nTitle);
@@ -58,56 +63,22 @@ public:
   
   /* Render the menu */
   void Render(int xlow, int xhigh, int ylow, int yhigh);
-
   /* Enable showing of this menu */
   void Show();
-  /* Enable showing and setting parent */
-  void Show(TMenu * nParent);
-  /* Hide this menu */
-  void Hide();
-
-  /* Handle commands */
-  virtual bool CommandConsume(TCommand * Command);
-  /* Handle the keyboard presses */
-  bool KeyboardHandler(unsigned char key);
-
-  /* If we need to show a sub menu, an menuitem will let us know */
-  void ShowChild(TMenu * nChild) {
-    Child = nChild;
-    Hide();
-    Child->Show(this);
-  };
-  /* Our Child will stop showing it selv at some point */
-  void HideChild(TMenu * oChild) {
-    if (oChild != Child) {
-      cerr << "TMenu::HideChild, with unknown child" << endl;
-    } else {
-      /* Redundant */
-      Child->Hide();
-      /* Needs to be here */
-      Show();
-    }
-  }
   /* Sometimes we will stop showing ourselves, and show our
      parent */
-  void ShowParent() {
-    Hide();
-    if (Parent) {
-      Parent->HideChild(this);
-    }
-  }
-  /* This is to get the current menu 
-     Which is a hack */
-  TMenu * GetCurrentMenu() {
-    if (!CurrentMenu) {
-      CurrentMenu = this;
-    }
-    return CurrentMenu;
-  }
-
+  void ShowParent();
+  /* If we need to show a sub menu, an menuitem will let us know */
+  void ShowChild(TMenu * nChild);
+  /* Hide this menu */
+  void Hide();
   /* Add a TMenuItem to the menu */
   void AddMenuItem(TMenuItem * item);
   /* Add "the" TCancelMenuItem to the menu */
   void AddCancelMenuItem(TMenuItem * item);
+  /* This is to get the current menu - which is a hack */
+  TMenu * GetCurrentMenu();
+  /* Handle commands */
+  virtual bool CommandConsume(TCommand * Command);
 };
 #endif

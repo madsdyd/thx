@@ -2,20 +2,11 @@ Version schedule.
 
 This is an overview of what features go where. This is subject to change.
 
-** 0.3.1 (Input control)
-  - Define input pipeline (DONE)
-  - Collect input from various sources into pipeline
-    - keyboard (DONE)
-    - special keys (DONE)
-    - mouse
-    - joystick ?
-    - time ?
-  - Disable key repeat (DONE)
+- Fix the public interface in a lot of classes.
 
 ** 0.3.2 (Moving on with input)
   - Clean away old keyboard handling code.
   - Probably convert all angle, force, etc. stuff to doubles.
-  - The keyrepeat is not enabled, when quitting.
   - Make the map fall down be more smooth
   - Do some mouse stuff?
   - joystick - time?
@@ -23,9 +14,6 @@ This is an overview of what features go where. This is subject to change.
   - XGrabPointer?
 
 ** 0.3.5 (Command generation)
-  - Make command structure (DONE)
-  - Make TGame aware of command structure (DONE)
-  - Forward events from pipeline to command structure (DONE)
   - Clean up dependencies between the different state variables
     especially the menu stuff and TGame stuff.
   - Remove dead code.

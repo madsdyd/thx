@@ -64,16 +64,12 @@ public:
   virtual bool Disable();
 
   /* Focus and Blur */
-  /* Focus let the menu know that it has focus. It 
-     will only handle keypresses and other events in 
-     focused state. If it wont accept focus, false 
-     will be returned, otherwise true */
+  /* Focus let the menu know that it has focus. It will only handle
+     keypresses and other events in focused state. If it wont accept
+     focus, false will be returned, otherwise true */
   virtual bool Focus();
   /* If the menu item is editing, it will not allow blur */
   virtual bool Blur();
-
-  /* Returns true if the key has been handled, false otherwise */
-  virtual bool KeyboardHandler(unsigned char key) = 0;
 };
   
 typedef std::vector<TMenuItem *> TMenuItems;
@@ -92,7 +88,6 @@ public:
     TMenuItem(owner, cap, desc) {
     Disable();
   };
-  virtual bool KeyboardHandler(unsigned char key) { return true; };
   virtual bool CommandConsume(TCommand * Command) { return false; };
   virtual void Render(int xlow, int xhigh);
 };
@@ -116,7 +111,7 @@ public:
  * TSimpleActionMenuItem
  * **********************************************************************
  This menuitem is a base item for some very similar command handling
- code. If it receives a select, it calls DoAction */
+ code. If it receives a (menuitem, select) command, it calls DoAction */
 class TSimpleActionMenuItem : public TMenuItem {
 protected:
   virtual void DoAction() = 0;
@@ -135,7 +130,6 @@ protected:
   TMenu * SubMenu;
   virtual void DoAction();
 public:
-  virtual bool KeyboardHandler(unsigned char key);
   TSubMenuItem(TMenu * owner, string cap, string desc, TMenu * subMenu) :
     TSimpleActionMenuItem(owner, cap, desc) {
     SubMenu = subMenu;
@@ -152,7 +146,6 @@ protected:
 public:
   TReturnMenuItem(TMenu * owner, string cap, string desc) 
     : TSimpleActionMenuItem(owner, cap, desc) {};
-  virtual bool KeyboardHandler(unsigned char key);
 };
 
 /* **********************************************************************
@@ -171,7 +164,6 @@ public:
     : TSimpleActionMenuItem(owner, cap, desc) {
     function = func;
   };
-  virtual bool KeyboardHandler(unsigned char key);
 };
 
 /* **********************************************************************
@@ -209,10 +201,8 @@ protected:
 
 public:
   TValueMenuItem(TMenu * owner, string cap, string desc) 
-    : TMenuItem(owner, cap, desc) {};
-  
+    : TMenuItem(owner, cap, desc) {};  
   /* Returns true if the key has been handled, false otherwise */
-  virtual bool KeyboardHandler(unsigned char key);
   virtual bool CommandConsume(TCommand * Command); 
 };
   
@@ -234,7 +224,6 @@ public:
     selected_value = -1;
     storage = store;
   };
-  virtual bool KeyboardHandler(unsigned char key);
   virtual bool CommandConsume(TCommand * Command);
 
   /* Add a value to be shown to the list */
@@ -268,7 +257,6 @@ public:
   /* Renders both the menu entry and value */
   virtual void Render(int xlow, int xhigh);
   /* Returns true if the key has been handled, false otherwise */
-  virtual bool KeyboardHandler(unsigned char key);
   virtual bool CommandConsume(TCommand * Command);
 };
 #endif

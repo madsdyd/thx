@@ -130,6 +130,7 @@ private:
   void UpdateGameDone(system_time_t updatetime);
 
 public:
+  // TODO: Fix this reference to keyboard.c
   TPlayer * current_player;  /* Pointer to current player.
 				Accessed from keyboard.c :-/ */
   TGame(int nwidth, int nlenght, int nnum_rounds, float nmapsteepness);

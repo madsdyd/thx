@@ -290,8 +290,7 @@ void TDisplay::Render(void) {
   glRotatef(viewpoint->rotation.x, 1.0, 0.0, 0.0);
   glRotatef(viewpoint->rotation.z, 0.0, 0.0, 1.0);
   /* Force us to be inside and above the map.
-     Values are actually changed in the keyboard.c file, which is 
-     kinda ugly. */
+     The viewpoint is otherwise changed by the TPlayer class */
 #define TRANSOFFSET 3
 #define ZOFFSET 3.0
   if (viewpoint->translation.y < TRANSOFFSET) {

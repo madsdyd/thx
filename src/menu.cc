@@ -26,11 +26,17 @@
 #include "command.hh"
 
 #include "display.hh"
+#include "text.hh"
+
+/* This renders text for the menus */
 TTextRender MenuTextRender;
+
+/* This keeps track of the menu that has or lastly had focus */
 TMenu * TMenu::CurrentMenu;
 
 /* **********************************************************************
-   Create the menu with appropiate init of variables. */
+ * Create the menu with appropiate init of variables. 
+ * *********************************************************************/
 TMenu::TMenu(string nTitle) {
   Title          = nTitle;
   Parent         = NULL;
@@ -38,11 +44,11 @@ TMenu::TMenu(string nTitle) {
   visible        = false;
   focuseditem    = -1;
   cancelitem     = -1;
-
 }
 
 /* **********************************************************************
-   Destroy the menu. Deallocate dynamic data */
+ * Destroy the menu. Deallocate dynamic data
+ * *********************************************************************/
 TMenu::~TMenu() {
   /* First thing to do is to hide - as this unregisters our commands */
   Hide();
@@ -55,7 +61,8 @@ TMenu::~TMenu() {
 }
 
 /* **********************************************************************
-   Enable showing of this menu */
+ * Enable showing of this menu 
+ * *********************************************************************/
 void TMenu::Show() {
   if (focuseditem < 0) {
     /* Locate element that can take focus */
@@ -81,14 +88,16 @@ void TMenu::Show() {
 }
 
 /* **********************************************************************
-   Enable showing and setting parent */
+ * Enable showing and setting parent
+ * *********************************************************************/
 void TMenu::Show(TMenu * nParent) {
   Parent = nParent;
   Show();
 }
 
 /* **********************************************************************
-   Hide this menu */
+ * Hide this menu
+ * *********************************************************************/
 void TMenu::Hide() {
   if (!visible) { return; };
   if (focuseditem >= 0) {
@@ -104,7 +113,54 @@ void TMenu::Hide() {
 }
 
 /* **********************************************************************
-   The render function simpy moves a point, and render all our lines */
+ * If we need to show a sub menu, an menuitem will let us kno
+ * *********************************************************************/
+void TMenu::ShowChild(TMenu * nChild) {
+  Child = nChild;
+  Hide();
+  Child->Show(this);
+};
+/* **********************************************************************
+ * Our Child will stop showing it selv at some point
+ * *********************************************************************/
+void TMenu::HideChild(TMenu * oChild) {
+  if (oChild != Child) {
+    cerr << "TMenu::HideChild, with unknown child" << endl;
+  } else {
+    /* Redundant */
+    Child->Hide();
+    /* Needs to be here */
+    Show();
+  }
+}
+
+/* **********************************************************************
+ * Sometimes we will stop showing ourselves, and show our parent
+ * *********************************************************************/
+void TMenu::ShowParent() {
+  Hide();
+  if (Parent) {
+    Parent->HideChild(this);
+  }
+}
+
+/* **********************************************************************
+ * This is to get the current menu, which is kind of a hack
+ * *********************************************************************/
+TMenu * TMenu::GetCurrentMenu() {
+  if (!CurrentMenu) {
+    CurrentMenu = this;
+  }
+  return CurrentMenu;
+}
+
+/* **********************************************************************
+ * This is to get the current menu - kind of a hack
+ * *********************************************************************/
+
+/* **********************************************************************
+ * The render function simpy moves a point, and render all our lines
+ * *********************************************************************/
 void TMenu::Render(int xlow, int xhigh, int ylow, int yhigh) {
   if (visible) {
     /* Render the menu title at the top (offset 2*size), centered in magenta */
@@ -194,19 +250,21 @@ bool TMenu::CommandConsume(TCommand * Command) {
 	/* This is now the focused item */
 	int olditem = focuseditem;
 	focuseditem = cancelitem;
-	//TODO: Fix this reference to the keyboard handler.
-	handled = menuitems[cancelitem]->KeyboardHandler(10);
+	/* Construct a temporary command to send to the item */
+	TCommand * tmpcmd = new TCommand(Command->timestamp, "menuitem", "select");
+	handled = menuitems[cancelitem]->CommandConsume(tmpcmd);
 	if (!handled) { /* We only refocus if not handled */
 	  if (!(menuitems[cancelitem]->Blur())) {
 	    cerr << "TMenu::CommandConsumer - could not Blur CancelMenuItem" << endl;
 	  };
 	  /* Always try and refocus the old one - should never fail */
 	  if (!menuitems[olditem]->Focus()) {
-	    cerr << "TMenu::KeyboardHandler - could not refocus on cancel" << endl;
+	    cerr << "TMenu::CommandConsume - could not refocus on cancel" << endl;
 	  } else {
 	    focuseditem = olditem;
 	  }
 	}
+	delete tmpcmd;
       }
       return handled;
     }
@@ -217,91 +275,15 @@ bool TMenu::CommandConsume(TCommand * Command) {
 }
 
 /* **********************************************************************
-   The keyboard handler sends everything to the focused item. If
-   it does not handle it, it checks for "up" and "down". If not handled,
-   returns false */
-bool TMenu::KeyboardHandler(unsigned char key) {
-  if (visible) {
-    // printf"TMenu::KeyboardHandler %i\n", key);
-    if (!menuitems[focuseditem]->KeyboardHandler(key)) {
-      /* Check for up and down */
-      switch(key) {
-      case 'a': { /* Up */
-	if (menuitems[focuseditem]->Blur()) {
-	  do {
-	    focuseditem = ( focuseditem - 1 + menuitems.size() ) % menuitems.size();
-	  } while(!menuitems[focuseditem]->Focus());
-#ifdef SOUND_ON
-	  sound_play(names_to_nums["data/sounds/menu_move.raw"]);
-#endif
-	}
-	return true;
-      }
-      case 'z': { /* Down */
-	if (menuitems[focuseditem]->Blur()) {
-	  do {
-	    focuseditem = (focuseditem + 1) % menuitems.size();
-	  } while(!menuitems[focuseditem]->Focus());
-#ifdef SOUND_ON
-	  sound_play(names_to_nums["data/sounds/menu_move.raw"]);
-#endif
-	}
-	return true;
-      }
-      case 27: { /* Escape */
-	bool handled = false;
-	if (-1 != cancelitem) {
-	  /* Send an enter to it */
-	  if (menuitems[focuseditem]->Blur()) {
-	    /* Try and handle it */
-	    if (!(menuitems[cancelitem]->Focus())) {
-	      cerr << "TMenu::KeyboardHandler - could not focus CancelMenuItem" 
-		   << endl;
-	    };
-	    /* This is now the focused item */
-	    int olditem = focuseditem;
-	    focuseditem = cancelitem;
-	    handled = menuitems[cancelitem]->KeyboardHandler(10);
-	    if (!handled) { /* We only refocus if not handled */
-	      if (!(menuitems[cancelitem]->Blur())) {
-		cerr << "TMenu::KeyboardHandler - could not Blur CancelMenuItem" << endl;
-	      };
-	      /* Always try and refocus the old one - should never fail */
-	      if (!menuitems[olditem]->Focus()) {
-		cerr << "TMenu::KeyboardHandler - could not refocus on cancel" << endl;
-	      } else {
-		focuseditem = olditem;
-	      }
-	    }
-	    /* Return the result of handling */
-	    return handled;
-	  }
-	}
-      }
-      default:
-	return false;
-      }
-    }
-    /* Was handled by item */
-    return true;
-  } else { /* We can't handle everything, because we still have
-	      focused items */
-    if (Child) {
-      return Child->KeyboardHandler(key);
-    } else {
-      return false;
-    }
-  }
-}
-
-/* **********************************************************************
-   Add a normal menu item */
+ * Add a normal menu item
+ * *********************************************************************/
 void TMenu::AddMenuItem(TMenuItem * item) {
   menuitems.push_back(item);
 }
 
 /* **********************************************************************
-   Add "the" Cancel menu item */
+ * Add "the" Cancel menu item
+ * *********************************************************************/
 void TMenu::AddCancelMenuItem(TMenuItem * item) {
   menuitems.push_back(item);
   cancelitem = menuitems.size() - 1;

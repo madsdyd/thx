@@ -1,0 +1,59 @@
+Mads, 20010606
+
+A quick note on how scores should/is calculated and games terminated
+especially in team mode.
+
+* Non-team mode
+
+If a tank is hitted, the owner of the missile (a player) should get
+points and money, unless the owner of the missile is also the owner of
+the tank.
+
+Currently this is handled in TTank::Explosion(TExplosion * Explosion),
+like this
+
+    if (Explosion->owner) {
+      if (Explosion->owner != owner) {
+	Explosion->owner->money += (int) rint(taken_damage * 100) / 2;
+	Explosion->owner->score += (int) rint(taken_damage * 100) / 2;
+      }
+    }
+
+The variable taken_damage is calculated before this section of code,
+in TTank::Explosion(). owner is the tanks owner.
+
+In a round, the next player is found in TGame::NextPlayer(). The order
+of the players are determined in TGame::RoundStart()
+
+Obviously a non-team round is over, when only a sole survivor
+exists. This is currently quite messy to figure out, and is done in
+TGame, using the method TGame::NextPlayer()
+
+* Team-mode
+
+In team mode, a player hitting a tank on another team, should be
+awarded the points and money as usual. However, should he hit a player
+on the same team, his score should be reduced similarly. (Maybe even
+below 0. Should we allow the money to be reduced? Maybe even go below
+zero?)
+
+To be able to calculate the damage, it is sufficient to have a test
+for wheter two owners are on the same team or not:
+
+/* Returns true if the players are on the same team */
+bool TGame::OnSameTeam(TPlayer * a, TPlayer * b)
+
+When the order for players have to be calculated, it should be such
+that players from the different teams should interleave(? Possibly
+not, since there may be a different number of players on each team).
+
+When the next player has to be found, the check for game over is
+performed, and should check for the existance of more than a single
+team: A team game round is over, when only a single team exists. 
+
+The way the team score is calculated is by adding the scores of the
+menbers. This is not done untill the game over screen.
+
+If we are to modify the score calculations such that other parameters
+are to be used, this should be done by moving the calculations out of
+TTank, and into TGame, or similar to that.

@@ -651,8 +651,11 @@ void* SoundThreadFunction(void * data) {
 	  /** Check that we have not passed end. In that case, break */
 	  if (tmp_sound_elem->size > i + tmp_sound_elem->pos) {
 	    mixerbuffer2[i] += 
-	      (*((unsigned char *)(LoadedSounds[tmp_sound_elem->sfx].data
-				   +tmp_sound_elem->pos+i))) - 128;
+	      (*((unsigned char *)
+		 ((unsigned char *) LoadedSounds[tmp_sound_elem->sfx].data
+		  +tmp_sound_elem->pos+i)
+		 )
+	       ) - 128;
 	    /** printf("%x ", mixerbuffer2[i]); */
 	  } else {
 	    /** Check for looping sounds */
@@ -660,8 +663,11 @@ void* SoundThreadFunction(void * data) {
 	      /** Reset the position, copy to buffer */
 	      tmp_sound_elem->pos = -i; /** Will start the sound at pos 0*/
 	      mixerbuffer2[i] += 
-		(*((unsigned char *)(LoadedSounds[tmp_sound_elem->sfx].data
-				     +tmp_sound_elem->pos+i))) - 128;
+		(*((unsigned char *)
+		   ((unsigned char *) LoadedSounds[tmp_sound_elem->sfx].data
+		    +tmp_sound_elem->pos+i)
+		   )
+		 ) - 128;
 	    }
 	  }
 	}

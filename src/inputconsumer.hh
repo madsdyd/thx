@@ -31,6 +31,7 @@
    command names */
 typedef map <keyboard_inputevent_event_t, string, lt_kiet> TKeyboardCommandMap;
 typedef TKeyboardCommandMap::iterator TKeyboardCommandMapIterator;
+/* TODO: There need to be more than a single keyboardmap */
 extern TKeyboardCommandMap KeyboardCommandMap;
 
 /* This is a input command */

@@ -2,6 +2,8 @@ qVersion schedule.
 
 This is an overview of what features go where. This is subject to change.
 
+- Finish command structure.
+
 ** 0.3.1 (Input control)
   - Define input pipeline
   - Collect input from various sources into pipeline

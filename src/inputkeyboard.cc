@@ -37,11 +37,16 @@ TKeyboardInputEvent::TKeyboardInputEvent(keyboard_inputevent_type_t nkeyboard_in
  * *********************************************************************/
 
 /* **********************************************************************
- * KeyboardFunc - called when a normal key is pressed 
+ * Keyboard{,Up}Func - called when a normal key is pressed 
  * Note that x,y is thrown away here. This may be stupid
  * *********************************************************************/
 void KeyboardFunc(unsigned char key, int x, int y) {
   Inputs.Events.push(new TKeyboardInputEvent(keyboard_inputevent_type_down,
+					     key));
+}
+
+void KeyboardUpFunc(unsigned char key, int x, int y) {
+  Inputs.Events.push(new TKeyboardInputEvent(keyboard_inputevent_type_up,
 					     key));
 }
 
@@ -55,10 +60,12 @@ void inputkeyboard_init() {
   
   /* Set the keyboard functions */
   glutKeyboardFunc(KeyboardFunc);
+  glutKeyboardUpFunc(KeyboardUpFunc);
 }
 
 void inputkeyboard_shutdown() {
   /* Reset the keyboard functions */
+  glutKeyboardUpFunc(NULL);
   glutKeyboardFunc(NULL);
 
   /* Reset global keyrepeat */

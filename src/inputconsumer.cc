@@ -36,12 +36,32 @@ TInputToCommand InputToCommand;
 /* **********************************************************************
  * The TInputToCommand constructor - sets up default mappings
  * *********************************************************************/
+
+/* First some nice default mappings */
+struct keymap_t {
+  keyboard_inputevent_event_t kev;
+  char * cmd;
+};
+
+keymap_t key_map_std_keys_down[] =
+{
+  {{'a', keyboard_inputevent_type_down}, "a"},
+  /* FINAL */
+  {{'z', keyboard_inputevent_type_down}, ""}
+};
+
 TInputToCommand::TInputToCommand() {
-  keyboard_inputevent_event_t tmp;
-  cout << "InputToCommand constructed" << endl;
-  tmp.key  = 'a';
-  tmp.type = keyboard_inputevent_type_down;
-  KeyboardCommandMap[tmp] = "a down";
+  int i; 
+  /* TODO: Nicer way to initialize - load and save, so on */
+  /* Map the standard keys */
+  i = 0;  
+  
+  while(strcmp(key_map_std_keys_down[i].cmd, "")) {
+    cout << "i = " << i << endl;
+    KeyboardCommandMap[key_map_std_keys_down[i].kev] 
+      = key_map_std_keys_down[i].cmd;
+    i++;
+  }
 }
 
 /* **********************************************************************
@@ -59,23 +79,37 @@ int TInputToCommand::Consume() {
     switch (InputEvent->eventtype) {
     case inputevent_type_keyboard: {
       /* Find the command in the keyboard map */
+      TKeyboardInputEvent * KeyEvent 
+	= (TKeyboardInputEvent *) InputEvent;
       TKeyboardCommandMapIterator loc 
-	= KeyboardCommandMap.find(((TKeyboardInputEvent *) 
-				   InputEvent)->keyboard_inputevent_event);
+	= KeyboardCommandMap.find(KeyEvent->keyboard_inputevent_event);
       if (loc != KeyboardCommandMap.end()) {
+	/* Found a "real" mapping */
+	// TODO: Actually dispatch a command
 	cout << "TInputToCommand::Consume, key "
-	     << ((TKeyboardInputEvent *) 
-		 InputEvent)->keyboard_inputevent_event.key
-	     << "maps to " << (*loc).second << endl;
+	     << KeyEvent->keyboard_inputevent_event.key
+	     << " maps to " << (*loc).second << endl;
       } else {
-	/* No mapping found */
-	cout << "TInputToCommand::Consume, no mapping found for key "
-	     << ((TKeyboardInputEvent *) 
-		 InputEvent)->keyboard_inputevent_event.key << endl;
+	/* No mapping found -
+	   Keyboard events for "down" that are not mapped, 
+	   generate a command that has the name of the key */
+	if (keyboard_inputevent_type_down 
+	    == KeyEvent->keyboard_inputevent_event.type) {
+	  // TODO: Actually distpatch a command 
+	  cout << "TInputToCommand::Consume, key (down)"
+	       << KeyEvent->keyboard_inputevent_event.key
+	       << " automaps to " << (*loc).second << endl;
+	} else {
+	  cout << "TInputToCommand::Consume, no mapping found for key "
+	       << ((TKeyboardInputEvent *) 
+		   InputEvent)->keyboard_inputevent_event.key 
+	       << " and this type (up/down)" << endl;
+	}
       }
       break;
     }
     case inputevent_type_pointer:
+      cout << "TInputToCommand::Consume - no code to consume pointer events" << endl;
       break;
     default:
       cerr << "TInputToCommand::Consume - Unknown inputeventtype" << endl;
@@ -84,8 +118,7 @@ int TInputToCommand::Consume() {
     /* Clean up */
     Inputs.Events.pop();
     delete InputEvent;
-  }
-  
+  }  
   return count;
 }
 

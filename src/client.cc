@@ -80,7 +80,7 @@ void Client_Idle() {
   system_time_t delta_time = time_now - last_time;
   last_time                = time_now;
   /* Empty the command chain */
-  InputToCommand.Consume();
+  // InputToCommand.Consume();
 
   /* The display should always be updated */
   Display->Update(delta_time);
@@ -723,7 +723,7 @@ void TClient::Run() {
   glutReshapeFunc(Client_Reshape);
 
   /* Testing the input event functions */
-  inputkeyboard_init();
+  // inputkeyboard_init();
 
   //  glutMouseFunc(Client_Mouse);
   //  glutPassiveMotionFunc(Client_PassiveMotion);

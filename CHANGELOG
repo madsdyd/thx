@@ -1,3 +1,6 @@
+20010310
+  - Added some conversions between input events and commands.
+
 20010307-09
   - Added beginning of input event structures/files.
 

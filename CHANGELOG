@@ -1,5 +1,6 @@
 20000717
   - Cleaned up some of the code a bit. Still lots to go.
+  - Imported sources of version 0.2.8.1 into the sourceforge cvs.
 
 20000627
   - Made refreshrate work.

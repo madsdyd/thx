@@ -4,15 +4,15 @@
 #include <math.h>
 #include <GL/glut.h>
 #include "types.hh"
-#include "text.hh"
 /* The display class - this is kind of an abstraction of the screen or
    window we render into, and have control over the various elements
    that are on screen */
 class TViewpoint;
 class TConsole;
+class TTextRender;
 class TDisplay {
 public:
-  TTextRender textrender;
+  TTextRender * textrender;
   unsigned int num_frames;
   /* We should probably publish these otherwise */
   unsigned int width;
@@ -23,6 +23,7 @@ public:
   TConsole * console;
   
   TDisplay(int argc, char** argv);
+  ~TDisplay();
   void Update(system_time_t deltatime); 
   void Reshape(int w, int h);
   void NormalMode();

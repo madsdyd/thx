@@ -7,11 +7,11 @@
 #include "tank.hh"
 #include "player.hh"
 #include "inventory.hh"
-
 #include "viewpoint.hh"
 #include "server.hh"
 #include "render.hh"
-#include "projectile.hh"
+#include "map.hh"        /* To be able to invalidate the map */
+#include "projectile.hh" /* For spawn markers */
 
 /* **********************************************************************
    keyboard_handler

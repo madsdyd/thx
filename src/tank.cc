@@ -16,15 +16,23 @@
 #include "types.hh"
 #include "marker.hh"
 #include "explosion.hh"
+#include "object.hh"
 #include "models.hh"
 
 /* **********************************************************************
    Initialize a tank */
 TTank::TTank(TPlayer * owner) : TEntity(owner) {
+  model = new TObject;
   /* Override default behaviour, we do not want to be freed be the game, 
      since players still reference us */
   free = false;
   /* Other init variables is done in prepare round */
+}
+
+/* **********************************************************************
+   Destruct a tank */
+TTank::~TTank() {
+  delete model;
 }
 
 /* **********************************************************************
@@ -39,7 +47,7 @@ void TTank::PrepareRound(TVector * loc) {
   cannon.angle    = 45;
   cannon.rotation = 0;
   cannon.force    = 15;
-  default_tank(&model,&color);
+  default_tank(model, &color);
 }
 
 /* **********************************************************************
@@ -195,6 +203,6 @@ void TTank::Render(TViewpoint * viewpoint) {
 
   glColor4fv(color.data);
   glDisable(GL_LIGHTING);
-  model.draw();
+  model->draw();
   glPopMatrix();
 }

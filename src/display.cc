@@ -6,6 +6,7 @@
 #include <strstream>
 
 #include "display.hh"
+#include "text.hh"
 #include "types.hh"
 #include "viewpoint.hh"
 #include "map.hh"
@@ -40,6 +41,8 @@ void display_reshape(int w, int h) {
 /* **********************************************************************
    Initialize GL and the display class */
 TDisplay::TDisplay(int argc, char** argv) {
+  textrender = new TTextRender;
+
   /* Default assumed */
   width  = 640;
   height = 480;
@@ -113,11 +116,19 @@ TDisplay::TDisplay(int argc, char** argv) {
   glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 
   /* The textrender can not be initialized until OpenGL is running */
-  textrender.Load("data/graphics/fonts/fontGray.tga");
+  textrender->Load("data/graphics/fonts/fontGray.tga");
 
   if (GL_NO_ERROR != glGetError()) {
     cerr << "TDisplay::TDisplay: GL was in error condition on exit" << endl;
   } 
+}
+
+
+
+/* **********************************************************************
+   Clean up */
+TDisplay::~TDisplay() {
+  delete textrender;
 }
 
 /* **********************************************************************
@@ -306,8 +317,8 @@ void TDisplay::Render(void) {
     tmp.form("POS: %4.1f, %4.1f, %4.1f", viewpoint->translation.x,
 	     viewpoint->translation.y, viewpoint->translation.z)
 	       << ends; 
-    textrender.Pos(0, 2*textrender.size);
-    textrender.Print(tmp.str());
+    textrender->Pos(0, 2*textrender->size);
+    textrender->Print(tmp.str());
   }
   
   /* ************************************************************
@@ -315,8 +326,8 @@ void TDisplay::Render(void) {
   {
     ostrstream tmp;
     tmp.form("FPS: %4.1f", framerate_get()) << ends;
-    textrender.Pos(525, 2*textrender.size);
-    textrender.Print(tmp.str());
+    textrender->Pos(525, 2*textrender->size);
+    textrender->Print(tmp.str());
   }
   
   /* ************************************************************
@@ -332,10 +343,10 @@ void TDisplay::Render(void) {
 	      Game->current_player->tank->color.data[2],
 	      0.90);
     glBegin(GL_QUADS);
-    glVertex2i(0,2*textrender.size);
-    glVertex2i(0,0*textrender.size);
-    glVertex2i(width,0*textrender.size);
-    glVertex2i(width,2*textrender.size);
+    glVertex2i(0,2*textrender->size);
+    glVertex2i(0,0*textrender->size);
+    glVertex2i(width,0*textrender->size);
+    glVertex2i(width,2*textrender->size);
     glEnd();
     // glDisable(GL_BLEND); 
 
@@ -353,8 +364,8 @@ void TDisplay::Render(void) {
 	       Game->current_player->score,
 	       Game->current_player->tank->health);
       tmp << ends;
-      textrender.Pos(0, textrender.size);
-      textrender.PrintLn(tmp.str());
+      textrender->Pos(0, textrender->size);
+      textrender->PrintLn(tmp.str());
     }
     {
       /* Print selected projectile, rotation, angle and force */
@@ -365,7 +376,7 @@ void TDisplay::Render(void) {
 	       Game->current_player->tank->cannon.force);
       tmp << Game->current_player->inventory->DescribeSelected() 
 	  << ends;
-      textrender.Print(tmp.str());
+      textrender->Print(tmp.str());
     }
   }
   

@@ -3,13 +3,13 @@
 #include <GL/gl.h>
 #include <string>
 
-#include "glTexFont/text.h"
 #include "color.hh"
 
 /* Unit to make text wrapper class that maintains state and position, etc. */
+class text_t;
 class TTextRender {
 private:
-  text_t text_render;
+  text_t * text_render;
   GLint x, y;
   void Draw(const string text);
 public:
@@ -17,6 +17,7 @@ public:
   int size;
   TColor color;
   TTextRender(); 
+  ~TTextRender();
   GLint Load(const string filename);
   void Pos(GLint xpos, GLint ypos);
   void PosY(GLint ypos);

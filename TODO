@@ -11,9 +11,9 @@ of playable game in version 0.3.0 that could actually be enjoyed.
     framerate.hh
     game_cmds.hh (DONE - removed)
     keyboard.hh (DONE - sortof)
-    render.hh
+    render.hh (DONE - sortof)
     sound.hh (DONE - sortof)
-    textures.hh
+    textures.hh 
     types.hh (DONE)
   - implement destructors
   - tighten includes

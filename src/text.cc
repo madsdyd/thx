@@ -1,8 +1,9 @@
 #include "text.hh"
-
+#include "glTexFont/text.h"
 /* **********************************************************************
-   Create an object */
+   Create a TextRender */
 TTextRender::TTextRender() {
+  text_render = new text_t;
   shadow = false;
   size   = 12;
   x      = 0;
@@ -11,10 +12,16 @@ TTextRender::TTextRender() {
 }
 
 /* **********************************************************************
-   Create an object */
+   Destroy it */
+TTextRender::~TTextRender() {
+  delete text_render;
+}
+
+/* **********************************************************************
+   Load a font texture */
 GLint TTextRender::Load(const string filename) {
-  GLint status = text_render.Load(filename.c_str());
-  text_render.gap = 1.0/256.0;
+  GLint status = text_render->Load(filename.c_str());
+  text_render->gap = 1.0/256.0;
   if (1 != status) {
     cout << "TTextRender::Load could not load " << filename << endl;
   }
@@ -37,11 +44,11 @@ void TTextRender::PosX(GLint xpos) {
    Draw - calls the renderer */
 void TTextRender::Draw(const string text) {
   if (shadow) {
-    text_render.Shadow();
+    text_render->Shadow();
   }
-  text_render.Size(size);
-  text_render.Color4fv(color.data);
-  text_render.Draw(x, y, text.c_str());
+  text_render->Size(size);
+  text_render->Color4fv(color.data);
+  text_render->Draw(x, y, text.c_str());
 }
 
 /* **********************************************************************

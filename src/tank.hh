@@ -3,12 +3,8 @@
 
 #include "types.hh"
 #include "entities.hh"
-#include "explosion.hh"
-
+#include "vector.hh"
 #include "color.hh"
-
-#include "map.hh"
-#include "object.hh"
 
 typedef struct {
   int angle;
@@ -22,17 +18,21 @@ typedef enum { tankstate_alive,    /* Alive and well - health > 0 */
 	       tankstate_rip       /* Done with animation */
 } tankstate_t;
 
+class TExplosion;
+class TMap;
+class TObject;
 class TTank : public TEntity {
 protected:
   float levitation;               /* Used for death animation */
   tankstate_t tankstate;
 public:
-  TObject model;
+  TObject * model;
   TColor color;
   TVector location;
   cannon_t cannon;
   float health;
   TTank(TPlayer * owner);
+  ~TTank();
   /* Prepare a tank for a new round, updates location, health, etc */
   void PrepareRound(TVector * loc);
   /* Adjust the force of the cannon */

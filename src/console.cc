@@ -1,6 +1,7 @@
 #include "console.hh"
 
 #include "display.hh"
+#include "text.hh"
 
 #define FADE_DELTA 5.0 /* Every line is on screen for this long */
 #define NUM_LINES_SHOW 4
@@ -48,9 +49,9 @@ void TConsole::Render(TDisplay * display) {
     int i   = mymin((int) lines.size(), 
 		    (int) rint(fade_time/FADE_DELTA));
     // cout << "TConsole::Render without background i = " << i << endl;
-    display->textrender.Pos(0, display->height-display->textrender.size);
+    display->textrender->Pos(0, display->height-display->textrender->size);
     while(i > 0) {
-      display->textrender.PrintLn(lines[lines.size()-i--]);
+      display->textrender->PrintLn(lines[lines.size()-i--]);
     }
   }
 }

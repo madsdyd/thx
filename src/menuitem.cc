@@ -214,13 +214,23 @@ bool TSimpleActionMenuItem::CommandConsume(TCommand * Command) {
  * TScrollMenuItem
  * **********************************************************************
  * *********************************************************************/
+static string scrollupcap;
+static string scrolldowncap;
+static string scrollnocap;
+
 TScrollMenuItem::TScrollMenuItem(TMenu * owner, string desc, bool isup) 
   : TSimpleActionMenuItem(owner, "--", desc) {
   IsUp      = isup;
   CanScroll = !isup;
   OtherEnd  = NULL;
+  /* Build the scrollup and down captions */
+  scrolldowncap = "v"; /* 134 */
+  scrollupcap   = "^"; /* 135 */
+  scrollnocap   = "_"; /* 139 */
   if (!isup) {
-    caption = "vv";
+    caption = scrolldowncap;
+  } else {
+    caption = scrollnocap;
   }
 };
 
@@ -231,9 +241,9 @@ void TScrollMenuItem::SetOtherEnd(TScrollMenuItem * other) {
 void TScrollMenuItem::SetCanScroll() {
   CanScroll = true;
   if (IsUp) {
-    caption = "^^";
+    caption = scrollupcap;
   } else {
-    caption = "vv";
+    caption = scrolldowncap;
   }
 }
 /* **********************************************************************
@@ -246,18 +256,18 @@ void TScrollMenuItem::DoAction() {
     /* We scroll Up - then test if it can be done again */
     Owner->ScrollUp(true);
     if (!Owner->ScrollUp(false)) {
-      caption = "--";
+      caption = scrollnocap;
     } else {
       Owner->ScrollDown(false);
-      caption = "^^";
+      caption = scrollupcap;
     }
   } else {
     Owner->ScrollDown(true);
     if (!Owner->ScrollDown(false)) {
-      caption = "--";
+      caption = scrollnocap;
     } else {
       Owner->ScrollUp(false);
-      caption = "vv";
+      caption = scrolldowncap;
     }
   }
 }

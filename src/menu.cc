@@ -325,13 +325,25 @@ bool TMenu::CommandConsume(TCommand * Command) {
     /* Scroll stuff */
     if ("scroll-up" == Command->args) {
       if (hasscrollarea) {
-	ScrollUp(true);
+	if (menuitems[focuseditem]->Blur()) {
+	  ((TScrollMenuItem *) menuitems[scrollmin])->DoAction();
+	  if (IsHiddenInScrollArea(focuseditem)) {
+	    FocusMoveUp();
+	  }
+	  menuitems[focuseditem]->Focus();
+	}
       }
       return true;
     }
     if ("scroll-down" == Command->args) {
       if (hasscrollarea) {
-	ScrollDown(true);
+	if (menuitems[focuseditem]->Blur()) {
+	  ((TScrollMenuItem *) menuitems[scrollmax])->DoAction();
+	  if (IsHiddenInScrollArea(focuseditem)) {
+	    FocusMoveDown();
+	  }
+	  menuitems[focuseditem]->Focus();
+	}
       }
       return true;
     }

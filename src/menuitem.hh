@@ -185,11 +185,11 @@ protected:
   bool IsUp;
   bool CanScroll;
   TScrollMenuItem * OtherEnd;
-  virtual void DoAction();
 public:
   TScrollMenuItem(TMenu * owner, string desc, bool isup);
   void SetOtherEnd(TScrollMenuItem * other);
   void SetCanScroll();
+  virtual void DoAction(); /* So that the menu can call them */
 };
 
 /* **********************************************************************

@@ -80,8 +80,12 @@ TProjectile * TProjectile::Fire(TVector * loc, TVector * vel) {
 void TProjectile::OnOrbit(TGame * game, system_time_t deltatime) {
   Display->console->AddLine("projectile went into orbit");
   /* Insert small explosion entity */
-  // game->AddEntity(new TExplosion(owner, location, diameter/2.0, 1.0, 25.0));
-  /* Remove during next game update */
+  /*  game->AddEntity(new TExplosion(owner, location, radius/4.0, 1.0, strength/4.0));
+#ifdef SOUND_ON
+  sound_play(names_to_nums["data/sounds/explosion.raw"]);
+#endif
+  */
+  /* Remove this projectile during next game update */
   keep = false;
 }
 
@@ -178,9 +182,14 @@ TProjectile * TSpawnProjectile::CopyThis() {
 void TSpawnProjectile::OnCollision(TGame * game, system_time_t deltatime, 
 				   TVector loc) {
   TVector vel;
-  vel.x = 3.0;
-  vel.y = 3.0;
-  vel.z = 12.0;
+  vel.x = 1.0;
+  vel.y = 1.0;
+  vel.z = 10.0;
+
+  /* TODO: This is a hack - need to make sure the spawned projectiles do not 
+     explode on the first round
+     When the collision detection is fixed, this should probably go. */
+  loc.z += 1.5;
   game->AddEntity(new TProjectile(owner, radius, strength/4.0, loc, vel));
   vel.x = -vel.x;
   game->AddEntity(new TProjectile(owner, radius, strength/4.0, loc, vel));
@@ -213,23 +222,32 @@ void TMirvProjectile::OnPosUpdate(TGame * game, system_time_t deltatime) {
     vel.x = velocity.x;
     vel.y = velocity.y;
     vel.z = 0.0;
+    /* Add projectile that continues same track */
     game->AddEntity(new TProjectile(owner, radius, strength/4.0, 
 				    location, vel));
-    vel.x += 6.0;
+
+    /* Add front, left, behind and back */
+    vel = vel*0.8F;
     game->AddEntity(new TProjectile(owner, radius, strength/4.0, 
 				    location, vel));
-    vel.y += 6.0;
+    vel = vel*1.25F*1.25F;
     game->AddEntity(new TProjectile(owner, radius, strength/4.0, 
 				    location, vel));
-    vel.x -= 6.0;
+    vel = vel*0.8F;
+    vel.rotatexy(M_PI/8.0);
     game->AddEntity(new TProjectile(owner, radius, strength/4.0, 
 				    location, vel));
+    vel.rotatexy(2.0*M_PI-M_PI/4.0);
+    game->AddEntity(new TProjectile(owner, radius, strength/4.0, 
+				    location, vel)); 
+
     /* Add a minor explosion */
     game->AddEntity(new TExplosion(owner, location, 
 				   radius/4.0, 6.0, strength/4.0)); 
 #ifdef SOUND_ON
-  sound_play(names_to_nums["data/sounds/explosion.raw"]);
+    sound_play(names_to_nums["data/sounds/explosion.raw"]);
 #endif    
+    /* Remove this projectile on next update */
     keep = false;
   }
 }

@@ -74,7 +74,18 @@ TVector TVector::operator*(float s) {
   return tmp;
 }
 
+TVector TVector::operator*(double s) {
+  TVector tmp(x * s, y * s, z * s);
+  return tmp;
+}
+
 TVector TVector::operator*(int s) {
   TVector tmp(x * s, y * s, z * s);
   return tmp;
+}
+
+void TVector::rotatexy(double d) {
+  float x1 = x * cos(d) - y * sin(d);
+  y = x * sin(d) + y * cos(d);
+  x = x1;
 }

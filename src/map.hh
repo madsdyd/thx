@@ -63,8 +63,12 @@ private:
   /* Slides the ground, called after lowering. */
   void Slide(int x, int y);
   void SetTexture(float h);
+  /* Return a random spot within the map, within border */
+  TVector RandomSpot(int border);
   /* The meat of RandomSpots */
   void DoRandomSpots(TVectors * spots, int remaining, int border);
+  //#define mappoint_at(map,x,y) (&(((map)->data[(int) (((x)*((map)->length)+(y)))])))
+  TMappoint * PointAt(int x, int y);
 public:
   int width, length;   
   float max_steepness; /* The max steepness after a slide */
@@ -73,8 +77,6 @@ public:
   float bumpiness;     // How bumpy the map should be
   TMap(int w, int l, float nmapsteepness);
   ~TMap();
-  /* Return a random spot within the map, within border */
-  TVector RandomSpot(int border);
   /* Return n random spots within the map, with min border dist from border
      and other spots */
   TVectors * RandomSpots(int n, int border);
@@ -93,8 +95,6 @@ public:
      This simply "removes" part of the landscape, leaving stuff that is no
      more then map_max_steepness steep */
   void Explosion(TExplosion * Explosion);
-  //#define mappoint_at(map,x,y) (&(((map)->data[(int) (((x)*((map)->length)+(y)))])))
-  TMappoint * PointAt(int x, int y);
   /* Return the height at a given point - within a triangle */
   float HeightAt(float x, float y);
   /* Init the renderer */

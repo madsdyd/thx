@@ -296,7 +296,8 @@ bool TGame::FireProjectile() {
   /* Initialize the projectile to the position of the tank fireing it */
   location.x = tank->location.x;  
   location.y = tank->location.y;
-  location.z = tank->location.z + 0.5;
+  /* TODO: This hack makes sure that we are always above the map */
+  location.z = GetMap()->HeightAt(location.x, location.y) + 1.0;
   
   /* The velocity is determined as the direcion, angle and force */
   dir_x = cos(tank->cannon.rotation * M_PI / 180.0);

@@ -3,10 +3,11 @@ Version schedule.
 This is an overview of what features go where. This is subject to change.
 
 - Fix the public interface in a lot of classes.
-
+- Still problems with the starting position of tanks
+- a lot of files depends on vector.hh!
+- slide on a map is never called?
 
 ** 0.3.2 (Moving on with input)
-  - Clean away old keyboard handling code.
   - Probably convert all angle, force, etc. stuff to doubles.
   - Do some mouse stuff?
   - joystick - time?

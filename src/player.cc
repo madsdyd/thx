@@ -31,7 +31,7 @@
  * *********************************************************************/
 TPlayer::TPlayer(string nname) { 
   name  = nname;
-  money = 500;
+  money = 5000;
   score = 0;
   inventory = new TInventory(this);
 }

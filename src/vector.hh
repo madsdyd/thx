@@ -35,13 +35,15 @@ public:
   float Distance(TVector &b);
   void display();
 
-  float TVector::inner(TVector a);
-  TVector TVector::cross(TVector a);
-  TVector TVector::operator-(TVector a);
-  TVector TVector::operator+(TVector a);
-  TVector TVector::operator*(float s);
-  TVector TVector::operator*(int s);
-
+  float inner(TVector a);
+  TVector cross(TVector a);
+  TVector operator-(TVector a);
+  TVector operator+(TVector a);
+  TVector operator*(double s);
+  TVector operator*(float s);
+  TVector operator*(int s);
+  /* Rotate this vector d degrees in the xy plane */
+  void rotatexy(double d);
 };
 
 typedef list<TVector> TVectors;

@@ -640,6 +640,11 @@ bool TMap::CollisionDetect(TVector * old_location, TVector * new_location) {
 
   } else {
     /* Well, duuuuh... */
+    /* TODO: This hack is to make sure that some weird errors don't 
+       happen - it is not the correct solution ... */
+    if (new_location->z <= HeightAt(new_location->x, new_location->y)) {
+      return true;
+    }
     return false;
   }
 

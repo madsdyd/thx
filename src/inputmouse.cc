@@ -29,55 +29,75 @@
  * The TMouseInputEvent class (constructor) 
  * Creates an instance, sets attributes
  * *********************************************************************/
-TMouseInputEvent::TMouseInputEvent(mousebutton_button_t nbutton,
-				   mousebutton_state_t nstate,
-				   unsigned int x, unsigned int y)
+TMouseInputEvent::TMouseInputEvent(mousebutton_state_t nstate,
+				   mousebutton_button_t nbutton,
+				   unsigned int x, unsigned int y,
+				   unsigned int oldx, unsigned int oldy)
   : TInputEvent(inputevent_type_pointer) {
+  mouse_inputevent_event.state  = nstate;
+  mouse_inputevent_event.button = nbutton;
   mouse_inputevent_event.x      = x;
   mouse_inputevent_event.y      = y;
-  mouse_inputevent_event.button = nbutton;
-  mouse_inputevent_event.state  = nstate;
+  mouse_inputevent_event.oldx   = oldx;
+  mouse_inputevent_event.oldy   = oldy;
 }
 /* **********************************************************************
  * Definition of glut callback functions
  * *********************************************************************/
 
 /* **********************************************************************
+ * This is a global variable, that holds the last known state of the mouse
+ * *********************************************************************/
+static unsigned int oldx = 0;
+static unsigned int oldy = 0;
+static mousebutton_button_t last_button = mouse_none;
+
+/* **********************************************************************
  * MouseFunc - called when a mouse button is clicked
  * *********************************************************************/
 void MouseFunc(int button, int state, int x, int y) {
-  mousebutton_button_t tmpbutton;
-  mousebutton_state_t  tmpstate;
   switch (button) {
   case GLUT_LEFT_BUTTON:
-    tmpbutton = mouse_left;
+    last_button = mouse_left;
     break;
   case GLUT_MIDDLE_BUTTON:
-    tmpbutton = mouse_middle;
+    last_button = mouse_middle;
     break;
   case GLUT_RIGHT_BUTTON:
-    tmpbutton = mouse_right;
+    last_button = mouse_right;
     break;
   default:
-    Assert(0, "Unknown GLUT state");
+    Assert(0, "MouseFunc: Unknown GLUT button pressed");
   }
-  switch (state) {
-  case GLUT_UP:
-    tmpstate = mouseup;
-      break;
-  case GLUT_DOWN:
-    tmpstate = mousedown;
-    break;
-  default:
-    Assert(0, "Unknown GLUT state");
+  /* Push an event, store the new values as old */
+  if (GLUT_DOWN == state) {
+    Inputs.Events.push(new TMouseInputEvent(mousedown, last_button, x, y, oldx, oldy));
+  } else {
+    Inputs.Events.push(new TMouseInputEvent(mouseup, last_button, x, y, oldx, oldy));
   }
-  Inputs.Events.push(new TMouseInputEvent(tmpbutton, tmpstate, x, y));
+  oldx = x;
+  oldy = y;
 }
 
 /* **********************************************************************
- * This table is used when mapping from GLUT key stuff to our format. 
+ * PassiveMotionFunc - called when the pointer is moved, with no
+ * buttons pressed
  * *********************************************************************/
+void PassiveMotionFunc(int x, int y) {
+  Inputs.Events.push(new TMouseInputEvent(mousemove, mouse_none, x, y, oldx, oldy));
+  oldx = x;
+  oldy = y;
+}
 
+/* **********************************************************************
+ * MotionFunc - called when the pointer is moved, with a button pressed.
+ * Note, this function will not work with multiple buttons pressed. 
+ * *********************************************************************/
+void MotionFunc(int x, int y) {
+  Inputs.Events.push(new TMouseInputEvent(mousedrag, last_button, x, y, oldx, oldy));
+  oldx = x;
+  oldy = y;
+}
 
 /* **********************************************************************
  * Registering and deregistering mouse handler functions in glut 
@@ -86,10 +106,14 @@ void MouseFunc(int button, int state, int x, int y) {
 void inputmouse_init() {
   /* Set the mouse functions */
   glutMouseFunc(MouseFunc);
+  glutPassiveMotionFunc(PassiveMotionFunc);
+  glutMotionFunc(MotionFunc);
 }
 
 void inputmouse_shutdown() {
   /* Reset the mouse functions */
+  glutMotionFunc(NULL);
+  glutPassiveMotionFunc(NULL);
   glutMouseFunc(NULL);
 }
 

@@ -23,25 +23,33 @@
 #define __INPUTMOUSE_HH__
 /* This is for input events generated from the mouse */
 #include "inputevent.hh"
+
+/* What was the reason for the event. */
+typedef enum {mouseup, 
+	      mousedown,
+	      mousemove,
+	      mousedrag
+} mousebutton_state_t;
+
 /* Is any button pressed */
 typedef enum {mouse_none,
 	      mouse_left,
 	      mouse_middle, 
 	      mouse_right
 } mousebutton_button_t;
-/* Did the button stay the same, go up/down */
-typedef enum {mouseup, 
-	      mousedown,
-	      mousestayedup,
-	      mousestayeddown
-} mousebutton_state_t;
 
 /* Uniqly define a mouse event */
 typedef struct {
+  /* Used for up and down */
+  mousebutton_state_t state;
+  /* Used for drag, up and down */
+  mousebutton_button_t button;
+  /* These are used for up, down, move and drags */
   unsigned int x;
   unsigned int y;
-  mousebutton_button_t button;
-  mousebutton_state_t state;
+  /* These are only used for move and drags */
+  unsigned int oldx;
+  unsigned int oldy;
 } mouse_inputevent_event_t;
 
 /*
@@ -62,9 +70,10 @@ class TMouseInputEvent : public TInputEvent {
 public:
   mouse_inputevent_event_t mouse_inputevent_event;
   /* Constructor takes mouse event type and key that it relates to */
-  TMouseInputEvent(mousebutton_button_t nbutton,
-		   mousebutton_state_t nstate,
-		   unsigned int x, unsigned int y);
+  TMouseInputEvent(mousebutton_state_t nstate,
+		   mousebutton_button_t nbutton,
+		   unsigned int x, unsigned int y,
+		   unsigned int oldx, unsigned int oldy);
 };
 /* Declare a global mouse handling setup function
    Will register OpenGL/GLUT callbacks (in this case). */

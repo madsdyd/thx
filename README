@@ -1,0 +1,58 @@
+This is the README for "Tank Hill eXtreme".
+
+This program has only been tested under Linux. You need support for OpenGL 
+(MesaGL) and probably some sort of hardware support to run this program.
+
+To compile:
+$cd src && make && cd ..
+
+To run:
+$./thx
+
+If you get a coredump, there are 3 likely causes: 
+- you do not have rigths to access your 3d hardware. 
+ (You may be running as non-root/with restrictive permissions).
+- you are running as root, but have not setup your display correctly.
+- you found a bug! (Please report this)
+
+The program does not grab the mouse - make sure that you do not move the mouse
+outside the window you start the program in, or you may loose control.
+
+Controls for controlling the menu: Please use the help option in the menu.
+
+Controls during the game (subject to change, check keyboard.cc):
+
+quit the game     : q
+in game menu      : esc
+
+move view         : d,g,r,f,t,b
+rotate view       : h,k
+tilt view         : u,j
+reset view        : e
+
+flymode           : y
+clipmode          : i
+test refreshrate  : c 
+
+tilt kanon        : a,z
+adjust force      : o,p
+rotate kanon      : n,m
+(combine with shift for faster changing)
+change projectile : tab
+fire              : space
+
+rendermodes:
+lines             : 1
+polys             : 2
+texture           : 3
+toogle lights     : 4
+toogle shademode  : 5
+toogle normals    : 6
+toogle markers    : 7
+
+This is a very early version of thx, not intended for public release. You are
+_not_ allowed to distribute this version. Contact the Authors for more 
+information.
+
+This game is planned (sometime in the future) to be released under the GPL. For
+now, please respect our wish not to distribute it.

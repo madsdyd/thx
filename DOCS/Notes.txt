@@ -1,0 +1,96 @@
+Generel notes about the structure of THX.
+
+* Overview
+
+The game is written in C++, and uses Mesa for rendering the 3D
+graphics. GLUT is used to handle the keyboard input, and manage the
+lowlevel event handling.
+
+Structurally, it is the intention that the game should work as a
+network aware client/server architecture (presently there are no
+server, and the game is not network aware). The intention is that the
+state of any game is maintained in the server, and updates to the
+state originates at the different clients and is passed to the server
+for approval and incooperation into the state.
+
+<figure to illustrate the relationship between the different parts>
+
+Nothing in the game has been designed. It is all a major hack, and
+that is the way I like it :-) (Design is for work. This is for fun :-)
+Also, the first hacking session on this game was 11 hours and resulted
+in something "playable", unfortunatly written entirely in C. Almost 30
+hours more was put into the game, before the decision to use C++ was
+taken. There are still a lot of "pure C" left in the game, in various
+places. Also, due to the hack nature, a lot of cruft is left
+around. Feel free to clean up :-)
+
+* The Game class (TGame)
+
+The game class contains all the elements of a running game. It
+contains pointers to the players, and the player who's turn it
+currently is. (This implies a turnbased game - which may change in the
+future). The game also contains all the other parts -- called entities
+-- of the game. The game maintains all the state by various means.
+
+** Structure of a game.
+
+A game is created with the width and lenght of the maps that are going
+to be used with the game, and the number of rounds that the game
+should have. (It is the intention to use a more flexsible system to
+maintain this kind of information and transfer it between the various
+parts of the system).
+
+When a new Game is created, it is quite empty, but ready to accept
+players. It is in state gamestate_joining. Adding players to the game
+can be done with the method
+bool TGame::AddPlayer(TPlayer * player)
+which will fail if the gamestate is not gamestate_joining.
+
+When all the players that wish to participate has been added, the
+method 
+bool TGame::Roundstart() 
+is called. This will fail if the game is not in a state that allows
+starting a round. Otherwise, some various initialization routines will
+take place. Most important is probably that a map will be created and
+set for the game, and the players tanks will be randomly placed upon
+this map. Finally the game will be set in a "running" state:
+gamestate_round_running, and the roundstate will be set to
+roundstate_can_fire (because players can fire :-).
+
+Now, the game is ready to let (virtuel) time pass. This happens by
+calling the "update" method:
+void TGame::Update(system_time_t updatetime)
+Depending on the state of the game, different methods will be called
+from within this method, but eventually all entities will get a chance
+to update their state to the current time. To allow for iteration in
+e.g. vector manipulations, the updatetime will be split into virtuel
+timeslices if the time since the last update passed has been too
+long. (There are some issues here with the first update, but it should
+not cause problems).
+
+The major method for players to add entities to the game, is via the
+method
+bool TGame::FireProjectile()
+which fires a projectile from the current_players canon. (Sort of). 
+It first checks if the player is allowed to fire (again, some
+turnbased assumptions are used here), and if that is the case, then a
+TProjectile is added to the list of entities. (Selection from the
+players inventory should be used). The method used for this is 
+void TGame::AddEntity(TEntity * Entity)
+This method checks if the entity is marked as affecting the turn - in
+that case, the variable num_stoppers is incremented. 
+
+Now, when the game updates the entities (from the method update above)
+in the "normal" running state, it will also remove the entites that
+have their "keep" variable set to false. If any of these is marked as
+affecting the turn, then 
+
+
+
+
+
+
+
+
+
+

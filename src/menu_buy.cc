@@ -1,0 +1,114 @@
+#include "menu_buy.hh"
+
+#include <iomanip.h> /* for setw ... sic */
+#include <strstream>
+
+#include "menuitem.hh"
+
+/* This is our global BuyMenu */
+TBuyMenu * BuyMenu = NULL;
+
+/* **********************************************************************
+   TBuyMenu uses a speciel menuitem class that is almost like a 
+   TActionMenuItem */
+class TBuyMenuItem : public TMenuItem {
+private:
+  TInventoryElement * element;
+  TAction function;
+  int * money;
+public:
+  /* Set the caption */
+  void SetCaption() {
+    /* Num  -  quantity @ price */
+    ostrstream tmp;
+    tmp << setw(4) << element->num << " - " << setw(5) << element->price
+	<< "/" << setw(2) << element->units << setw(0) << " : " 
+	<< element->name << ends;
+    caption = tmp.str();
+  };
+  TBuyMenuItem(TMenu * owner, string desc, int * nmoney,
+	       TAction nbuyaction, TInventoryElement * nelement) 
+    : TMenuItem(owner, "", desc) {
+    money    = nmoney;
+    element  = nelement;
+    function = nbuyaction;
+    SetCaption();
+  };
+  virtual bool KeyboardHandler(unsigned char key) {
+    /* Only handle keypresses if we have the focus */
+    if (menuitem_state_focused != state) {
+      cerr << "TBuyMenuItem::KeyboardHandler not in focus!" << endl;
+      return false;
+    };
+    if (key == 10 || key == 13 || key == 32) {
+      if (function && element) {
+	/* But it */
+	element->Buy(money);
+	/* Force an update */
+	function();
+      }
+      return true;
+    } else {
+      return false;
+    } 
+  }
+  /* Budget adjust the state of the menu item */
+  void Budget() {
+    Blur();
+    SetCaption();
+    if (*money < element->price) {
+      Disable();
+    } else {
+      Enable();
+    }
+  }
+  void Render(int xlow, int xhigh) {
+    /* Sets the color, then renders the caption centered with linechange */
+    SetRenderColor();
+    MenuTextRender.CenterLn(xlow, xhigh, caption, ":");
+  }
+};
+
+/* **********************************************************************
+   The BuyMenu constructor */
+TBuyMenu::TBuyMenu(string title, TInventory * inventory, int * money,
+		   TAction CancelFunc, TAction BudgetFunc) 
+  : TMenu(title) {
+  /* Create a lot of TBuyMenuItems */
+  TInventoryElements * tmp = inventory->GetElements();
+  TInventoryElementsIterator End = tmp->end();
+  for (TInventoryElementsIterator i = tmp->begin(); i != End; i++) {
+    AddMenuItem(new TBuyMenuItem(this, "Buy this package", money, 
+				 BudgetFunc, (*i)));
+  }  
+  /* Remember to fix budget, if you ever add menuitems here! */
+  AddMenuItem(new TSpaceMenuItem(this));
+  AddCancelMenuItem(new TActionMenuItem(this, "Continue", 
+					"Stop buying for this player", 
+					CancelFunc));
+  /* Do a Budget... */
+  Budget(Title);
+}
+
+/* **********************************************************************
+   The Budget function simply adjust the state of each TBuyMenuItem */
+void TBuyMenu::Budget(string ntitle) {
+  /* Set the new caption */
+  Title = ntitle;
+  /* Update all the menuitems, except the last two. (This is ugly) - very
+     ugly*/
+  TMenuItemsIterator End = menuitems.end();
+  End--; End--;
+  for (TMenuItemsIterator i = menuitems.begin(); i != End; i++) {
+    ((TBuyMenuItem *)(*i))->Budget();
+  };
+  /* Find an entry that can be selected 
+     The entry is blurred, maybe it will focus. */
+  if (focuseditem >= 0) {
+    if (!menuitems[focuseditem]->Focus()) {
+      do {
+	focuseditem = ( focuseditem - 1 + menuitems.size() ) % menuitems.size();
+      } while(!menuitems[focuseditem]->Focus());
+    }
+  }
+}

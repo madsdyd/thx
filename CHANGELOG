@@ -1,0 +1,236 @@
+20000717
+  - Cleaned up some of the code a bit. Still lots to go.
+
+20000627
+  - Made refreshrate work.
+  - Added a slight support method to TConsole.
+  - Removed the char buffers that were not absolutly neccesary.
+
+20000626
+  - Converted all text elements to use textured fonts.	
+  - Added drawing of markers as a keyboard option, defaults to not on.
+
+20000619
+  - Fixed viewpoint reseting - now a viewpoint can also be reset from a 
+    location.
+  - Console now works as before and uses texturemapped text for rendering
+  - Tracked down a bug in the texture_load code
+
+20000618
+  - Changed the canon rotation keys to n, m and made them use step of 1, 10
+    if N,M. Same with A,Z,O and P. Clipmode is now on i.
+  - Changed gravity and cleaned projectile fireing code a bit.
+  - Changed the money calculation code and the prices for missiles a bit
+  - Added TSpaceMenuItem
+  - Added viewpoint to the player, each player now have its own viewpoint
+  - Converted the display module to C++
+
+20000617
+  - Made method to let menuoptions center on ":".
+
+20000616
+  - Projectiles now have a strength and uses the radius for the explosion only
+  - Renamed the project from 3dse to thx
+  - Added a lot of sounds to various events
+  - Version 0.2.7 complete, release is version 0.2.7.1, because forgot commit.
+
+20000615
+  - Changed menu cancel code a bit
+  - Implemented game over "score" screen
+  - Randomized player ordering
+
+20000609
+  - Added menu for buying stuff between rounds
+
+20000608
+  - The playernames are now used in the game.
+  - Changed the player distribution code slightly
+  - Changed the Within method of the map, which I hope will fix the issues with 
+    projectiles exploding at the wrong place/time.
+  - Implemented in game menu.
+
+20000607
+  - Added an inventory to the player, that allows selection between different projectile
+    at run time. 
+
+20000605
+  - Viewpoint reset on round start.
+  - Removed a lot of cout statements
+  - Made an money award system.
+
+20000604
+  - Added game over screen. Takes you to the game menu.
+  - Reenabled sound. 
+  - Fixed the very slow fading projectiles on orbit
+
+20000601
+  - More cleaning up.
+  - Added menu for round end, and started coding for it.
+  - Added stuff to game.cc that makes it possible to restart a round
+  - Made map only load textures once
+  - Removed a lot of old couts 
+  - Lot of very minor stuff
+
+20000530
+  - added menugame and client files trying to clean up a bit
+
+20000528
+  - made operations on map that provides several random spots.
+  - made TDelay entity, that affect_turn and sleeps. Made TMarker inherit from it
+  - made explicit state change in tanks and operation that prepares for a round.
+
+20000527
+  - Integrated Skjalms random map making code
+  - Added light
+  - Added options to control light, shademode, normals from keyboard
+  - Change the projectile module to use a more modular update
+  - Added a fed extra projectiles - currently non-selectable
+  - Updated the game/round/turn code - still not done, but better:
+    Player change is now correct AFAIK.
+    Round end is now correctly determined (but not handled). 
+    Dying animation needs to insert "affect_round" until they are done.
+
+20000521
+  - Added support for map size from menu.
+
+20000510
+  - Changed glTexFont to allow interspace adjustments to the char rendering, 
+    which gives sligthly nicer looking displays.
+  - Introduced storage values to the menu system, that for now can be used to 
+    start a game with a given number of players.
+
+20000508
+  - Changed the menu system to look a little nicer.
+  - Made the menu rendering dependent on the screen size.
+  - Added menu help text
+
+20000507
+  - Made the exit and start menu entries do something.
+
+20000506
+  - The menu system uses glTexFont code to render the menu with.
+  - Added color module
+  - Added "text" module as wrapper to glTexFont.
+  - Made TListMenuItem class.
+  - Made TInfoMenuItem that still needs quite some work.
+
+20000504
+  - started to use glTexFont library. Some changes will be needed, but
+    in general I think it is great for this project. It has problems
+    with proportional writings. Maybe I should fix this?
+
+20000427
+  - fixed a wrapping in menus.
+  - made menu entries be able to be disabled.
+
+20000426
+  - Have some menuitems in place. (Value, String, Sub, Return).
+
+20000424
+  - made the impact on maps use the radius and be "round" in nature.
+  - made menu skeleton, still needs a lot of work.
+
+20000423
+  - converted map to c++ class.
+  
+20000422
+  - made projectile spawn marker entities
+  - made fixed updates of the game state when deltatime > max_deltatime
+    this helps make the physics more accurate.
+  - updated todo file
+
+20000421
+  - tank, projectile and explosion is now converted to c++
+  - game, entities mostly OK now, cleaned up.
+  - player now converted.
+  - more then 2 players can now be added to the game.
+  - players that are dead are now removed from the game.
+  - can change between rendering types on 1, 2, 3 on the keyboard.
+
+20000420
+  - converted game.hh and entities.hh to c++. Still some old code in there.
+
+20000419
+  - new function for common entities
+  - function pointers to entities render functions
+
+20000418
+  - new module "textures" added. Textures are now working. I think.
+  - can now use textures of different sizes
+  - cleaned up display a little
+
+20000417
+  - tanks take damage both from explosions and faling to the ground
+  - tanks use a vector_t for location, and is drawn at their z values
+  - tanks have a cannon that can rotate, keys on [,] [.] (is drawed)
+  - projectiles are fired from the location of the tank
+  - tank code pretty much cleaned up.
+  - adjusted near clip plane. Makes most of the errors with z buffer go away.
+
+20000416
+  - As a test, made the projectile spawn "kids" upon first explosion. :-)
+    This is a hack now, but demonstrates the flexibility of the entity system.
+  - Corrected bug in mappoint_at macro/function
+  - Landscape now takes (simple) damage  
+  - Cleaned up the map module. Mostly ok now.
+
+20000415
+  - Updated entities to use a "update_func" pointer.
+  - Added function to map that checks if a location is within the map.
+  - Projectiles that leaves the map now explodes.
+  - Changed bitmap font in display c. Removed a bit of old code.
+  - Updated the tank module, and it is now almost as it should be.
+  - Projectiles can now be fired from within game.c and is fired with correct values.
+
+20000413
+  - Fixed most of the problems with inserting/removing entities
+
+20000412
+  - Updated the cvs. Underway to the next version.
+  - Entity system almost in place now. Entities can be added and removed
+    quite dynamically.
+  - Found the "refreshrate" bug: adding lines to print was the reason that 
+    the performance fell so violently.
+
+20000410
+  - reorganized quite a bit. Is now using glutIdle to update the game
+    world. This works with a "new_projectile_t" and using entities to 
+    automatically update the world. Still undecided as to what to do with 
+    the update/render issue and client/server stuff. Eventually I may 
+    decide to move all handling of an entity (map, tank, projectile, etc)
+    into the various modules that handles these, and make conditional defines
+    in the case with the dedicated server. The display stuff is now handled
+    (skeleton in place, works with new_projectile) by using the games 
+    dynamic list of entities.
+
+20000408
+  - moved data stuff into a data directory, source into src
+
+20000407
+  - made landscape height floating point
+  - now uses lists to display terrain - improved performance approx 30 %.
+  
+20000405
+  - fixed texture repeate bug. It was a braindamaged thing.
+  - now has a sligthly better landscape slide model
+
+20000404:
+  - better movement code (new keybindings)
+  - textures mapped linearly
+  - added refreshrate function
+  - limited viewpoint to 3 within map
+  - random tank placement minimum 5 from border and not on line
+  - added backside culling - minimal speed up. (bugs?)
+  - added some more keys to rotate up and down and a flymode
+  - fixed initial impact bug
+
+20000403:
+  - First version
+  - 11 hours of coding
+  - texture mapped landscape
+  - single type of balistic missile
+  - 2 degrees of freedom
+  - broken collision detect with ground
+  - single map
+  - texture mapping based on landheight
+  - sound on impact (non portable)

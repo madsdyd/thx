@@ -1,0 +1,148 @@
+Version schedule. 
+
+This is an overview of what features go where. The idea is to have a kind 
+of playable game in version 0.3.0 that could actually be enjoyed.
+
+** 0.2.9 (Clean up)
+  - move data to consistent structure
+  - fix remaining showstopper bugs
+  - play test
+  - remove char buffers (DONE?)
+  - convert to c++ finally
+    framerate.hh
+    game_cmds.hh
+    keyboard.hh
+    render.hh
+    sound.hh
+    textures.hh
+    types.hh
+  - implement destructors
+  - tighten includes
+  - memory check code
+  - tidy code
+  
+** 0.3.0 (Beta/Sourceforge)
+  - Write some documentation
+  - rename project to thx (DONE)
+  - make GPL aware
+
+-------------------------------------------------------------------------------
+
+* New structure
+
+* Ressource management
+  - make flexible path support
+  - make texture ressource management
+  - make models ressource management
+  - make sound ressource management
+
+* Menu system
+  - Make menuitem color
+  - Make the menu system smarter, wrt the way it uses variables from the
+    gamestate
+  - Render nice background image?
+
+* Design
+  - all references from display to the current map, should go through the 
+    current game. Or should they? What about the display lists?
+  - check that we are still on track wrt a dedicated server.
+  - what about "going into orbit" type of events?
+  - make all types of entities capable of damaging eachoter?
+  - should the display have the role of the client class, with respect to the
+    rendering of menus?
+
+* Bugs
+  - visual bugs sometimes - underside drawn? Related to texturing or culling?
+    This bug may have gone away with the map now using floats for heights.
+    May be related to the resolution of the depth buffer. Test with moving near
+    plane farther away.
+    The conflicts with glu objects seem to be resolved with moving the 
+    clipplane away. However, the problems with textures may persist.
+  - it seems projectiles that leaves the map explode in the wrong height.
+    This may be related to the Within method, that I have changed sligthly.
+    (This may even be fixed).
+  - there are some color issues when rendering lines with lighting
+  - checkout if the ostrstream.str operator has memory leaking problems (the
+    way it is used, that is).
+
+* Research
+  - 3d collision detection
+  - in-front-of/behind issues with planes (viewpoint) etc.
+  - LOD
+
+* Gameplay/state
+  - seperate gamestate from "client" side?
+  - help button - at least describe keys.
+  - config/variable/alias/console system
+  - keyboard input scale to time
+  - team support
+  - computer players
+  - simultanous mode
+  - different tanks?
+  - direct hit should take out a tank
+  - support for moving the tank around
+
+* Map and Physics
+  - better/correct colision detection with ground - almost a bug right now.
+  - make nice map slide stuff/max steepness.
+  - better colision detection with tanks
+  - projectiles should be checked against tanks as well as the ground
+  - separate physics engine from code? How?
+  - use bounding boxes for collision detection with tanks?
+  - support more map sizes
+
+* Landscape
+  - load landscape from file? (Nah)
+
+* Display/rendering
+  - find better textures
+  - better heigth related texturing
+  - model for missiles
+  - model for tanks
+  - shot animation (smoke?)
+  - nicer impact animation (smoke?)
+  - LOD on landscape/only render stuff in front of viewer
+  - mipmapped textures (does this make a visible difference)
+  - change between different "stored" viewpoints.
+  - make nice dynamic HUD for multiple players.
+  - animate landscape slide/tanks falling?
+  - is it faster to minimize texture binds, or does it not matter when glList?
+  - experiment with field of view
+  - what about the textures, and more dynamic maps?
+  - world map sphere rendering?
+  - make real console
+  - support for storing a number of viewpoints for each player
+  - burned ground texture where hits have happened
+  - some kind of background picture
+
+* Entities to be implemented
+  - landmines, that explodes when hit
+  - smoke trail from missiles
+  - smoke from damaged tanks
+  - napalm
+  - rolling bombs
+  - more projectiles
+  - burning areas of the map
+  - trees, stones, bushes
+  - lakes???
+
+* Sound
+  - use OpenAL for sound
+  - how to get sound into the design at present
+  - missile fligth sound
+  - landscape slide sound
+  - damping on distance
+  - display sound for in game menu
+  - better sounds! (Really needed)
+
+* Control and configuration
+  - console
+  - controle
+  - configuration files
+
+* Mouse
+  - control orientation with mouse
+  - grab mouse in fullscreen mode
+
+* Network
+  - network support

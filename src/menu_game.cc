@@ -142,7 +142,7 @@ TGameMenu::TGameMenu(string title,
     tmpinfo->AddLine("are d, g,f,r,t,b for moving");
     tmpinfo->AddLine("your viewpoint, and h,j,k,u for");
     tmpinfo->AddLine("rotating your viewpoint.");
-    tmpinfo->AddLine("The canon is controlled with");
+    tmpinfo->AddLine("The cannon is controlled with");
     tmpinfo->AddLine("the arrow keys,+,-, and ENTER.");
     tmpinfo->AddLine("Escape shows the in game menu.");
     tmpinfo->AddLine("q will quit the game at any point.");

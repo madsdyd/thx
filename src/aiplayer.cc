@@ -21,6 +21,7 @@
 */
 #include "aiplayer.hh"
 #include "game.hh"
+#include "display.hh"
 
 /* **********************************************************************
  * Constructors and destructors

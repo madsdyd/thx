@@ -23,6 +23,90 @@
 #include <GL/glut.h>
 #include <map>
 #include "inputkeyboard.hh"
+
+/* **********************************************************************
+ * AsString return a string describing the key
+ * *********************************************************************/
+/* Define a static array of mappings. */
+static struct {
+  unsigned int key;
+  char * name;
+} keynames[] = {
+  {1, "^A"},
+  {2, "^B"},
+  {3, "^C"},
+  {4, "^D"},
+  {5, "^E"},
+  {6, "^F"},
+  {7, "^G"},
+  {8, "BACKSPACE"},
+  {9, "TAB"},
+  {10, "RETURN"},
+  {11, "^K"},
+  {12, "^L"},
+  {13, "ENTER"},
+  {14, "^N"},
+  {15, "^O"},
+  {16, "^P"},
+  {17, "^Q"},
+  {18, "^R"},
+  {19, "^S"},
+  {20, "^T"},
+  {21, "^U"},
+  {22, "^V"},
+  {23, "^W"},
+  {24, "^X"},
+  {25, "^Y"},
+  {26, "^Z"},
+  {27, "ESC"},
+  {28, "FS"},
+  {29, "GS"},
+  {30, "RS"},
+  {31, "US"},
+  {32, "SPACE"},
+  {128, "DEL"},
+  {KEY_UP, "KEY_UP"},
+  {KEY_DOWN, "KEY_DOWN"},
+  {KEY_LEFT, "KEY_LEFT"},
+  {KEY_RIGHT, "KEY_RIGHT"},
+  {KEY_HOME, "KEY_HOME"},
+  {KEY_END, "KEY_END"},
+  {KEY_PAGEUP, "KEY_PAGEUP"},
+  {KEY_PAGEDOWN, "KEY_PAGEDOWN"},
+  {KEY_INSERT, "KEY_INSERT"},
+  {KEY_F1, "KEY_F1"},
+  {KEY_F2, "KEY_F2"},
+  {KEY_F3, "KEY_F3"},
+  {KEY_F4, "KEY_F4"},
+  {KEY_F5, "KEY_F5"},
+  {KEY_F6, "KEY_F6"},
+  {KEY_F7, "KEY_F7"},
+  {KEY_F8, "KEY_F8"},
+  {KEY_F9, "KEY_F9"},
+  {KEY_F10, "KEY_F10"},
+  {KEY_F11, "KEY_F11"},
+  {KEY_F12, "KEY_F12"},
+  {0, 0}
+};
+
+typedef map <int, string> TKeynameMap;
+typedef TKeynameMap::iterator TKeynameMapIterator;
+TKeynameMap keys_to_names;
+
+string keyboard_inputevent_event_t::AsString() {
+  /* Check if this is a normal key */
+  if (key < 127 && key > 32) {
+    char buf[2];
+    buf[0] = (char) key;
+    buf[1] = 0;
+    return string(buf);
+  } 
+  else if (key <= 32 || (key >= KEY_FIRST && key < KEY_LAST)) {
+    return string(keys_to_names[key]);
+  }
+  else return string("??");
+}
+
 /* **********************************************************************
  * The TKeyboardInputEvent class (constructor) 
  * Creates an instance, sets attributes
@@ -128,6 +212,12 @@ void inputkeyboard_init() {
   while(glutkey_to_thxkey[i].glutkey) {
     glutkey_to_thxkeys[glutkey_to_thxkey[i].glutkey]
       = glutkey_to_thxkey[i].thxkey;
+    i++;
+  }
+  i = 0;
+  keys_to_names.clear();
+  while(keynames[i].key) {
+    keys_to_names[keynames[i].key] = keynames[i].name;
     i++;
   }
   /* Enable global keyrepeat - used in menus */

@@ -6,7 +6,8 @@ LFLAGS=-L/usr/X11R6/lib -lm -lglut -lGLU -lGL -lpthread
 WFLAGS=-Wtraditional -Wpointer-arith -Wconversion -Wstrict-prototypes -Wmissing-prototypes -Wmissing-declarations -Wnested-externs -Woverloaded-virtual 
 CFLAGS=-Wall $(WFLAGS) -I/usr/X11R6/include -pedantic -D_REENTRANT -DSOUND_ON -DDEBUG# -pg -pedantic 
 
-SOURCES=inputmouse.cc debug.cc gamemode.cc command.cc commandconsumer.cc \
+SOURCES=menu_controls.cc \
+	inputmouse.cc debug.cc gamemode.cc command.cc commandconsumer.cc \
 	inputconsumer.cc inputkeyboard.cc inputevent.cc console.cc \
 	types.cc game.cc sound.cc display.cc tank.cc map.cc \
 	main.cc player.cc render.cc viewpoint.cc framerate.cc server.cc \

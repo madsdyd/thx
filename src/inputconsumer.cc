@@ -231,6 +231,14 @@ void TInputToCommand::Init() {
 }
 
 /* **********************************************************************
+ * Shutdown the keyboard and mouse, and others
+ * *********************************************************************/
+void TInputToCommand::Shutdown() {
+  inputkeyboard_shutdown();
+  inputmouse_shutdown();
+}
+
+/* **********************************************************************
  * The Consume method.
  * *********************************************************************/
 int TInputToCommand::Consume() {
@@ -277,12 +285,12 @@ int TInputToCommand::Consume() {
 	} else {
 	  /* No mapping found -
 	     Keyboard events for "down" that are not mapped,
-	     with key < 256 
+	     with key < 128
 	     generate a command that has the name of the key 
 	     if the key is within a certain range. */
 	  if (keydown 
 	      == KeyEvent->keyboard_inputevent_event.type 
-	      && KeyEvent->keyboard_inputevent_event.key < 256) {
+	      && KeyEvent->keyboard_inputevent_event.key < 128) {
 #if(INPUT_DEBUG)
 	    cout << "TInputToCommand::Consume, key (down)"
 		 << KeyEvent->keyboard_inputevent_event.key
@@ -371,6 +379,31 @@ int TInputToCommand::Consume() {
   return count;
 }
 
+/* **********************************************************************
+ * GetKeyMappingsForCommand
+ * Get a string describing what keys are mapped to this command. 
+ * Only return mapping for gamemode and keydown events.
+ * This is pretty ugly code, but only used from the ControlsMenu
+ * *********************************************************************/
+string TInputToCommand::GetKeyMappingsForCommand(string command, string args) {
+  TKeyboardCommandMapIterator End = KeyboardCommandMap[gamemode_game].end();
+  TKeyboardCommandMapIterator i;
+  string res = "";
+  string pre = "";
+  for (i = KeyboardCommandMap[gamemode_game].begin(); i != End; i++) {
+    if ((*i).second.cmd == command && (*i).second.arg == args) {
+      /* Found a match - add to res */
+      keyboard_inputevent_event_t tmpkeyev = (*i).first;
+      res += pre + tmpkeyev.AsString();
+      if ("" == pre) {
+	pre = ", ";
+      }
+    }
+  }
+  /* t << "GetKeyMappingsForCommand - (" << command << "," << args << ") maps to "
+     << res << endl; */
+  return res;
+}
 
 /* **********************************************************************
  * The AddKeyboardMapping method.

@@ -34,6 +34,7 @@
 #include "menu_round.hh"
 #include "menu_buy.hh"
 #include "menu_score.hh"
+#include "menu_controls.hh"
 
 /* Testing input events */
 #include "inputkeyboard.hh"
@@ -596,6 +597,9 @@ TClient::TClient(int argc, char ** argv) {
   /* Initialize MENU system */
   /* First the Text render system */
   MenuTextRender.Load("data/graphics/fonts/fontGray.tga");
+  /* Init the controls menu */
+  ControlsMenu = new TControlsMenu("Controls");
+
   /* Init the Game Menu */
   GameMenu = new TGameMenu("Tank Hill eXtreme", 
 			   GameMenu_StartFunc, 
@@ -659,7 +663,7 @@ TClient::~TClient() {
   CommandDispatcher.UnregisterConsumer("in-game-menu-show");
 
   /* Stop the input system */
-  inputkeyboard_shutdown();
+  InputToCommand.Shutdown();
 }
 
 /* **********************************************************************

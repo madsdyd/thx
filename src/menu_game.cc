@@ -20,6 +20,7 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 #include "menu_game.hh"
+#include "menu_controls.hh"
 
 TGameMenu * GameMenu;
 
@@ -45,12 +46,9 @@ TGameMenu::TGameMenu(string title,
     AddMenuItem(new TSubMenuItem(this, "New Game", 
 				 "Starts a new game", 
 				 NewGameMenu));
-    /*    tmpitem = new TSubMenuItem(this, "Config", 
-			       "Edit config options", 
-			       NULL);
-			       tmpitem->Disable();
-    AddMenuItem(tmpitem);
-    */
+    AddMenuItem(new TSubMenuItem(this, "Controls", 
+				 "Setup the controls", 
+				 ControlsMenu));
     /* Cancel/Exit */
     AddCancelMenuItem(new TSubMenuItem(this, "Exit", 
 				       "Exit the game", 
@@ -66,7 +64,7 @@ TGameMenu::TGameMenu(string title,
 						 GameStartFunc));
     NewGameMenu->AddMenuItem(new TSpaceMenuItem(NewGameMenu));
 			     
-      TListMenuItem * tmpitem 
+    TListMenuItem * tmpitem 
       = new TListMenuItem(NewGameMenu, "Map size", 
 			  "Change the size of the map",
 			  &mapsize);

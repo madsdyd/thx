@@ -1,3 +1,12 @@
+20010417
+  - GetKeyMappings now work. Everything else is broken :-)
+
+20010415
+  - Started adding a GetKeyMappings to InputConsumer.
+
+20010414
+  - Started working on the TControlsMenu.
+
 20010412 
   - Tagging version 0.3.3.3
   - Added methods to let a mouse event write itself to a string, and construct from 

@@ -21,6 +21,7 @@
 */
 #ifndef __INPUTKEYBOARD_HH__
 #define __INPUTKEYBOARD_HH__
+#include <string>
 /* This is for input events generated from the keyboard */
 #include "inputevent.hh"
 /* Subtype of event */
@@ -44,7 +45,8 @@ typedef enum {keydown, /* Key pressed */
 #define KEY_DELETE 127
 
 /* A list of special keys */
-#define KEY_UP 256
+#define KEY_FIRST 256
+#define KEY_UP KEY_FIRST
 #define KEY_DOWN (KEY_UP + 1)
 #define KEY_LEFT (KEY_DOWN + 1)
 #define KEY_RIGHT (KEY_LEFT + 1)
@@ -65,12 +67,15 @@ typedef enum {keydown, /* Key pressed */
 #define KEY_F10 (KEY_F9 + 1)
 #define KEY_F11 (KEY_F10 + 1)
 #define KEY_F12 (KEY_F11 + 1)
+#define KEY_LAST (KEY_F12 + 1)
 
 /* Uniqly define a keyboard event */
-typedef struct {
+class keyboard_inputevent_event_t {
+public:
   unsigned int key;
   keypress_t type;
-} keyboard_inputevent_event_t;
+  string AsString(); /* Return the current key as a string */
+};
 
 struct lt_kiet
 {

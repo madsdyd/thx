@@ -2,11 +2,18 @@ Version schedule.
 
 This is an overview of what features go where. This is subject to change.
 
-- update README
+- Fix TControlsMenuItem to 
+  figure out what mappings the command already have
+  write what mappings the command already have
+  actually change the mapping
+  somehow be able to receive raw keypresses from the inputconsumer, 
+    maybe have a special mode for the command consumer.
+- Fix it, so that we can have many menu items on a screen
+- Fix it, so that the TControlsMenu can be used from several different places
+  
 
-** 0.3.4 (Mouseinput continued)
-  - Make the game able to operate by mouse. (DONE)
-  - The mouse input mappings need to be aware of the mode (not?) (DONE)
+- Make the init order more explicit
+
 
 ** 0.3.6 (Input customization)
   - make global variables to adjust the axis on the mouse
@@ -44,6 +51,12 @@ This is an overview of what features go where. This is subject to change.
   - Look below
 
 ** 1.0.0 (User interface)
+  - Title screen
+  - Credit screen
+  - Intro?
+  - Demo mode
+  - rpm and deb files?
+  - Publicity, freshmeat, linux games site, etc.
   - Look below
 
 ** Post 1.0

@@ -62,15 +62,13 @@ public:
   }
   /* Override {Unr,R}egisterCommands 
      We do not want the usual itemedit handling - only raw */
-  bool RegisterCommands() {
+  void RegisterCommands() {
     CommandDispatcher.RegisterConsumer("raw-keydown", this);
     CommandDispatcher.RegisterConsumer("raw-mouse", this);
-    return true;
   };
-  bool UnregisterCommands() {
+  void UnregisterCommands() {
     CommandDispatcher.UnregisterConsumer("raw-mouse");
     CommandDispatcher.UnregisterConsumer("raw-keydown");
-    return true;
   };
   /* Override enter edit state - we want the raw game mode */
   bool EnterEditState() {
@@ -81,12 +79,7 @@ public:
       cerr << "TConstrolMenuItem::EnterEditState - unable to change gamemode" << endl;
       return false;
     }
-    if (!RegisterCommands()) {
-      GameMode.SetMode(StoredMode);
-      cerr << "TControlsMenuItem::EnterEditState - unable to register commands" 
-	   << endl;
-      return false;
-    }
+    RegisterCommands();
     state = menuitem_state_selected;
     return true;
   } 

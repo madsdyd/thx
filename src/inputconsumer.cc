@@ -267,8 +267,7 @@ TInputToCommand::TInputToCommand() {
 	     << "Maybe you should delete the file " << mapfile << endl;
       }
     } else {
-      cerr << "Could not open "
-	   << mapfile << endl
+      cerr << "Could not open " << mapfile << endl;
     }
   }
 

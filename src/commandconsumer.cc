@@ -35,8 +35,10 @@ TCommandDispatcher CommandDispatcher;
 /* **********************************************************************
  * RegisterConsumer - maps command names to a command consumer.
  * *********************************************************************/
-bool TCommandDispatcher::RegisterConsumer(string commandname, 
+void TCommandDispatcher::RegisterConsumer(string commandname, 
 					  TCommandConsumer * consumer) {
+  CommandConsumers[commandname] = consumer;
+#ifdef NEVER
   /* Check that commandname is not registered, store */
   TCommandConsumersIterator loc 
     = CommandConsumers.find(commandname);
@@ -52,12 +54,16 @@ bool TCommandDispatcher::RegisterConsumer(string commandname,
 	 << " for \"" << commandname << "\"" << endl;
 #endif
   }
+#endif
+
 }
 
 /* **********************************************************************
  * Unregister - frees a command name
  * *********************************************************************/
-bool TCommandDispatcher::UnregisterConsumer(string commandname) {
+void TCommandDispatcher::UnregisterConsumer(string commandname) {
+  CommandConsumers.erase(commandname);
+#ifdef NEVER
   /* Find location of command name, delete it */
   TCommandConsumersIterator loc 
     = CommandConsumers.find(commandname);
@@ -71,6 +77,8 @@ bool TCommandDispatcher::UnregisterConsumer(string commandname) {
   } else {
     return false;
   }
+#endif
+
 }
 
 /* **********************************************************************

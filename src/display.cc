@@ -187,16 +187,9 @@ TDisplay::TDisplay(int argc, char** argv) {
   } 
 
   /* Register our commands */
-  if (!CommandDispatcher.RegisterConsumer("display", this)) {
-    cerr << "TDisplay::TDisplay - could not register (display) command" << endl;
-  }
-  if (!CommandDispatcher.RegisterConsumer("render", this)) {
-    cerr << "TDisplay::TDisplay - could not register (render) command" << endl;
-  }
-  if (!CommandDispatcher.RegisterConsumer("toggle-pointer-grab", this)) {
-    cerr << "TDisplay::TDisplay - could not register (toggle-pointer-grab) command" 
-	 << endl;
-  }
+  CommandDispatcher.RegisterConsumer("display", this);
+  CommandDispatcher.RegisterConsumer("render", this);
+  CommandDispatcher.RegisterConsumer("toggle-pointer-grab", this);
 }
 
 
@@ -205,15 +198,9 @@ TDisplay::TDisplay(int argc, char** argv) {
  * Clean up
  * *********************************************************************/
 TDisplay::~TDisplay() {
-  if (!CommandDispatcher.UnregisterConsumer("display")) {
-    cerr << "TDisplay::~TDisplay - could not unregister (display) commands" << endl;
-  }
-  if (!CommandDispatcher.UnregisterConsumer("render")) {
-    cerr << "TDisplay::~TDisplay - could not unregister (display) commands" << endl;
-  }
-  if (!CommandDispatcher.UnregisterConsumer("toggle-pointer-grab")) {
-    cerr << "TDisplay::~TDisplay - could not unregister (display) commands" << endl;
-  }
+  CommandDispatcher.UnregisterConsumer("display");
+  CommandDispatcher.UnregisterConsumer("render");
+  CommandDispatcher.UnregisterConsumer("toggle-pointer-grab");
   delete textrender;
   delete console;
 }

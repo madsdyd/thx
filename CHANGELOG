@@ -10,6 +10,9 @@
   - The bindings are now saved and loaded - the ugliest hack ever.
     It will definitivly not stay like this.
   - Tagging 0.3.4.4
+  - Made registering and unregistering consumers always work. Removed a lot
+    of bool checking code.
+  - Fixed some warnings
 
 20010423
   - Finally figured out why we had a segfault. I hate implicit type conversion in 

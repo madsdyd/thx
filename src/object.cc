@@ -186,7 +186,7 @@ void TObject::addTriangle(int q0, int q1, int q2) {
 void TObject::draw() {
   int i, j, idx[3];
   Point pts[3];
-  TVector normal,foo,bar;
+  // TVector normal,foo,bar;
   GLfloat shininess[] = { 100.0 };
 
   glMaterialfv(GL_FRONT, GL_SPECULAR, points[0].color);
@@ -354,7 +354,7 @@ bool TObject::CollisionDetect(TVector * old_location, TVector * new_location) {
 void TObject::calcNormals() {
   //  TVector Normals[numTriangles];
   TVector P0, P1, P2, u, v;
-  TrianglePtrList::iterator ite, end;
+  // TrianglePtrList::iterator ite, end;
 
   int i,idx[3];
 assert(numTriangles<=maxTriangles);

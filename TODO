@@ -2,12 +2,15 @@ Version schedule.
 
 This is an overview of what features go where. This is subject to change.
 
+The text () is the focus of the "series". E.g. 0.4.0 (AI) means that
+everything starting with 0.4. is probably going to be related to AI. The 0.4.0 release
+however, is the final release of the previous series.
 
 ** 0.3.5 (Input customization)
   - Save and load bindings (DONE)
   - Loosen up on registering and unregistering commands - should not keep 
     a command, if failing to release another. (Maybe registering and release should
-    always work?)
+    always work?) (DONE)
 
 ** 0.4.0 (AI)
   - Console

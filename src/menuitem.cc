@@ -351,14 +351,14 @@ void TActionMenuItem::DoAction() {
 /* **********************************************************************
  * TValueMenuItem::{R,Unr}egisterCommands
  * *********************************************************************/
-bool TValueMenuItem::RegisterCommands() {
+void TValueMenuItem::RegisterCommands() {
   // cout << "TValueMenuItem::RegisterCommands called" << endl;
-  return CommandDispatcher.RegisterConsumer("itemedit", this);
+  CommandDispatcher.RegisterConsumer("itemedit", this);
 }
 
-bool TValueMenuItem::UnregisterCommands() {
+void TValueMenuItem::UnregisterCommands() {
   // cout << "TValueMenuItem::UnregisterCommands called" << endl;
-  return CommandDispatcher.UnregisterConsumer("itemedit");
+  CommandDispatcher.UnregisterConsumer("itemedit");
 }
 
 /* **********************************************************************
@@ -389,20 +389,13 @@ bool TValueMenuItem::EnterEditState() {
     cerr << "TValueMenuItem::EnterEditState - unable to change gamemode" << endl;
     return false;
   }
-  if (!RegisterCommands()) {
-    GameMode.SetMode(StoredMode);
-    cerr << "TValueMenuItem::EnterEditState - unable to register commands" << endl;
-    return false;
-  }
+  RegisterCommands();
   state = menuitem_state_selected;
   return true;
 }
 
 bool TValueMenuItem::LeaveEditState() {
-  if (!UnregisterCommands()) {
-    cerr << "TValueMenuItem::LeaveEditState - unable to unregister commands" << endl;
-    return false;
-  }
+  UnregisterCommands();
   if (!GameMode.SetMode(StoredMode)) {
     RegisterCommands();
     cerr << "TValueMenuItem::LeaveEditState - unable to change gamemode" << endl;
@@ -520,28 +513,14 @@ void TListMenuItem::AddValue(string nvalue) {
 /* **********************************************************************
  * Register and unregister commands.
  * **********************************************************************/
-bool TListMenuItem::RegisterCommands() {
-  if (TValueMenuItem::RegisterCommands()) {
-    if (CommandDispatcher.RegisterConsumer("list", this)) {
-      return true;
-    } else {
-      TValueMenuItem::UnregisterCommands();
-    }
-  }
-  /* Fall to here in case of error */
-  return false;
+void TListMenuItem::RegisterCommands() {
+  TValueMenuItem::RegisterCommands();
+  CommandDispatcher.RegisterConsumer("list", this);
 };
 
-bool TListMenuItem::UnregisterCommands() {
-  if (TValueMenuItem::UnregisterCommands()) {
-    if (CommandDispatcher.UnregisterConsumer("list")) {
-      return true;
-    } else {
-      TValueMenuItem::RegisterCommands();
-    }
-  }
-  /* Fall to here in case of error */
-  return false;
+void TListMenuItem::UnregisterCommands() {
+  TValueMenuItem::UnregisterCommands();
+  CommandDispatcher.UnregisterConsumer("list");
 };
 
 /* **********************************************************************
@@ -598,38 +577,18 @@ string TStringMenuItem::killed = "";
 /* **********************************************************************
  * Register and unregister commands.
  * **********************************************************************/
-bool TStringMenuItem::RegisterCommands() {
-  if (TValueMenuItem::RegisterCommands()) {
-    if (CommandDispatcher.RegisterConsumer("point-move", this)) {
-      if (CommandDispatcher.RegisterConsumer("edit", this)) {
-	if (CommandDispatcher.RegisterConsumer("keydown", this)) {
-	  return true;
-	}
-	CommandDispatcher.UnregisterConsumer("edit");
-      }
-      CommandDispatcher.UnregisterConsumer("point-move");
-    }
-    TValueMenuItem::UnregisterCommands();
-  }
-  /* Fall to here in case of error */
-  return false;
+void TStringMenuItem::RegisterCommands() {
+  TValueMenuItem::RegisterCommands();
+  CommandDispatcher.RegisterConsumer("point-move", this);
+  CommandDispatcher.RegisterConsumer("edit", this);
+  CommandDispatcher.RegisterConsumer("keydown", this);
 };
 
-bool TStringMenuItem::UnregisterCommands() {
-  if (TValueMenuItem::UnregisterCommands()) {
-    if (CommandDispatcher.UnregisterConsumer("edit")) {
-      if (CommandDispatcher.UnregisterConsumer("point-move")) {
-	if (CommandDispatcher.UnregisterConsumer("keydown")) {
-	  return true;
-	}
-	CommandDispatcher.RegisterConsumer("point-move", this);
-      }
-      CommandDispatcher.RegisterConsumer("edit", this);
-    }
-    TValueMenuItem::RegisterCommands();
-  }
-  /* Fall to here in case of error */
-  return false;
+void TStringMenuItem::UnregisterCommands() {
+  TValueMenuItem::UnregisterCommands();
+  CommandDispatcher.UnregisterConsumer("edit");
+  CommandDispatcher.UnregisterConsumer("point-move");
+  CommandDispatcher.UnregisterConsumer("keydown");
 };
 
 /* **********************************************************************

@@ -222,8 +222,8 @@ protected:
   /* This handles registering and unregistering commands that are
      handled by this class.  Typically called when editing/selected
      mode is entered/left. */
-  virtual bool RegisterCommands();
-  virtual bool UnregisterCommands();
+  virtual void RegisterCommands();
+  virtual void UnregisterCommands();
 
 public:
   TValueMenuItem(TMenu * owner, string cap, string desc) 
@@ -244,8 +244,8 @@ private:
   int selected_value;
   string * storage; /* the place where the value can be read */
 protected:
-  virtual bool RegisterCommands();
-  virtual bool UnregisterCommands();
+  virtual void RegisterCommands();
+  virtual void UnregisterCommands();
 public:
   TListMenuItem(TMenu * owner, string cap, string desc, string * store) 
     : TValueMenuItem(owner, cap, desc) {
@@ -267,8 +267,8 @@ public:
    This could probably be done a lot smarter with templates, but... */
 class TStringMenuItem : public TValueMenuItem {
 protected:
-  virtual bool RegisterCommands();
-  virtual bool UnregisterCommands();
+  virtual void RegisterCommands();
+  virtual void UnregisterCommands();
 private:
   unsigned int cursorpos;
   string new_value;

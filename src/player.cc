@@ -69,50 +69,28 @@ void TPlayer::PrepareRound(TGame * game, TVector * location) {
  * Currently, this is commands to control the viewpoint
  * and the cannon (eventually)
  * *********************************************************************/
-bool TPlayer::RegisterCommands() {
-  if (CommandDispatcher.RegisterConsumer("viewpoint-move", this)) {
-    if (CommandDispatcher.RegisterConsumer("viewpoint-rotate", this)) {
-      if (CommandDispatcher.RegisterConsumer("cannon", this)) {
-	if (CommandDispatcher.RegisterConsumer("inventory", this)) {
-	  return true;
-	}
-	CommandDispatcher.UnregisterConsumer("cannon");
-      }
-      CommandDispatcher.UnregisterConsumer("viewpoint-rotate");
-    }
-    CommandDispatcher.UnregisterConsumer("viewpoint-move");
-  }
-  return false;
+void TPlayer::RegisterCommands() {
+  CommandDispatcher.RegisterConsumer("viewpoint-move", this);
+  CommandDispatcher.RegisterConsumer("viewpoint-rotate", this);
+  CommandDispatcher.RegisterConsumer("cannon", this);
+  CommandDispatcher.RegisterConsumer("inventory", this);
 }
 
-bool TPlayer::UnregisterCommands() {
-  if (CommandDispatcher.UnregisterConsumer("viewpoint-move")) {
-    if (CommandDispatcher.UnregisterConsumer("viewpoint-rotate")) {
-      if (CommandDispatcher.UnregisterConsumer("cannon")) {
-	if (CommandDispatcher.UnregisterConsumer("inventory")) {
-	  return true;
-	}
-	CommandDispatcher.RegisterConsumer("cannon", this);
-      }
-      CommandDispatcher.RegisterConsumer("viewpoint-rotate", this);
-    }
-    CommandDispatcher.RegisterConsumer("viewpoint-move", this);
-  }
-  return false;
+void TPlayer::UnregisterCommands() {
+  CommandDispatcher.UnregisterConsumer("viewpoint-move");
+  CommandDispatcher.UnregisterConsumer("viewpoint-rotate");
+  CommandDispatcher.UnregisterConsumer("cannon");
+  CommandDispatcher.UnregisterConsumer("inventory");
 }
 /* **********************************************************************
  * Begin and end a turn. Mostly do command registering at the moment.
  * *********************************************************************/
 void TPlayer::BeginTurn() {
-  if (!RegisterCommands()) {
-    cerr << "TPlayer::BeginTurn() - unable to register commands!" << endl;
-  }
+  RegisterCommands();
 }
 
 void TPlayer::EndTurn() {
-  if (!UnregisterCommands()) {
-    cerr << "TPlayer::EndTurn() - unable to unregister commands!" << endl;
-  }
+  UnregisterCommands();
   /* Clear the commands */
   active_commands.clear();
 }

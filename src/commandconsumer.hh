@@ -44,9 +44,9 @@ private:
   TCommandConsumers CommandConsumers;
 public:
   /* Register a consumer of commands */
-  bool RegisterConsumer(string commandname, TCommandConsumer * consumer);
+  void RegisterConsumer(string commandname, TCommandConsumer * consumer);
   /* Unregister a consumer of commands */
-  bool UnregisterConsumer(string commandname);
+  void UnregisterConsumer(string commandname);
   /* Dispatch and return the number of commands dispatched */
   int Dispatch();
 };

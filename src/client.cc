@@ -569,7 +569,6 @@ TClient::TClient(int argc, char ** argv) {
 
   /* Initialize SOUND system */
 #ifdef SOUND_ON
-#warning "LAME SOUND CODE ON"
   if (sound_init("/dev/dsp", 8)) { /* 1 == NUMSOUNDS */
     cerr << "Could not initialize sound" << endl;
   }

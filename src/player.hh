@@ -45,8 +45,8 @@ protected:
      current client. The string is used to identify the 
      command, mostly when removing and inserting commands */
   map <string, TCommand> active_commands;
-  bool RegisterCommands();
-  bool UnregisterCommands();
+  void RegisterCommands();
+  void UnregisterCommands();
   void PerformCommandUpdate(system_time_t timenow);
 public:
   string name;            /* The players name */

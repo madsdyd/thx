@@ -289,7 +289,7 @@ void abrams_chassis(TObject *model, TColor *color) {
 }
 
 void abrams_barrel(TObject *model, TColor *color) {
-  int i;
+  // int i;
   float col[4];
 
   (*model)  = TObject(16,22);

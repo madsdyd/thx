@@ -284,7 +284,7 @@ int sound_stopall() {
   struct SoundRequest snd;
   snd.snd_request    = stop;
   snd.snd_request_id = -1;
-  snd.snd_num        = ~0;
+  snd.snd_num        = ~((unsigned int)0);
   return sound_request(1, snd);
 }
 

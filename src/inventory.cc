@@ -27,7 +27,8 @@
 #include <stdio.h>
 
 /* **********************************************************************
-   Implementation of stuff that has to do with the inventory */
+ * Implementation of stuff that has to do with the inventory
+ * *********************************************************************/
 TInventoryElement::TInventoryElement(string nname, TProjectile * nprojectile,
 				     int nunits, int nprice, int nnum) {
   name       = nname;
@@ -38,7 +39,8 @@ TInventoryElement::TInventoryElement(string nname, TProjectile * nprojectile,
 }
 
 /* **********************************************************************
-   Buy reduces the money with the appropiate amount and adjust quantity */
+ * Buy reduces the money with the appropiate amount and adjust quantity
+ * *********************************************************************/
 void TInventoryElement::Buy(int * money) {
   if (*money < price) { /* Cant buy without money */
     return;
@@ -55,7 +57,8 @@ void TInventoryElement::Buy(int * money) {
  * *********************************************************************/
 
 /* **********************************************************************
-   Constructor and destructor */
+ * Constructor and destructor
+ * *********************************************************************/
 TInventory::TInventory(TGame * Game, TPlayer * Owner) {
   /* This is where the projectile types that are available to the players
      are created. Every inventory gets initialized the same way. */
@@ -92,7 +95,8 @@ TInventory::~TInventory() {
 }
 
 /* **********************************************************************
-   The selection methods */
+ * The selection methods
+ * *********************************************************************/
 void TInventory::SelectFirst() {
   selected = 0;
 }
@@ -113,7 +117,8 @@ void TInventory::SelectPrevious() {
 }
 
 /* **********************************************************************
-   The fire method (kaboom) */
+ * The fire method (kaboom)
+ * *********************************************************************/
 TProjectile * TInventory::FireSelected(TVector * loc, TVector * vel) {
   if (data[selected]->num <= 0) {
     cerr << "TInventory::FireSelected on selected with 0 items!" << endl;
@@ -134,7 +139,8 @@ TProjectile * TInventory::FireSelected(TVector * loc, TVector * vel) {
 }
 
 /* **********************************************************************
-   Describes the currently selected missile */
+ * Describes the currently selected missile
+ * *********************************************************************/
 string TInventory::DescribeSelected() {
   /* Argh, if I only knew some more C++ */
   char buf[256];
@@ -143,7 +149,8 @@ string TInventory::DescribeSelected() {
 }
 
 /* **********************************************************************
-   Return a pointer to the elements */
+ * Return a pointer to the elements
+ * *********************************************************************/
 TInventoryElements * TInventory::GetElements() {
   return &data;
 }

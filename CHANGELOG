@@ -2,6 +2,7 @@
   - Minor changes to make THX compile under Mandrake 7.2
   - Added arrow keys support in menus. 
   - Made it possible to change the window size, and have the menu still work.
+  - Cleaned up the drawing of tanks a bit - makes the explosions red.
 
 20000725
   - Fixed a missing include from markers.cc that made markers disappear

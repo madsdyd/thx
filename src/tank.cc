@@ -181,18 +181,23 @@ void TTank::Render(TViewpoint * viewpoint) {
   GLfloat mat_diffuse[] = { 1.0, 1.0, 1.0, 1.0 };
   GLfloat mat_shininess[] = { 10.0 };
 
+  /* ************************************************** */
+  /* Store original matrix */
   glPushMatrix();
+  /* Translate to the origion of our entity */
   glTranslatef(location.x, location.y, location.z);
+
+  /* We want to do this with lighting */
+  glEnable(GL_LIGHTING);
+
+  /* ************************************************** */
+  /* Render the canon, just above the tank */
   glPushMatrix();
-
-  /* Just above the tank, render a canon */
   glTranslatef(0.0, 0.0, 0.65);
-
   /* This is needed to make OpenGL agree with me on rotation */
   glRotatef(90.0, 0.0, 0.0, 1.0);
   glRotatef(cannon.rotation, 0.0, 0.0, 1.0);
   glRotatef(90.0-cannon.angle, 1.0, 0.0, 0.0);
-
   /* Scale to make a long, sleek barrel for the tank */
   glScalef(0.15,0.15,1.5);
 
@@ -201,30 +206,30 @@ void TTank::Render(TViewpoint * viewpoint) {
   glColor3f(0.25 * color.data[0] + 0.15
 	    , 0.25 * color.data[1] + 0.15
 	    , 0.25 * color.data[2] + 0.15);
-  glShadeModel(GL_SMOOTH);
-  glEnable(GL_LIGHTING);
-
+  
   glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular);
   glMaterialfv(GL_FRONT, GL_SHININESS, mat_shininess);
   glMaterialfv(GL_FRONT, GL_DIFFUSE, mat_diffuse);
+  
   glutSolidCone(1.0,1.0,8,8);
   //barrel->draw();
   glPopMatrix();
 
-
-  // Rotate back to compensate for... errrr... something...
-  // Now the Y-axis in the tank model is actually up...
+  /* ************************************************** */
+  /* Render the tank */
+  /* Rotate back to compensate for... errrr... something...
+     Now the Y-axis in the tank model is actually up... */
   glRotatef(90.0, 1.0, 0.0, 0.0);
   glTranslatef(0.0, 0.75, 0.0);
   glColor4fv(color.data);
-  //  glDisable(GL_LIGHTING);
   glPushMatrix();
   glScalef(2.0, 2.0, 2.0);
   model->draw();
   glPopMatrix();
+  
+  /* ************************************************** */
+  /* Remove ligthning */
+  glDisable(GL_LIGHTING);
+  /* Restore original state */
   glPopMatrix();
-
-  glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular);
-  glMaterialfv(GL_FRONT, GL_SHININESS, mat_shininess);
-  glMaterialfv(GL_FRONT, GL_DIFFUSE, mat_diffuse);
 }

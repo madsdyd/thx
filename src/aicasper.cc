@@ -165,19 +165,23 @@ void TAIPlayerCasper::EndTurn() {
     return;
   }
 
-  /* TODO: Scale the adjustment */
+  /* TODO: Scale the adjustment - maintain target, when OK hit. */
+  /* TODO: Needs to work with angles too */
 
   /* Since we are on a line, we will need to go further, if we
      are short, and shorter, if we are too long */
-  if (tank->location.Distance(Target->tank->location) <
-      tank->location.Distance(&best_location)) {
+  /* (The code can be used, if we adjust for the angles */
+  double delta = tank->location.Distance(Target->tank->location) -
+    tank->location.Distance(&best_location);
+  if (delta < 0.0) {
     /* We shot too long */
     Display->console->AddLine(name + " shot too long");
     /* This adjustment needs to work better... */
     if (cannon_target.angle < 80) {
-      cannon_target.angle += 5.0;
+      cannon_target.angle += 5.0 + delta/10.0;
     }
     if (cannon_target.force > 2.0) {
+      // TODO: Doing delta stuff here
       cannon_target.force -= 1.0;
     }
   } else {
@@ -185,7 +189,7 @@ void TAIPlayerCasper::EndTurn() {
     Display->console->AddLine(name + " shot too short");
     /* This adjustment needs to work better... */
     if (cannon_target.angle > 30) {
-      cannon_target.angle -= 2.0;
+      cannon_target.angle -= 2.0 + delta/10.0;
     }
     if (cannon_target.force < 25.0) {
       cannon_target.force += 2.0;

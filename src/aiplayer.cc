@@ -104,6 +104,11 @@ void TAIPlayer::Update(system_time_t timenow) {
   /* Call our parents update */
   TPlayer::Update(timenow);
   
+  /* If we have fired, we defer doing anything to next turn */
+  if (has_fired) {
+    return;
+  }
+  
   /* In here, we check if our turngoal is met, and if that is the case, 
      we kinda fire */
   bool cr, ca, cf;
@@ -236,13 +241,41 @@ void TAIPlayer::UpdateViewpoint() {
  * *********************************************************************/
 void TAIPlayer::TrackProjectile(TVector * location, TVector * velocity) {
   /* Try and follow this bloody projectile in a decent way. Pretty hard,
-     actually */
+     actually - almost like the tanks */
+  double scale_move = 3.0;
+  /* Start from where it is */
   viewpoint.translation = *location;
-  
+
+  /* Back away from it, always go to 3.0 above */
   TVector tmpvec(velocity);
   tmpvec.Normalize();
-  tmpvec.z = -1.0;
-  tmpvec = tmpvec * 3;
+  tmpvec = tmpvec * scale_move;
+  tmpvec.z = -scale_move;
   viewpoint.translation = viewpoint.translation - tmpvec;
+
+  /* Enforce current viewpoint rules */
+  Display->UpdateViewpoint();
+  
+  /* Adjust the "angle" we are looking, such that we can see the tank.
+     We are scale_move behind it, and hopefully somewhat above it 
+     Simple trigonometry will solve it for us. */
+  /* The x on the viewpoint has the same "function" as the angle parameter 
+     on the cannon (what a mess) */
+  double dy = location->z - viewpoint.translation.z;
+  viewpoint.rotation.x = RadToDegree(atan(-dy/scale_move));
+  while(viewpoint.rotation.x < 0.0) {
+    viewpoint.rotation.x += 360.0;
+  }
 }
 
+/* **********************************************************************
+ * This is called, if the fired projectile impacts 
+ * The thing we look for here, is wheter or not the z is up
+ * If the projectile impacted while going up, we probably had too 
+ * low a cannon angle.
+ * *********************************************************************/
+void TAIPlayer::ImpactProjectile(TVector * location, TVector * velocity) {
+  if (velocity->z > 0.0) {
+    cannon_target.angle += 15.0;
+  }
+}

@@ -8,8 +8,11 @@ AUTOTOOLS TEMP TODO:
 
 NORMAL TODO:
 
-- Better viewpoint following. Make sure exploding tanks are visible!
+- Better viewpoint following (sure we can reuse some code, and generalize it). 
+- Make sure exploding tanks are visible!
 - Maybe "global viewpoint" command? 
+
+- Lige nu - delta i aicasper.cc
 
 - Client_Idle can not change mode when aborting a round????
 - We need to encapsulate the canon parameters.

@@ -1,5 +1,7 @@
 20010909
-  - Following of projectiles now "sortof" works.
+  - Following of projectiles now "sortof" works and is OK nice.
+  - The AI's will try and avoid using to low angles - hitting stuff when
+    projectile is going up.
 
 20010908
   - Better naming of Casper players, and removed some old debug prints

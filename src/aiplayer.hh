@@ -47,6 +47,8 @@ public:
   virtual void EndTurn();   /* Called, when this players turn is about to end */
   /* Follow a fired missile */
   void TrackProjectile(TVector * location, TVector * velocity);
+  /* Handle impact */
+  void ImpactProjectile(TVector * location, TVector * velocity);
   /* The update command mostly handle the movement stuff */
   virtual void Update(system_time_t timenow);
 };

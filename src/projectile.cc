@@ -152,6 +152,11 @@ void TProjectile::Update(system_time_t deltatime) {
   if (game->GetMap()->CollisionDetect(&(location), &new_location)) {
     /* IMPACT! - call OnImpact */
     OnCollision(deltatime, new_location);
+    /* If tracking this projectile, call the owner, let him know we impacted */ 
+    if (track && owner) {
+      owner->ImpactProjectile(&location, &velocity);
+    }
+
     return;
   };
 

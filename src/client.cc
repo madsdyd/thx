@@ -728,10 +728,12 @@ TClient::~TClient() {
 /* **********************************************************************
    Reshape the display 
  * *********************************************************************/ 
+// TODO: Is this correct? Isn't it the Display we should reshape??
 void Client_Reshape(int w, int h) {
-  Display->width=w;
+  Display->Reshape(w, h);
+  /*  Display->width=w;
   Display->height=h;
-  glViewport(0, 0, (GLsizei) w, (GLsizei) h);
+  glViewport(0, 0, (GLsizei) w, (GLsizei) h); */
 }
 
 /* **********************************************************************

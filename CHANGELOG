@@ -1,6 +1,8 @@
 20010324
   - Fixed problem with missing movements that were pressed and released within
     a single frame.
+  - Made the fonts on the actual game scale with the size
+  - Made TPlayer handle the viewpoint-rotate and canon commands
 
 20010323
   - Made the TPlayer handle some of the basic movement commands

@@ -3,7 +3,9 @@ Version schedule.
 This is an overview of what features go where. This is subject to change.
 
 
-- Fix the size of text on the display to scale with the screen size.
+- Probably convert all angle, force, etc. stuff to doubles.
+- The keyrepeat is not enabled, when quitting.
+
 - The buymenuitems does not work with the command structure thingy
 - Key repeat need to be a gamemode only thing
 - We need to be able to show the in game menus
@@ -111,6 +113,7 @@ This is an overview of what features go where. This is subject to change.
   - The top 4 lines seems to have a wrong color?
   - The tanks are rather "dusty" - the lighting is probably fucked.
   - Arrow keys do not work in the buy menu.
+  - There are quite a bit of dead code.
 
 * Research
   - 3d collision detection

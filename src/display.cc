@@ -66,13 +66,14 @@ TDisplay::TDisplay(int argc, char** argv) {
 
   /* Default assumed */
 #ifdef INPUTCMD
-  width  = 320;
-  height = 240;
+  width  = 800;
+  height = 600;
+  flymode    = true; 
 #else  
   width  = 640;
   height = 480;
-#endif
   flymode    = false; 
+#endif
   clipmode   = false;
   num_frames = 0;
   viewpoint  = NULL;
@@ -177,6 +178,8 @@ void TDisplay::Update(system_time_t deltatime) {
 /* **********************************************************************
    Reshape */
 void TDisplay::Reshape(int w, int h) {
+  // TODO: Is this dead code?
+
   /* We store these for our own use */
   width  = w;
   height = h;
@@ -365,7 +368,7 @@ void TDisplay::Render(void) {
   {
     ostrstream tmp;
     tmp.form("FPS: %4.1f", framerate_get()) << ends;
-    textrender->Pos(Display->width-115, 2*textrender->size);
+    textrender->Pos(Display->width-10*textrender->size, 2*textrender->size);
     textrender->Print(tmp.str());
   }
   

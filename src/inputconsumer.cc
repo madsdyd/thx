@@ -87,7 +87,7 @@ keymap_t key_map_std_keys_down[] =
   /* GAME */
   {gamemode_game, {' ',           keyboard_inputevent_type_down}, "fire", ""},
   {gamemode_game, {KEY_ESCAPE,    keyboard_inputevent_type_down}, "escape", ""},
-  /* Viewpoint manipulation commands */
+  /* Viewpoint-move manipulation commands */
   {gamemode_game, {'r',           keyboard_inputevent_type_down}, "viewpoint-move", "+forward"},
   {gamemode_game, {'r',           keyboard_inputevent_type_up},   "viewpoint-move", "-forward"},
   {gamemode_game, {'f',           keyboard_inputevent_type_down}, "viewpoint-move", "+backward"},
@@ -100,7 +100,44 @@ keymap_t key_map_std_keys_down[] =
   {gamemode_game, {'t',           keyboard_inputevent_type_up},   "viewpoint-move", "-up"},
   {gamemode_game, {'b',           keyboard_inputevent_type_down}, "viewpoint-move", "+down"},
   {gamemode_game, {'b',           keyboard_inputevent_type_up},   "viewpoint-move", "-down"},
-  
+  /* Viewpoint-rotate manipulation commands */
+  {gamemode_game, {'u',           keyboard_inputevent_type_down}, "viewpoint-rotate", "+forward"},
+  {gamemode_game, {'u',           keyboard_inputevent_type_up},   "viewpoint-rotate", "-forward"},
+  {gamemode_game, {'j',           keyboard_inputevent_type_down}, "viewpoint-rotate", "+backward"},
+  {gamemode_game, {'j',           keyboard_inputevent_type_up},   "viewpoint-rotate", "-backward"},
+  {gamemode_game, {'h',           keyboard_inputevent_type_down}, "viewpoint-rotate", "+left"},
+  {gamemode_game, {'h',           keyboard_inputevent_type_up},   "viewpoint-rotate", "-left"},
+  {gamemode_game, {'k',           keyboard_inputevent_type_down}, "viewpoint-rotate", "+right"},
+  {gamemode_game, {'k',           keyboard_inputevent_type_up},   "viewpoint-rotate", "-right"},
+  // keyboard.cc : e == viewpoint->Reset(..);
+  /* Tank manipulation stuff */
+  {gamemode_game, {'n',           keyboard_inputevent_type_down}, "canon", "+rotate-left"},
+  {gamemode_game, {'n',           keyboard_inputevent_type_up},   "canon", "-rotate-left"},
+  {gamemode_game, {'m',           keyboard_inputevent_type_down}, "canon", "+rotate-right"},
+  {gamemode_game, {'m',           keyboard_inputevent_type_up},   "canon", "-rotate-right"},
+  {gamemode_game, {'a',           keyboard_inputevent_type_down}, "canon", "+raise"},
+  {gamemode_game, {'a',           keyboard_inputevent_type_up},   "canon", "-raise"},
+  {gamemode_game, {'z',           keyboard_inputevent_type_down}, "canon", "+lower"},
+  {gamemode_game, {'z',           keyboard_inputevent_type_up},   "canon", "-lower"},
+  {gamemode_game, {KEY_LEFT,      keyboard_inputevent_type_down}, "canon", "+rotate-left"},
+  {gamemode_game, {KEY_LEFT,      keyboard_inputevent_type_up},   "canon", "-rotate-left"},
+  {gamemode_game, {KEY_RIGHT,     keyboard_inputevent_type_down}, "canon", "+rotate-right"},
+  {gamemode_game, {KEY_RIGHT,     keyboard_inputevent_type_up},   "canon", "-rotate-right"},
+  {gamemode_game, {KEY_UP,        keyboard_inputevent_type_down}, "canon", "+raise"},
+  {gamemode_game, {KEY_UP,        keyboard_inputevent_type_up},   "canon", "-raise"},
+  {gamemode_game, {KEY_DOWN,      keyboard_inputevent_type_down}, "canon", "+lower"},
+  {gamemode_game, {KEY_DOWN,      keyboard_inputevent_type_up},   "canon", "-lower"},
+  /* Force */
+  {gamemode_game, {'p',           keyboard_inputevent_type_down}, "canon", "+force-increase"},
+  {gamemode_game, {'p',           keyboard_inputevent_type_up},   "canon", "-force-increase"},
+  {gamemode_game, {'o',           keyboard_inputevent_type_down}, "canon", "+force-decrease"},
+  {gamemode_game, {'o',           keyboard_inputevent_type_up},   "canon", "-force-decrease"},
+  {gamemode_game, {'+',           keyboard_inputevent_type_down}, "canon", "+force-increase"},
+  {gamemode_game, {'+',           keyboard_inputevent_type_up},   "canon", "-force-increase"},
+  {gamemode_game, {'-',           keyboard_inputevent_type_down}, "canon", "+force-decrease"},
+  {gamemode_game, {'-',           keyboard_inputevent_type_up},   "canon", "-force-decrease"},
+  // Selection of projectile.
+
 
   /* FINAL */
   {gamemode_any, {0, keyboard_inputevent_type_down}, "", ""}

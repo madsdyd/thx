@@ -65,21 +65,43 @@ void TPlayer::PrepareRound(TVector * location) {
  * and the cannon (eventually)
  * *********************************************************************/
 bool TPlayer::RegisterCommands() {
-  return CommandDispatcher.RegisterConsumer("viewpoint-move", this);
+  if (CommandDispatcher.RegisterConsumer("viewpoint-move", this)) {
+    if (CommandDispatcher.RegisterConsumer("viewpoint-rotate", this)) {
+      if (CommandDispatcher.RegisterConsumer("canon", this)) {
+	return true;
+      }
+      CommandDispatcher.UnregisterConsumer("viewpoint-rotate");
+    }
+    CommandDispatcher.UnregisterConsumer("viewpoint-move");
+  }
+  return false;
 }
 
 bool TPlayer::UnregisterCommands() {
-  return CommandDispatcher.UnregisterConsumer("viewpoint-move");
+  if (CommandDispatcher.UnregisterConsumer("viewpoint-move")) {
+    if (CommandDispatcher.UnregisterConsumer("viewpoint-rotate")) {
+      if (CommandDispatcher.UnregisterConsumer("canon")) {
+	return true;
+      }
+      CommandDispatcher.RegisterConsumer("viewpoint-rotate", this);
+    }
+    CommandDispatcher.RegisterConsumer("viewpoint-move", this);
+  }
+  return false;
 }
 /* **********************************************************************
  * Begin and end a turn. Mostly do command registering at the moment.
  * *********************************************************************/
 void TPlayer::BeginTurn() {
-  RegisterCommands();
+  if (!RegisterCommands()) {
+    cerr << "TPlayer::BeginTurn() - unable to register commands!" << endl;
+  }
 }
 
 void TPlayer::EndTurn() {
-  UnregisterCommands();
+  if (!UnregisterCommands()) {
+    cerr << "TPlayer::EndTurn() - unable to unregister commands!" << endl;
+  }
   /* Clear the commands */
   active_commands.clear();
 }
@@ -90,6 +112,7 @@ void TPlayer::EndTurn() {
  * This is somewhat a test, as I am not sure this is the right way to 
  * proceed.
  * *********************************************************************/
+// TODO: Remove this include. ostrstream?
 #include <stdio.h>
 void TPlayer::PerformCommandUpdate(system_time_t timenow) {
   /* Perform action based on the stored_commands 
@@ -106,16 +129,23 @@ void TPlayer::PerformCommandUpdate(system_time_t timenow) {
   TActiveCommandsIterator end = active_commands.end();
   TActiveCommandsIterator i;
   for (i = active_commands.begin(); i != end; i++) {
-    /* Do any action, scale after time, update the timestamp of the command */
+    /* Do any action, scale after time, update the timestamp of the command 
+       Not updating the timestamp will make the display accellerate. */
     TCommand Command = (*i).second;
     /* TODO: This is probably some wrongly typecasting */
     double scale_move = timenow - Command.timestamp;
+    // TODO: Lot of this scale_move is not consistent with 
+    // low FPS...
     if (scale_move < 0) {
       printf("TPlayer::PerformCommandUpdate - time is %f\n", timenow);
       /* This means that the command was entered after the last update, 
 	 which is not so weird. */
       printf("TPlayer::PerformCommandUpdate scale_move is negative :%f\n", scale_move);
     } else {
+      /* I originally wrote the following code:
+	 Command.timestamp = timenow;
+	 But, this does not work (no wonder, but bugs can be hard to see 
+	 I kinda like the accelaration effect - So I will leave it in! */
       printf("TPlayer::PerformCommandUpdate scale_move is :%f\n", scale_move);
       if ("viewpoint-move" == Command.name) {
 	// TODO: Actually use the +/- part of the args ... 
@@ -160,7 +190,50 @@ void TPlayer::PerformCommandUpdate(system_time_t timenow) {
 	       << endl;
 	}
       } /* viewpoint-move */
-      Command.timestamp = timenow;
+      else if ("viewpoint-rotate" == Command.name) {
+	if ("+forward" == Command.args) {
+	  viewpoint.rotation.x-=2.0 * scale_move;
+	  if (viewpoint.rotation.x<0.0) 
+	    viewpoint.rotation.x+=360.0;
+	} 
+	else if ("+backward" == Command.args) {
+	  viewpoint.rotation.x+=2.0 * scale_move;
+	  if (viewpoint.rotation.x>360.0) 
+	    viewpoint.rotation.x-=360.0;
+	  
+	}
+	else if ("+left" == Command.args) {
+	  viewpoint.rotation.z-=2.0 * scale_move;
+	  if (viewpoint.rotation.z<0.0) 
+	    viewpoint.rotation.z+=360.0;
+	  
+	} 
+	else if ("+right" == Command.args) {
+	  viewpoint.rotation.z+=2.0 * scale_move;
+	  if (viewpoint.rotation.z>360.0) 
+	    viewpoint.rotation.z-=360.0;
+	}
+      } /* viewpoint-rotate */
+      else if ("canon" == Command.name) {
+	if ("+rotate-left" == Command.args) {
+	  tank->AdjustRotation(1 + scale_move);
+	}
+	else if ("+rotate-right" == Command.args) {
+	  tank->AdjustRotation(-1-scale_move);
+	}
+	else if ("+raise" == Command.args) {
+	  tank->AdjustAngle(1 + scale_move);
+	}
+	else if ("+lower" == Command.args) {
+	  tank->AdjustAngle(-1-scale_move);
+	}
+	else if ("+force-increase" == Command.args) {
+	  tank->AdjustForce(1 + scale_move);
+	}
+	else if ("+force-decrease" == Command.args) {
+	  tank->AdjustForce(-1-scale_move);
+	}
+      } /* canon */
     } /* time_scale < 0 */
   } /* Iterate over all commands */
 }

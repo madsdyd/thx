@@ -19,6 +19,8 @@
     along with this program; if not, write to the Free Software
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
+#include <strstream>
+
 #include "player.hh"
 /* Implements functions related to the players */
 
@@ -67,11 +69,11 @@ void TPlayer::PrepareRound(TGame * game, TVector * location) {
 bool TPlayer::RegisterCommands() {
   if (CommandDispatcher.RegisterConsumer("viewpoint-move", this)) {
     if (CommandDispatcher.RegisterConsumer("viewpoint-rotate", this)) {
-      if (CommandDispatcher.RegisterConsumer("canon", this)) {
+      if (CommandDispatcher.RegisterConsumer("cannon", this)) {
 	if (CommandDispatcher.RegisterConsumer("inventory", this)) {
 	  return true;
 	}
-	CommandDispatcher.UnregisterConsumer("canon");
+	CommandDispatcher.UnregisterConsumer("cannon");
       }
       CommandDispatcher.UnregisterConsumer("viewpoint-rotate");
     }
@@ -83,11 +85,11 @@ bool TPlayer::RegisterCommands() {
 bool TPlayer::UnregisterCommands() {
   if (CommandDispatcher.UnregisterConsumer("viewpoint-move")) {
     if (CommandDispatcher.UnregisterConsumer("viewpoint-rotate")) {
-      if (CommandDispatcher.UnregisterConsumer("canon")) {
+      if (CommandDispatcher.UnregisterConsumer("cannon")) {
 	if (CommandDispatcher.UnregisterConsumer("inventory")) {
 	  return true;
 	}
-	CommandDispatcher.RegisterConsumer("canon", this);
+	CommandDispatcher.RegisterConsumer("cannon", this);
       }
       CommandDispatcher.RegisterConsumer("viewpoint-rotate", this);
     }
@@ -155,8 +157,10 @@ void TPlayer::PerformCommandUpdate(system_time_t timenow) {
 	 I kinda like the accelaration effect - So I will leave it in! */
       if (scale_move > 5.0) { scale_move = 5.0; };
       // printf("TPlayer::PerformCommandUpdate scale_move is :%f\n", scale_move);
+      /* **********************************************************************
+       * (viewpoint-move)
+       * *********************************************************************/
       if ("viewpoint-move" == Command.name) {
-	// TODO: Actually use the +/- part of the args ... 
 	if ("+forward" == Command.args) {
 	  viewpoint.translation.x 
 	    += scale_move * sin(viewpoint.rotation.z * M_PI / 180.0);
@@ -192,12 +196,17 @@ void TPlayer::PerformCommandUpdate(system_time_t timenow) {
 	  viewpoint.translation.z -= scale_move;
 	}    
 	else {
+	  /* Ups, not handling this */
 	  cerr << "TPlayer::PerformCommandUpdate, not handling ("
 	       << Command.name << "," << Command.args << ")" << endl;
 	  cout << "TPlayer::PerformCommandUpdate, need to remove command?"
 	       << endl;
 	}
       } /* viewpoint-move */
+
+      /* **********************************************************************
+       * (viewpoint-rotate)
+       * *********************************************************************/
       else if ("viewpoint-rotate" == Command.name) {
 	if ("+forward" == Command.args) {
 	  viewpoint.rotation.x-=2.0 * scale_move;
@@ -221,8 +230,18 @@ void TPlayer::PerformCommandUpdate(system_time_t timenow) {
 	  if (viewpoint.rotation.z>360.0) 
 	    viewpoint.rotation.z-=360.0;
 	}
+	else {
+	  /* Ups, not handling this */
+	  cerr << "TPlayer::PerformCommandUpdate, not handling ("
+	       << Command.name << "," << Command.args << ")" << endl;
+	  cout << "TPlayer::PerformCommandUpdate, need to remove command?"
+	       << endl;
+	}
       } /* viewpoint-rotate */
-      else if ("canon" == Command.name) {
+      /* **********************************************************************
+       * cannon
+       * *********************************************************************/
+      else if ("cannon" == Command.name) {
 	if ("+rotate-left" == Command.args) {
 	  tank->AdjustRotation(scale_move);
 	}
@@ -241,7 +260,14 @@ void TPlayer::PerformCommandUpdate(system_time_t timenow) {
 	else if ("+force-decrease" == Command.args) {
 	  tank->AdjustForce(-scale_move);
 	}
-      } /* canon */
+	else {
+	  /* Ups, not handling this */
+	  cerr << "TPlayer::PerformCommandUpdate, not handling ("
+	       << Command.name << "," << Command.args << ")" << endl;
+	  cout << "TPlayer::PerformCommandUpdate, need to remove command?"
+	       << endl;
+	}
+      } /* cannon */
     } /* time_scale < 0 */
   } /* Iterate over all commands */
 }
@@ -266,8 +292,61 @@ bool TPlayer::CommandConsume(TCommand * Command) {
       inventory->SelectNext();
       return true;
     }
-  } else {
-    /* Handle commands that have a +/- stuff */
+  }
+  /* Testing mouse handling */
+  if ("viewpoint-rotate" == Command->name) {
+    if ("mouse" == Command->args.substr(0, 5)) {
+      istrstream args(Command->args.c_str());
+      string foo;
+      unsigned int x;
+      unsigned int y;
+      unsigned int oldx;
+      unsigned int oldy;
+      int xd, yd;
+      cout << "matched mouse" << endl;
+      args >> foo >> foo >> x >> y >> oldx >> oldy;
+      xd = x - oldx;
+      yd = y - oldy;
+      cout << "TPlayer: mouse diff " << xd << ", " << yd << endl;
+      /* Change the viewpoint */
+      /* Left, right */
+      viewpoint.rotation.z += xd * 0.15;
+      if (viewpoint.rotation.z < 0.0) 
+	viewpoint.rotation.z += 360.0;
+      if (viewpoint.rotation.z > 360.0) 
+	viewpoint.rotation.z -= 360.0;
+      /* Up/down */
+      viewpoint.rotation.x += yd * 0.15;
+      if (viewpoint.rotation.x < 0.0) 
+	viewpoint.rotation.x += 360.0;
+      if (viewpoint.rotation.x > 360.0) 
+	viewpoint.rotation.x -= 360.0;
+      return true;
+    }
+  }
+  if ("cannon" == Command->name) {
+    if ("mouse" == Command->args.substr(0, 5)) {
+      istrstream args(Command->args.c_str());
+      string foo;
+      unsigned int x;
+      unsigned int y;
+      unsigned int oldx;
+      unsigned int oldy;
+      int xd, yd;
+      cout << "matched mouse" << endl;
+      args >> foo >> foo >> x >> y >> oldx >> oldy;
+      xd = x - oldx;
+      yd = y - oldy;
+      cout << "TPlayer: mouse diff " << xd << ", " << yd << endl;
+      /* Change the cannon */
+      tank->AdjustRotation(-xd * 0.15);
+      tank->AdjustAngle(yd * 0.15);
+      return true;
+    }
+  }
+  
+  /* Handle commands that have a +/- stuff */
+  {
     // Check if this is one we handle, check for +/-, 
     // Remove/insert into active commands, PerformCommandUpdate
     /* Check the first character in the args */

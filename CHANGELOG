@@ -1,5 +1,8 @@
 20010411
   - Changed the Makefile to drop -g - makes final linking faster
+  - Added a "centermode" to the inputmouse - made gamemode change to/from it.
+  - Made the game aware of the mouse - hacked player to handle the mouse
+    need to fix permantly.
 
 20010410
   - The mouse is now supported in all menus

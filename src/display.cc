@@ -489,6 +489,10 @@ void TDisplay::Render(void) {
   
   /* Increment frame counter */
   num_frames++;
+
+  /* Debug, write viewpoint, rotation.z */
+  cout << "TDisplay::Render() - viewpoint.rotation.z " 
+       << viewpoint->rotation.z << endl;
 }
 
 /* **********************************************************************

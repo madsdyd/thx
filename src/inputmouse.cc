@@ -91,18 +91,27 @@ void MouseFunc(int button, int state, int x, int y) {
 /* **********************************************************************
  * MouseFunc - called by both passive and motion func
  * *********************************************************************/
+static bool justwarped = false;
 void MouseFunc(unsigned int x, unsigned int y, 
 	       mousebutton_button_t button) {
-  bool center = centermode && Display->GrabbingPointer;
-  int x2 = Display->GetWidth()/2;
-  int y2 = Display->GetHeight()/2;
+  bool center = centermode && Display->GrabbingPointer();
+  unsigned int x2 = Display->GetWidth()/2;
+  unsigned int y2 = Display->GetHeight()/2;
 
-  /* This is a hack - if we are in centermode, and the source and
+  /* This is a hack - if we are in centermode, we just warped and the
      destination is the center of the screen, then ignore the event */
-  if (center
-      && x == oldx && y == oldy && x == x2 && y == y2) {
+  if (center && justwarped && x == x2 && y == y2) {
+    justwarped = false;
+    oldx = x;
+    oldy = y;
     return;
   }
+  /* If new and old are the same, nothing happened, really */
+  if (x == oldx && y == oldy) {
+    justwarped = false;
+    return;
+  }
+
   /* If we are in centermode, push event that is relative to center,
      otherwise push true event*/
   /*  if (center) {
@@ -117,6 +126,7 @@ void MouseFunc(unsigned int x, unsigned int y,
   /* Make sure we warp back */
   if (center) {
     glutWarpPointer(x2, y2);
+    justwarped = true;
   }
 }
 /* **********************************************************************

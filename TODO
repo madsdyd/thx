@@ -2,6 +2,12 @@ Version schedule.
 
 This is an overview of what features go where. This is subject to change.
 
+- Fix encapsulation in viewpoint - sucks right now.
+- is the mousemovement errativ?
+- fix finally in player.cc
+- wrap mouse arguments - use signed ints? Fix manual decode.
+- update README
+
 ** 0.3.4 (Mouseinput continued)
   - Make the game able to operate by mouse.
   - The mouse input mappings need to be aware of the mode (not?)

@@ -119,19 +119,19 @@ keymap_t key_map_std[] =
   {gamemode_game, {'k',           keyup},   "viewpoint-rotate", "-right"},
   // TODO?: keyboard.cc : e == viewpoint->Reset(..);
   /* Tank manipulation stuff */
-  {gamemode_game, {KEY_LEFT,      keydown}, "canon", "+rotate-left"},
-  {gamemode_game, {KEY_LEFT,      keyup},   "canon", "-rotate-left"},
-  {gamemode_game, {KEY_RIGHT,     keydown}, "canon", "+rotate-right"},
-  {gamemode_game, {KEY_RIGHT,     keyup},   "canon", "-rotate-right"},
-  {gamemode_game, {KEY_UP,        keydown}, "canon", "+raise"},
-  {gamemode_game, {KEY_UP,        keyup},   "canon", "-raise"},
-  {gamemode_game, {KEY_DOWN,      keydown}, "canon", "+lower"},
-  {gamemode_game, {KEY_DOWN,      keyup},   "canon", "-lower"},
+  {gamemode_game, {KEY_LEFT,      keydown}, "cannon", "+rotate-left"},
+  {gamemode_game, {KEY_LEFT,      keyup},   "cannon", "-rotate-left"},
+  {gamemode_game, {KEY_RIGHT,     keydown}, "cannon", "+rotate-right"},
+  {gamemode_game, {KEY_RIGHT,     keyup},   "cannon", "-rotate-right"},
+  {gamemode_game, {KEY_UP,        keydown}, "cannon", "+raise"},
+  {gamemode_game, {KEY_UP,        keyup},   "cannon", "-raise"},
+  {gamemode_game, {KEY_DOWN,      keydown}, "cannon", "+lower"},
+  {gamemode_game, {KEY_DOWN,      keyup},   "cannon", "-lower"},
   /* Force */
-  {gamemode_game, {'+',           keydown}, "canon", "+force-increase"},
-  {gamemode_game, {'+',           keyup},   "canon", "-force-increase"},
-  {gamemode_game, {'-',           keydown}, "canon", "+force-decrease"},
-  {gamemode_game, {'-',           keyup},   "canon", "-force-decrease"},
+  {gamemode_game, {'+',           keydown}, "cannon", "+force-increase"},
+  {gamemode_game, {'+',           keyup},   "cannon", "-force-increase"},
+  {gamemode_game, {'-',           keydown}, "cannon", "+force-decrease"},
+  {gamemode_game, {'-',           keyup},   "cannon", "-force-decrease"},
   /* Selection of projectile */
   {gamemode_game, {'\t',          keydown},   "inventory", "next-weapon"},
   /* Render and display stuff - misplaced? */
@@ -179,6 +179,11 @@ mousemap_t mouse_map_std[] =
   {gamemode_any,  {mousedown, mouse_left},   "mouse-down", ""},
   {gamemode_any,  {mouseup,   mouse_left},   "mouse-up",   ""},
 
+  /* GAME */
+  {gamemode_game, {mousemove, mouse_none},   "viewpoint-rotate", "mouse"},
+  {gamemode_game, {mousemove, mouse_middle}, "cannon", "mouse"},
+
+  {gamemode_game, {mousedown, mouse_left},   "fire", ""},
   
   /* FINAL */
   {gamemode_any,  {mousemove, mouse_none}, "", ""}

@@ -149,6 +149,12 @@ void TMenu::HideChild(TMenu * oChild) {
 }
 
 /* **********************************************************************
+ * Set the menuitem size - called from Render
+ * *********************************************************************/
+void TMenu::SetItemSize() {
+  MenuTextRender.size = Display->GetHeight()/27; /* 480/27 ~= 18 */
+}
+/* **********************************************************************
  * Sometimes we will stop showing ourselves, and show our parent
  * *********************************************************************/
 void TMenu::ShowParent() {
@@ -192,7 +198,7 @@ void TMenu::Render(int xlow, int xhigh, int ylow, int yhigh) {
     
     /* Render the menu items */
     /* Set the size for the "normal" menu entries */
-    MenuTextRender.size = Display->GetHeight()/27; /* 480/27 ~= 18 */
+    SetItemSize();
     /* We render them between position 25 % down and the position where the 
        description is.
        The Menuitem updates the MenuTextPosition themselves;

@@ -23,6 +23,8 @@
    for the various commands */
 #include "menu.hh"
 class TControlsMenu : public TMenu {
+protected:
+  void SetItemSize();
 public:
   TControlsMenu(string title);
 };

@@ -253,9 +253,38 @@ int TInputToCommand::Consume() {
     InputEvent = Inputs.Events.front();
     switch (InputEvent->eventtype) {
     case inputevent_type_keyboard: {
+      /* Get a pointer we can use */
+      TKeyboardInputEvent * KeyEvent = (TKeyboardInputEvent *) InputEvent;
+      
+      /* **********************************************************************
+       * Raw gamemode
+       * *********************************************************************/
+      /* Raw is a special case, similar to automap, however, 
+	 raw sends keys as numbers only, where automap maps to ascii (sort of) */
+      if (gamemode_raw == GameMode.GetMode()) {
+	if (keydown 
+	    == KeyEvent->keyboard_inputevent_event.type 
+	    && (KeyEvent->keyboard_inputevent_event.key < 128
+		|| (KeyEvent->keyboard_inputevent_event.key >= KEY_FIRST &&
+		    KeyEvent->keyboard_inputevent_event.key < KEY_LAST))) {
+#if(INPUT_DEBUG)
+	  cout << "TInputToCommand::Consume, key (down)"
+	       << KeyEvent->keyboard_inputevent_event.key
+	       << " in raw is" << "raw " 
+	       << KeyEvent->keyboard_inputevent_event.key << endl;
+#endif
+	  ostrstream tmparg;
+	  tmparg << KeyEvent->keyboard_inputevent_event.key << ends;
+	  CommandQueue.push(new TCommand(KeyEvent->timestamp,
+					 "raw", tmparg.str()));
+	} 
+	break;
+      }
+      /* **********************************************************************
+       * Normal handling
+       * *********************************************************************/
+
       /* Find the command in the keyboard map */
-      TKeyboardInputEvent * KeyEvent 
-	= (TKeyboardInputEvent *) InputEvent;
       /* Check the current mode */
       TKeyboardCommandMapIterator loc 
 	= KeyboardCommandMap[GameMode.GetMode()].find(KeyEvent->keyboard_inputevent_event);
@@ -411,16 +440,23 @@ string TInputToCommand::GetKeyMappingsForCommand(string command, string args) {
 bool TInputToCommand::AddKeyboardMapping(gamemode_t mode, 
 					 keyboard_inputevent_event_t event,
 					 string cmd, string arg) {
+#ifdef NEVER
   /* Check if a mapping is already present */
   TKeyboardCommandMapIterator loc 
     = KeyboardCommandMap[mode].find(event);
-  if (loc != KeyboardCommandMap[GameMode.GetMode()].end()) {
+  if (loc != KeyboardCommandMap[mode].end()) {
     /* A mapping alread exists. */
     cerr << "TInputToCommand::AddKeyboardMapping - mapping for event already exists" 
 	 << endl;
     return false;
-  } else {
-    KeyboardCommandMap[mode][event] = TCmdArg(cmd, arg);
-    return true;
   }
+#endif
+  KeyboardCommandMap[mode][event] = TCmdArg(cmd, arg);
+  /* Check if we need to add a - mapping to a + mapping */
+  if (keydown == event.type && arg.size() > 0 && '+' == arg[0]) {
+    event.type = keyup;
+    arg[0] = '-';
+    KeyboardCommandMap[mode][event] = TCmdArg(cmd, arg);
+  }
+  return true;
 }

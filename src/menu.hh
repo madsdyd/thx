@@ -56,6 +56,9 @@ protected:
   void Show(TMenu * nParent);
   /* Our Child will stop showing it selv at some point */
   void HideChild(TMenu * oChild); 
+  /* Set the menuitem size. Used when we do not want to override
+     all of render ... */
+  virtual void SetItemSize();
 public:
   /* Construct and destruct the menu */
   TMenu(string nTitle);

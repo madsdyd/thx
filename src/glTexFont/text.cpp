@@ -391,11 +391,11 @@ GLint text_t::BoldMode (char *s)
 
 GLint text_t::GetCharHits(char *s, char f)
 {
-   for (GLint hits = 0; *s; *s++)
-      if (*s == f)
-         hits ++;
-
-	return hits;
+  GLint hits;
+  for (hits = 0; *s; *s++)
+    if (*s == f)
+      hits ++;
+  return hits;
 }
 
 void text_t::MakeMap(void)

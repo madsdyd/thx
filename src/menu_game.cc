@@ -21,9 +21,20 @@
 */
 #include "menu_game.hh"
 #include "menu_controls.hh"
+#include "menuitem_color.hh"
 
 TGameMenu * GameMenu;
 
+/* **********************************************************************
+ * The destructor for TGameMenue
+ * *********************************************************************/
+TGameMenu::~TGameMenu() {
+  delete NewGameMenu;
+  delete PlayerMenu;
+  delete HelpMenu;
+  delete AboutMenu;
+  delete ExitMenu;
+};
 
 /* **********************************************************************
    The constructor for our game menu.
@@ -33,6 +44,8 @@ TGameMenu::TGameMenu(string title,
 		     TAction GameStartFunc,
 		     TAction GameEndFunc) : TMenu(title) {
   NewGameMenu = new TMenu("New Game");
+  PlayerMenu  = new TPlayerMenu("Player Settings", &numplayers, 
+				&PlayerSettings);
   HelpMenu    = new TMenu("Help");
   AboutMenu   = new TMenu("About Tank Hill eXtreme");
   ExitMenu    = new TMenu("Really Exit?");
@@ -68,66 +81,73 @@ TGameMenu::TGameMenu(string title,
 						 GameStartFunc));
     NewGameMenu->AddMenuItem(new TSpaceMenuItem(NewGameMenu));
 			     
-    TListMenuItem * tmpitem 
-      = new TListMenuItem(NewGameMenu, "Map size", 
-			  "Change the size of the map",
-			  &mapsize);
-    //    tmpitem->AddValue("small");
-    tmpitem->AddValue("medium");
-    tmpitem->AddValue("large");
+    /* Player related stuff */
+    TUIntListMenuItem * tmpitem 
+      = new TUIntListMenuItem(NewGameMenu, "Number of players", 
+			      "Set the number of players",
+			      &numplayers); 
+    tmpitem->AddOption("2", 2);
+    tmpitem->AddOption("3", 3);
+    tmpitem->AddOption("4", 4);
     NewGameMenu->AddMenuItem(tmpitem);
+    NewGameMenu->AddMenuItem(new TSubMenuItem(NewGameMenu, 
+					      "Player Settings", 
+					      "Set name, color, etc for "
+					      "each player", 
+					      PlayerMenu));
+
+    /* Map related stuff */
     tmpitem 
-      = new TListMenuItem(NewGameMenu, "Number of players", 
-			  "Set the number of players",
-			  &numplayers);
-    tmpitem->AddValue("2");
-    tmpitem->AddValue("3");
-    tmpitem->AddValue("4");
+      = new TUIntListMenuItem (NewGameMenu, "Map size", 
+			       "Change the size of the map",
+			       &mapsize);
+    tmpitem->AddOption("medium", 32);
+    tmpitem->AddOption("large", 64);
+    tmpitem->AddOption("small", 16);
     NewGameMenu->AddMenuItem(tmpitem);
-    tmpitem 
-      = new TListMenuItem(NewGameMenu, "Number of rounds", 
-			  "Set the number of rounds of the game",
-			  &numrounds);
-    tmpitem->AddValue("2");
-    tmpitem->AddValue("3");
-    tmpitem->AddValue("4");
-    tmpitem->AddValue("5");
-    tmpitem->AddValue("6");
-    tmpitem->AddValue("7");
-    tmpitem->AddValue("8");
-    tmpitem->AddValue("9");
-    NewGameMenu->AddMenuItem(tmpitem);
+
     /* The Map steepness - decides its type */
-    tmpitem = 
-      new TListMenuItem(NewGameMenu, "Map type", 
-			"Select the topology of the map", 
-			&maptype);
-    tmpitem->AddValue("highlands");
-    tmpitem->AddValue("mountains");
-    tmpitem->AddValue("flatlands");
-    tmpitem->AddValue("bumby");
+    //    TDoubleListMenuItem * d
+    TDoubleListMenuItem * dtmpitem = 
+      new TDoubleListMenuItem(NewGameMenu, "Map type", 
+			      "Select the topology of the map", 
+			      &maptype);
+    dtmpitem->AddOption("highlands", 1.4);
+    dtmpitem->AddOption("mountains", 2.0);
+    dtmpitem->AddOption("flatlands", 0.2);
+    dtmpitem->AddOption("bumby", 0.8);
+    NewGameMenu->AddMenuItem(dtmpitem);
+
+    /* Number of rounds */
+    tmpitem 
+      = new TUIntListMenuItem(NewGameMenu, "Number of rounds", 
+			      "Set the number of rounds of the game",
+			      &numrounds);
+    tmpitem->AddOption("2", 2);
+    tmpitem->AddOption("3", 3);
+    tmpitem->AddOption("4", 4);
+    tmpitem->AddOption("5", 5);
+    tmpitem->AddOption("6", 6);
+    tmpitem->AddOption("7", 7);
+    tmpitem->AddOption("8", 8);
+    tmpitem->AddOption("9", 9);
     NewGameMenu->AddMenuItem(tmpitem);
-    /* The player names TODO: Should be dynamic */
-    playernames[0] = "Player 1";
-    playernames[1] = "Player 2";
-    playernames[2] = "Player 3";
-    playernames[3] = "Player 4";
-    NewGameMenu->AddMenuItem(new TStringMenuItem(NewGameMenu, "Player 1 name", 
-						"Enter the name of player 1 "
-						 "here",
-						 &playernames[0]));
-    NewGameMenu->AddMenuItem(new TStringMenuItem(NewGameMenu, "Player 2 name", 
-						"Enter the name of player 2 "
-						 "here",
-						 &playernames[1]));
-    NewGameMenu->AddMenuItem(new TStringMenuItem(NewGameMenu, "Player 3 name", 
-						"Enter the name of player 3 " 
-						 "here",
-						 &playernames[2]));
-    NewGameMenu->AddMenuItem(new TStringMenuItem(NewGameMenu, "Player 4 name", 
-						 "Enter the name of player 4 "
-						 "here",
-						 &playernames[3]));
+
+
+
+#ifdef NEVER
+    TColorMenuItem * ctmpitem 
+      = new TColorMenuItem(NewGameMenu, 
+			   "Player 1 color", 
+			   "Choose the color of player 1", &testcolor);
+    ctmpitem->AddOption("Yellow", ColorDefinitions.GetColor("yellow"));
+    ctmpitem->AddOption("Blue",   ColorDefinitions.GetColor("blue"));
+    ctmpitem->AddOption("Red",    ColorDefinitions.GetColor("red"));
+    ctmpitem->AddOption("Green",  ColorDefinitions.GetColor("green"));
+    NewGameMenu->AddMenuItem(ctmpitem);
+#endif
+
+
 
     NewGameMenu->AddMenuItem(new TSpaceMenuItem(NewGameMenu));
     NewGameMenu->AddCancelMenuItem(new TReturnMenuItem(NewGameMenu, "Return", 

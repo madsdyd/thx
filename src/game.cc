@@ -89,6 +89,11 @@ TGame::TGame(int nwidth, int nlenght, int nnum_rounds, float nmapsteepness) {
   num_rounds          = nnum_rounds;
   num_this_round      = 0;
   roundstate          = roundstate_not_ready;
+
+  /* Wind init */
+  wind.x = 1.0;
+  wind.y = 1.0;
+  wind.z = 0.0;
   
 }
 
@@ -605,4 +610,31 @@ bool TGame::CommandConsume(TCommand * Command) {
     return FireProjectile();
   }
   return false;
+}
+
+/* **********************************************************************
+ * Wind stuff
+ * *********************************************************************/
+
+/* **********************************************************************
+ * SetWind - Called to change the wind according to some rules.
+ * *********************************************************************/
+void TGame::SetWind() {
+  wind.x += 1.0;
+}
+
+/* **********************************************************************
+ * Apply the current wind to a velocity
+ * This is a bit more complicated than it sounds.
+ * Obviously, the wind cannot add to the velocity if the velocity in the
+ * wind direction is greater than the wind velocity. In this case, 
+ * we may actually apply drag.
+ * TODO: Ask skjalm about how to do it. We may have to use the area of
+ * the object and possible the weight.
+ * *********************************************************************/
+void TGame::ApplyWind(TVector &vel, system_time_t deltatime) {
+  /* This is a hack at the moment */
+  vel.x += wind.x * deltatime;
+  vel.y += wind.y * deltatime;
+  vel.z += wind.z * deltatime;
 }

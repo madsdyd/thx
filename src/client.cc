@@ -37,7 +37,6 @@
 #include "menu_controls.hh"
 
 /* Testing input events */
-#include "inputkeyboard.hh"
 #include "inputconsumer.hh"
 #include "command.hh"
 #include "commandconsumer.hh"
@@ -250,107 +249,57 @@ void GameMenu_StartFunc() {
     cerr << "GameMenu_StartFunc - error changing gamemode!" << endl;
     return;
   }
-  // TODO: Somehow this does not seem to fit here....
-  inputkeyboard_disablerepeat();
   GameMenu->GetCurrentMenu()->Hide();
   if (Client->game_running || Client->has) {
     cerr << "GameMenu_StartFunc() called with wrong state!" << endl;
   }
   if (GL_NO_ERROR != glGetError()) {
-    cerr << "GameMenu_StartFunc() : GL was in error condition on entering" << endl;
+    cerr << "GameMenu_StartFunc() : GL was in error condition on entering"
+	 << endl;
   } 
 
   /* ************************************************************
      Initialize the game. This should maybe go somewhere else */
   
   /* Initialize stuff as selected from the menu system */
-  int game_numrounds = atoi(GameMenu->numrounds.c_str());
-  
-  int game_mapsize;
-  float game_mapsteepness;
-  /* Find the mapsize. 3 fixed values for now */
-  if ("small" == GameMenu->mapsize) {
-    game_mapsize = 16;
-  } else {
-    if ("medium" == GameMenu->mapsize) {
-      game_mapsize = 32;
-    } else {
-      game_mapsize = 64;
-    }
-  }
-
-  /* Find the map type */
-  if ("flatlands" == GameMenu->maptype) {
-    game_mapsteepness = 0.2;
-  } else {
-    if ("bumby" == GameMenu->maptype) {
-      game_mapsteepness = 0.8;
-    } else {
-      if ("highlands" == GameMenu->maptype) {
-	game_mapsteepness = 1.4;
-      } else {
-	if ("mountains" == GameMenu->maptype) {
-	  game_mapsteepness = 2.0;
-	}
-      }
-    }
-  }
+  int game_numrounds       = GameMenu->numrounds;
+  int game_mapsize         = GameMenu->mapsize;
+  double game_mapsteepness = GameMenu->maptype;
   
 
   /* Setup a game. This is pretty simple at this point. 
      max 4 players allowed */
-  Game = new TGame(game_mapsize, game_mapsize, game_numrounds, game_mapsteepness);
+  Game = new TGame(game_mapsize, game_mapsize, 
+		   game_numrounds, game_mapsteepness);
 
   TTank * tank;
   TPlayer * player;
 
-  /* There are better ways to do this */
-  switch(atoi(GameMenu->numplayers.c_str())) {
-    
-  case 4:
-    player = new TPlayer(GameMenu->playernames[3]);
-    tank   = new TTank(player);
-    tank->color      =  ColorDefinitions.GetColor("yellow");
-    player->tank     = tank;
+  /* TODO: Remove this ugly hack
+     This hack makes sure that we have enough playersettings, if
+     the player never visited the playersettings menu. It will not 
+     remain like this, but I need to check in some code. */
+  
+  while(GameMenu->PlayerSettings.size() < GameMenu->numplayers) {
+    cout << "Gamestart, TODO: REMOVE, Adding a playersetting" << endl;
+    TPlayerSetting tmpset;
+    ostrstream tmp1;
+    tmp1.form("Player %i", GameMenu->PlayerSettings.size() + 1) << ends;
+    tmpset.name = tmp1.str();
+    GameMenu->PlayerSettings.push_back(tmpset);
+  }
+  
+  for (unsigned int i = 0; i < GameMenu->numplayers; i++) {
+    player       = new TPlayer(GameMenu->PlayerSettings[i].name);
+    tank         = new TTank(player);
+    player->tank = tank;
+    tank->color  = GameMenu->PlayerSettings[i].color;
     if (!Game->AddPlayer(player)) {
       cerr << "Error adding player " << player->name << endl;
-      //    sound_shutdown();
-      exit(1);
-    }
-
-  case 3:
-    player = new TPlayer(GameMenu->playernames[2]);
-    tank   = new TTank(player);
-    tank->color      = ColorDefinitions.GetColor("blue");
-    player->tank     = tank;
-    if (!Game->AddPlayer(player)) {
-      cerr << "Error adding player " << player->name << endl;
-      //    sound_shutdown();
-      exit(1);
-    }
-
-  default:
-    player = new TPlayer(GameMenu->playernames[1]);
-    tank   = new TTank(player);
-    tank->color      = ColorDefinitions.GetColor("green");
-    player->tank     = tank;
-    if (!Game->AddPlayer(player)) {
-      cerr << "Error adding player " << player->name << endl;
-      //    sound_shutdown();
-      exit(1);
-    }
-
-    player = new TPlayer(GameMenu->playernames[0]);
-    tank   = new TTank(player);
-    tank->color      = ColorDefinitions.GetColor("red");
-    player->tank     = tank;
-    if (!Game->AddPlayer(player)) {
-      cerr << "Error adding player " << player->name << endl;
-      //    sound_shutdown();
       exit(1);
     }
   }
-      
+
   /* Initialize framerate counter */
   framerate_init();
 

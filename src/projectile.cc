@@ -155,6 +155,9 @@ void TProjectile::Update(TGame * game, system_time_t deltatime) {
   location = new_location;
   velocity.z -= GRAVITY * deltatime;
 
+  /* Update according to wind */
+  game->ApplyWind(velocity, deltatime);
+
   /* Set a marker if the option is on. */
   if (spawn_markers)
     game->AddEntity(new TMarker(owner, location, 0.05, 2.0));

@@ -1,4 +1,3 @@
-# Define where to get our sounds
 CC=g++
 LFLAGS=-L/usr/X11R6/lib -lm -lglut -lGLU -lGL -lpthread
 
@@ -6,7 +5,7 @@ LFLAGS=-L/usr/X11R6/lib -lm -lglut -lGLU -lGL -lpthread
 WFLAGS=-Wtraditional -Wpointer-arith -Wconversion -Wstrict-prototypes -Wmissing-prototypes -Wmissing-declarations -Wnested-externs -Woverloaded-virtual -pedantic
 CFLAGS=-Wall -g $(WFLAGS) -I/usr/X11R6/include -D_REENTRANT -DSOUND_ON -DDEBUG # -pg 
 
-SOURCES=menu_controls.cc \
+SOURCES=menu_players.cc menuitem_color.cc menu_controls.cc \
 	inputmouse.cc debug.cc gamemode.cc command.cc commandconsumer.cc \
 	inputconsumer.cc inputkeyboard.cc inputevent.cc console.cc \
 	types.cc game.cc sound.cc display.cc tank.cc map.cc \

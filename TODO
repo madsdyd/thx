@@ -2,15 +2,34 @@ Version schedule.
 
 This is an overview of what features go where. This is subject to change.
 
+cvs add menuitem_color.hh menuitem_color.cc menu_player.hh menu_player.cc
+
+- Fix ColorMenuItem to use initial value, make a list of possible player
+  colors.
+- Fix adding playersettings, without having to show the playersettings
+  menu...
+
 The text () is the focus of the "series". E.g. 0.4.0 (AI) means that
 everything starting with 0.4. is probably going to be related to AI. The 0.4.0 release
 however, is the final release of the previous series.
 
+- Consider; Making a TWorld, that contains the world; Wind, Terrain, Entities, etc?
+  Should probably be done, postpone to CVS access. For now, I put it into the map.
+  The game logic and such is still in TGame.
+
+- Consider splitting the menuitems into a larger number of files
+  (Add TColorMenuItem for starters)
+
+- Make skjalm fix the wind code.
+
+Team support - Teams should be defined when a game is created. 
+
+
 ** 0.4.0 (AI)
+  - Implement wind before going AI.
   - Console
   - Team support
   - Make a ceiling?
-  - Implement wind before going AI.
   - Implement AI entities
   - Connect to event pipelines
 

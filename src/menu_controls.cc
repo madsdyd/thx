@@ -244,7 +244,7 @@ TControlsMenu::TControlsMenu(string title) : TMenu(title) {
 				    "Change what key quits THX",
 				    "quit", "", gamemode_any));
 
-
+  /* Close the scroll area, allow 10 items to show at a time */
   CloseScrollArea(10, tmpitem2);
 
   /* Return menu item */

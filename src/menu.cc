@@ -76,6 +76,7 @@ TMenu::~TMenu() {
  * Enable showing of this menu 
  * *********************************************************************/
 void TMenu::Show() {
+  // cout << "TMenu::Show - " << Title << endl;
   if (focuseditem < 0) {
     FocusFirst();
   }
@@ -120,6 +121,8 @@ void TMenu::Hide() {
  * If we need to show a sub menu, an menuitem will let us kno
  * *********************************************************************/
 void TMenu::ShowChild(TMenu * nChild) {
+  // cout << "TMenu::ShowChild - " << Title << " showing " 
+  // << nChild->Title << endl;
   Child = nChild;
   Hide();
   Child->Show(this);

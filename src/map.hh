@@ -48,6 +48,8 @@ private:
   int width, length;   
   bool has_changed;    /* Set to TRUE when init, impact or rendertype changes */
   TMappoint * data;
+
+  /* This is the global wind */
   /* The landscape generating stuff */
   void lsGenerate();
   GLfloat lsRand(int step);

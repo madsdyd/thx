@@ -1,3 +1,20 @@
+20010528
+  - Checked in stuff that allows for more dynamic configuration of players.
+    Lots of details still missing.
+
+20010505
+  - Made menuitem to select colors
+  - Fixed bug in text renderer - now centers correctly.
+
+20010504
+  - Made a TListMenuItem use templates, changed dependant code.
+
+20010502
+  - Made the gamemode change change the keyboard repeat
+
+20010501
+  - Added wind to the Map. This is a temporary hack (what else is new)
+
 20010430
   - Cleaned up a bit in objects and models, removed some memory leaks, 
     made the tanks use a display list.

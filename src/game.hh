@@ -24,6 +24,7 @@
 #include <vector>
 
 /* Other includes */
+#include "vector.hh"
 #include "entities.hh"
 #include "commandconsumer.hh"
 /* This module provides the actual game and gamestate
@@ -100,6 +101,10 @@ private:
   float mapsteepness;
   void SetMap();             /* Creates a new map and stores it in map */
 
+  /* Wind related stuff - temporary location */
+  TVector wind;
+  void SetWind(); /* Changes the wind according to settings, called each round */
+
   /* The player infos.  */
   TPlayerInfos playerInfos;
   int num_players;
@@ -135,7 +140,10 @@ private:
 public:
   TGame(int nwidth, int nlenght, int nnum_rounds, float nmapsteepness);
   virtual ~TGame();
+  /* Get a pointer to the map */
   TMap * GetMap();
+  /* Get a pointer to the global wind */
+  void ApplyWind(TVector &vel, system_time_t deltatime);
 
   /* **********************************************************************
    * Handling players

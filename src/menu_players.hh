@@ -19,43 +19,34 @@
     along with this program; if not, write to the Free Software
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
-#ifndef __MENU_GAME_HH__
-#define __MENU_GAME_HH__
-/* Defines various options and a global menu to display before and between games */
-
+#ifndef __MENU_PLAYERS_HH__
+#define __MENU_PLAYERS_HH__
+/* This unit defines a menu to set up the players. This does not
+   include the number - which is supposed to be set in another menu */
+#include <list>
 #include "menu.hh"
-#include "menu_players.hh"
-#include "color.hh"
-
-class TGameMenu : public TMenu {
-private:
-  /* The game menu owns the following menus, which are built by
-     the TGameMenu constructor */
-  TMenu * NewGameMenu;
-  TPlayerMenu * PlayerMenu; 
-  TMenu * HelpMenu;
-  TMenu * AboutMenu;
-  TMenu * ExitMenu;
+#include "menuitem_color.hh"
+/* This declares a class to hold some player information.
+   This information is stored somewhere else, so that it can be
+   üsed when setting up a game. */
+class TPlayerSetting {
 public:
-  /* Storage for our variables that are set in the menus, but used in
-     setting up the game */
-  unsigned int mapsize;
-  unsigned int numplayers;
-  unsigned int numrounds;
-  double maptype;
-
-  /* This is the storage for the information about players. 
-     This list only changes while the TPlayerMenu is shown */
-  TPlayerSettings PlayerSettings;
-
-  /* Set up the menu */
-  TGameMenu(string title, 
-	    TAction GameStartFunc,
-	    TAction GameEndFunc);
-  ~TGameMenu();
+  string name;
+  TColor color;
 };
+typedef vector<TPlayerSetting> TPlayerSettings;
+typedef TPlayerSettings::iterator TPlayerSettingsIterator;
 
-/* The global game menu */
-extern TGameMenu * GameMenu;
 
+class TPlayerMenu : public TMenu {
+private:
+  unsigned int * NumPlayers;
+  TPlayerSettings * PlayerSettings;
+public:
+  /* Override the constructor to take a list of TPlayerSettings */
+  TPlayerMenu(string title, unsigned int * num_players, 
+	      TPlayerSettings * nplayer_settings);
+  /* Override show to make it dynamically insert a number of menuitems */
+  virtual void Show();
+};
 #endif

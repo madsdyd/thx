@@ -79,8 +79,8 @@ TDisplay::TDisplay(int argc, char** argv) {
   textrender = new TTextRender;
 
   /* Default values */
-  width       = 320;
-  height      = 200;
+  width       = 500;
+  height      = 320;
   flymode     = true; 
   clipmode    = false;
   grabpointer = true;

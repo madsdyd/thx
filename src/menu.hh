@@ -92,7 +92,7 @@ public:
   /* Render the menu */
   void Render(int xlow, int xhigh, int ylow, int yhigh);
   /* Enable showing of this menu */
-  void Show();
+  virtual void Show();
   /* Sometimes we will stop showing ourselves, and show our
      parent */
   void ShowParent();

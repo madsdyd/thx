@@ -22,6 +22,7 @@
 #include "gamemode.hh"
 /* To change the way the mouse is working */
 #include "inputmouse.hh"
+#include "inputkeyboard.hh"
 
 /* The Gamemode singleton */
 TGameMode GameMode;
@@ -46,9 +47,11 @@ bool TGameMode::SetMode(gamemode_t newmode) {
     /* Changing the mode may influence the way the mouse works */
     if (newmode == gamemode_game) {
       inputmouse_centermode();
+      inputkeyboard_disablerepeat();
     }
     else {
       inputmouse_normalmode();
+      inputkeyboard_enablerepeat();
     }
     return true;
   } else {

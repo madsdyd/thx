@@ -106,10 +106,9 @@ void TTextRender::Center(GLint min, GLint max, string text, string pivot) {
   string left   = text.substr(0, pivot_pos);
   // string rigth  = text.substr(pivot + pivot.size(), text.size());
   /* Position for the pivot - left*/
-  GLint metric = Metric(pivot);
   x = (max - min - Metric(pivot))/2 - Metric(left);
   Draw(text);
-  x += metric;
+  x += Metric(text);
 }
 
 /* **********************************************************************

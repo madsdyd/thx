@@ -29,7 +29,15 @@
    Get the system time, convert it to a double, return it */
 system_time_t system_gettime() {
   /* The return code is ignored */
+#ifdef HAVE_GETTIMEOFDAY
   struct timeval tmp;
   gettimeofday(&tmp, NULL);
   return tmp.tv_sec + (tmp.tv_usec) / 1000000.0;
+#else
+  /* If we do not have gettimeofday, what then? We need some way
+     of getting at least milliseconds resolution, and encode the current
+     time in a double */
+#error "gettimeofday is currently required - look in comments for info"
+  return 0;
+#endif
 }

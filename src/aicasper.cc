@@ -20,7 +20,10 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 #include "aicasper.hh"
-
+#include "game.hh"
+#include "debug.hh"
+#include "display.hh" /* To use the console. This may be stupid */
+#include "console.hh"
 /* **********************************************************************
  * Constructors and destructors
  * *********************************************************************/
@@ -45,6 +48,11 @@ void TAIPlayerCasper::PrepareRound(TVector * location) {
   /* Now, a decision about the round strategy should be set. For now, the 
      strategy is always just to hit someone else. */
   /* This is also where the AI player buys weapons */
+
+  /* Let us try and locate a target */
+  Target = game->NotMe(this);
+  Assert(Target, "TAIPlayerCasper::PrepareRound - no other player found!");
+  Display->console->AddLine("Casper found a target!");
 }
 
 /* **********************************************************************
@@ -58,13 +66,13 @@ void TAIPlayerCasper::BeginTurn() {
      in "Update" 
      Please note that the basic AI player is totally random in its goals,
      modelled after the way my son played, when he was 4 months old. ;-) */
+  Display->console->AddLine("TIAPlayerCasper::BeginTurn needs to do something");
   cannon_target.angle    =  90.0*rand()/(RAND_MAX+1.0);
   cannon_target.rotation = 359.0*rand()/(RAND_MAX+1.0);
   cannon_target.force    = 100.0*rand()/(RAND_MAX+1.0);
   /* cout << "TAIPlayerCasper::BeginTurn - setting goals " 
      << cannon_target.angle << ", " << cannon_target.rotation 
      << ", " << cannon_target.force << endl; */
-  cout << "TIAPlayerCasper::BeginTurn needs to do something" << endl;
 
 }
 

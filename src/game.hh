@@ -195,11 +195,18 @@ public:
   bool IsGameOver();
   /* The command handler */
   virtual bool CommandConsume(TCommand * Command);
+
+  /* **********************************************************************
+   * Team stuff - used to get info about other players, etc.
+   * *********************************************************************/
   /* Figure out if this is a team game */
   bool GetTeamMode() {
     return teammode;
   }
   /* Wheter or not two players are on the same team */
   bool OnSameTeam(TPlayer * a, TPlayer * b);
+  /* Tmp procedure - get an active player that is not me */
+  TPlayer * NotMe(TPlayer * me);
+
 };
 #endif

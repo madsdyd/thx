@@ -614,6 +614,12 @@ bool TGame::CommandConsume(TCommand * Command) {
 }
 
 /* **********************************************************************
+ * **********************************************************************
+ * Team stuff etc
+ * **********************************************************************
+ * *********************************************************************/
+
+/* **********************************************************************
  * Wheter or not two players are on the same team
  * *********************************************************************/
 bool TGame::OnSameTeam(TPlayer * a, TPlayer * b) {
@@ -627,9 +633,24 @@ bool TGame::OnSameTeam(TPlayer * a, TPlayer * b) {
 }
 
 /* **********************************************************************
- * Wind stuff
+ * Temporary procedure - get an active player that is not me
  * *********************************************************************/
+TPlayer * TGame::NotMe(TPlayer * me) {
+  TPlayerInfosIterator End = playerInfos.end();
+  for (TPlayerInfosIterator i = playerInfos.begin() ; i != End; i ++) {
+    if ((*i)->active && (*i)->player != me) {
+      return (*i)->player;
+    }
+  }
+  /* If we reach here, no living players were found, that was not me */
+  return NULL;
+}
 
+
+/* **********************************************************************
+ * Wind stuff	
+ * *********************************************************************/
+     
 /* **********************************************************************
  * SetWind - Called to change the wind according to some rules.
  * *********************************************************************/

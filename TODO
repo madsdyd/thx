@@ -1,10 +1,10 @@
 AUTOTOOLS TEMP TODO:
 - Should the documents be installed somehow? How about a man page?
 
-- Check for remaining stuff in config.h
-
 - Check that all the options for configure actually works as
   expected.
+
+- make dist don't work on mother?!?
 
 NORMAL TODO:
 
@@ -176,7 +176,8 @@ however, is the final release of the previous series.
     rendering of menus?
 
 * Bugs (Note, some of these may be fixed)
-  - Is the grabbing of the mouse broken in windows?
+  - Is the grabbing of the mouse broken in windows? (Yes on fast pc's)
+  - The mouse "jitters" when used for movements, etc. Something is wrong.
   - Sometimes, someone can not register a command. This may have something
     to do with the order the global objects are being created in. 
     Need to fix this - Singleton pattern?

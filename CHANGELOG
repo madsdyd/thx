@@ -1,3 +1,9 @@
+20010902
+  - Some minor stuff added to AICasper - still no sense in what it does.
+
+20010901
+  - Added the config directory to the dist stuff.
+
 20010831
   - Finally completed (sort of) the autotools support.
 

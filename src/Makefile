@@ -1,11 +1,12 @@
 # Define where to get our sounds
-SOUNDDIR=
 CC=g++
 LFLAGS=-L/usr/X11R6/lib -lm -lglut -lGLU -lGL -lpthread
-CFLAGS=-Wall -pedantic -D_REENTRANT -g -DSOUND_ON# -pg -pedantic 
-# -DSOUNDDIR=$(SOUNDDIR)
 
-SOURCES=gamemode.cc command.cc commandconsumer.cc \
+#WFLAGS=-Wtraditional -Wshadow -Wpointer-arith -Wconversion -Wstrict-prototypes -Wmissing-prototypes -Wmissing-declarations -Wredundant-decls -Wnested-externs -Woverloaded-virtual 
+WFLAGS=-Wtraditional -Wpointer-arith -Wconversion -Wstrict-prototypes -Wmissing-prototypes -Wmissing-declarations -Wredundant-decls -Wnested-externs -Woverloaded-virtual 
+CFLAGS=-Wall $(WFLAGS) -pedantic -D_REENTRANT -g -DSOUND_ON -DDEBUG# -pg -pedantic 
+
+SOURCES=debug.cc gamemode.cc command.cc commandconsumer.cc \
 	inputconsumer.cc inputkeyboard.cc inputevent.cc console.cc \
 	types.cc game.cc sound.cc display.cc tank.cc map.cc \
 	main.cc player.cc render.cc viewpoint.cc framerate.cc server.cc \

@@ -264,6 +264,19 @@ void Client_Special(int key, int x, int y) {
 
 
 /* **********************************************************************
+ * Mouse testing stuff
+ * *********************************************************************/
+
+void Client_Mouse(int button, int state, int x, int y) {
+  cout << "Client_Mouse; button:" << button << ", state:" << state
+       << ", x:" << x << ", y:" << y << endl;
+}
+
+void Client_PassiveMotion(int x, int y) {
+  cout << "Client_PassiveMotion; x:" << x << ", y:" << y << endl;
+}
+
+/* **********************************************************************
  * GameMenu Callback functions
  * *********************************************************************/
 
@@ -622,6 +635,9 @@ TClient::~TClient() {
   glutKeyboardFunc(NULL);
   glutSpecialFunc(NULL);
   glutIdleFunc(NULL);
+  glutReshapeFunc(NULL);
+  glutMouseFunc(NULL);
+  glutPassiveMotionFunc(NULL);
 
   /* Free the menus */
   delete InGameMenu; InGameMenu = NULL;
@@ -658,6 +674,8 @@ void TClient::Run() {
   glutSpecialFunc(Client_Special);
   glutIdleFunc(Client_Idle);
   glutReshapeFunc(Client_Reshape);
+  //  glutMouseFunc(Client_Mouse);
+  //  glutPassiveMotionFunc(Client_PassiveMotion);
   
   /* Request fullscreen */
   // If fullscreen is enabled, my 3dfx breaks.

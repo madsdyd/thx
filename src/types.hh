@@ -1,6 +1,6 @@
 #ifndef __TYPES_H__
 #define __TYPES_H__
-/* Various common stuff */
+/* Various very common stuff */
 #include <math.h>
 #include <list>
 #include <vector>
@@ -26,10 +26,6 @@
 #define GRAVITY 9.82
 //#define GRAVITY 15
 
-/* Vector is 3 floats */
-typedef struct {
-  float x, y, z;
-} vector_t;
 
 /* Time measurement. Under Linux/BSD this will be gettimeofday
    On other systems it should be redefined */

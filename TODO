@@ -2,9 +2,6 @@ Version schedule.
 
 This is an overview of what features go where. This is subject to change.
 
-** 0.3.3.2 
-  - Experimenting with mouse warping. (DONE)
-
 ** 0.3.4 (Mouseinput continued)
   - Make the game able to operate by mouse.
   - The mouse input mappings need to be aware of the mode (not?)

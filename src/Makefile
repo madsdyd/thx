@@ -4,7 +4,7 @@ LFLAGS=-L/usr/X11R6/lib -lm -lglut -lGLU -lGL -lpthread
 
 #WFLAGS=-Wtraditional -Wshadow -Wpointer-arith -Wconversion -Wstrict-prototypes -Wmissing-prototypes -Wmissing-declarations -Wredundant-decls -Wnested-externs -Woverloaded-virtual 
 WFLAGS=-Wtraditional -Wpointer-arith -Wconversion -Wstrict-prototypes -Wmissing-prototypes -Wmissing-declarations -Wnested-externs -Woverloaded-virtual 
-CFLAGS=-Wall $(WFLAGS) -I/usr/X11R6/include -pedantic -D_REENTRANT -g -DSOUND_ON -DDEBUG# -pg -pedantic 
+CFLAGS=-Wall $(WFLAGS) -I/usr/X11R6/include -pedantic -D_REENTRANT -DSOUND_ON -DDEBUG# -pg -pedantic 
 
 SOURCES=inputmouse.cc debug.cc gamemode.cc command.cc commandconsumer.cc \
 	inputconsumer.cc inputkeyboard.cc inputevent.cc console.cc \

@@ -6,6 +6,9 @@ The text () is the focus of the "series". E.g. 0.4.0 (AI) means that
 everything starting with 0.4. is probably going to be related to AI. The 0.4.0 release
 however, is the final release of the previous series.
 
+- Når en menu vises efter game, er musen typisk i midten, pga. grab. 
+  Men, menuen bruger den gamle version. Kan det fikses?
+
 ** 0.3.5 (Input customization)
   - Save and load bindings (DONE)
   - Loosen up on registering and unregistering commands - should not keep 

@@ -13,6 +13,8 @@
   - Made registering and unregistering consumers always work. Removed a lot
     of bool checking code.
   - Fixed some warnings
+  - Changed player money back to 500
+  - Added in game menu show sound
 
 20010423
   - Finally figured out why we had a segfault. I hate implicit type conversion in 

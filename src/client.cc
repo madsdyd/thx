@@ -699,6 +699,9 @@ bool TClient::CommandConsume(TCommand * Command) {
       // TODO: Maintaining 2 status fields?? This is needed pt. for rendering
       has |= CLIENT_HAS_INGAMEMENU;
       InGameMenu->Show();
+#ifdef SOUND_ON
+      sound_play(names_to_nums["data/sounds/menu_forward_menu.raw"]);
+#endif
       return true;
     }
     cerr << "TClient::CommandConsume - error setting gamemode!" << endl;

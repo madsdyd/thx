@@ -1,3 +1,10 @@
+20000720
+  - Skjalms changes should be in here now:
+    - Almost correct collision detection between ground and projectiles
+    - Tank has a model
+    - Thinner cannon, has shadows
+    - Prices adjusted
+
 20000717
   - Cleaned up some of the code a bit. Still lots to go.
   - Imported sources of version 0.2.8.1 into the sourceforge cvs.

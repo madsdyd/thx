@@ -48,6 +48,8 @@
 #include "sound.hh"
 #endif
 
+#include "aifactory.hh"
+
 TClient * Client;
 
 static int selfcount = 0;
@@ -276,11 +278,13 @@ void GameMenu_StartFunc() {
     if (GameMenu->PlayerSettings[i].playerclass == "human") {
       player     = new TPlayer(Game, GameMenu->PlayerSettings[i].name,
 			       GameMenu->PlayerSettings[i].team);
-      cout << "Creating a TPlayer" << endl;
+      cout << "Creating a normal player (TPlayer)" << endl;
     } else {
-      player     = new TAIPlayer(Game, GameMenu->PlayerSettings[i].name,
-				 GameMenu->PlayerSettings[i].team);
-      cout << "Creating a TAIPlayer" << endl;
+      player     = AIFactory.CreateAIPlayer(GameMenu->PlayerSettings[i].playerclass, 
+					    Game, 
+					    GameMenu->PlayerSettings[i].name,
+					    GameMenu->PlayerSettings[i].team);
+      cout << "Creating an AI player" << endl;
     }
     tank         = new TTank(Game, player);
     player->tank = tank;

@@ -2,6 +2,7 @@
   - Moved the handling of the fire command from the TGame class to 
     the player class - otherwise it was possible to fire when an IA player
     was active (no good).
+  - Added an AI factory to facilitate creating AI players.
 
 20010716
   - Updated the basic AI to be slightly more interessting.

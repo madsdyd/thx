@@ -1,15 +1,13 @@
-#ifndef __3DOBJECT_H__
-#define __3DOBJECT_H__
-
+#ifndef __OBJECT_HH__
+#define __OBJECT_HH__
 #include <list>
 #include <vector>
-#include "types.hh"
+
 #include "vector.hh"
-
+#include "triangle.hh"
+#include "point.hh"
 class TObject {
-
 public:
-
   TObject(int numPts, int numTris);
   TObject() {}
   ~TObject();
@@ -57,6 +55,4 @@ private:
   vector<TrianglePtrList> ptsNbour;
 
 };
-
 #endif
-

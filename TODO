@@ -15,7 +15,7 @@ of playable game in version 0.3.0 that could actually be enjoyed.
     render.hh
     sound.hh
     textures.hh
-    types.hh
+    types.hh (DONE)
   - implement destructors
   - tighten includes
   - memory check code

@@ -1,12 +1,10 @@
-#ifndef __POINT_H__
-#define __POINT_H__
+#ifndef __POINT_HH__
+#define __POINT_HH__
 
 #include "vector.hh"
 
 class Point {
-
 public:
-
   // Constructors
   Point() {}
   Point(float coords[]);
@@ -19,19 +17,6 @@ public:
   TVector coords; // Coordinates of the point {x,y,z,w}
   float color[4]; // Color of the point {r,g,b,a}
   TVector normal; // Vertex normal
-
-
-private:
-
-
 };
-
-
-
-
-
-
-
+typedef Point* PointPtr;
 #endif
-
-

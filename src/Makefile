@@ -2,7 +2,7 @@
 SOUNDDIR=
 CC=g++
 LFLAGS=-L/usr/X11R6/lib -lm -lglut -lGLU -lGL -lpthread
-CFLAGS=-Wall -D_REENTRANT -g -DSOUND_ON -DINPUTCMD# -pg -pedantic 
+CFLAGS=-Wall -pedantic -D_REENTRANT -g -DSOUND_ON# -pg -pedantic 
 # -DSOUNDDIR=$(SOUNDDIR)
 
 SOURCES=gamemode.cc command.cc commandconsumer.cc \

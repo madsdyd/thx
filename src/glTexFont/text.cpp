@@ -36,8 +36,8 @@ CHANGES
 */
 #include "text.h"
 
-static GLfloat white[4] = {1.0, 1.0, 1.0, 1.0};
-static GLfloat gray[4] = {0.5, 0.5, 0.5, 1.0};
+GLfloat white[4] = {1.0, 1.0, 1.0, 1.0};
+GLfloat gray[4] = {0.5, 0.5, 0.5, 1.0};
 
 GLint text_t::fontBlockCol = 16;
 GLint text_t::fontBlockRow = 16;

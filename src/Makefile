@@ -1,7 +1,7 @@
 # Define where to get our sounds
 SOUNDDIR=
 CC=g++
-LFLAGS=-lm -lglut -lGLU -lGL -lpthread
+LFLAGS=-L/usr/X11R6/lib -lm -lglut -lGLU -lGL -lpthread
 CFLAGS=-Wall -D_REENTRANT -g -DSOUND_ON # -pg -pedantic 
 # -DSOUNDDIR=$(SOUNDDIR)
 

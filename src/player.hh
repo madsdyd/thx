@@ -25,6 +25,10 @@
 #include <string>
 #include <map>
 
+using std::string;
+using std::map;
+using std::pair;
+
 #include "color.hh"
 #include "viewpoint.hh"
 #include "commandconsumer.hh"

@@ -25,6 +25,9 @@
    commands, that are stuffed into the command chain. */
 #include <string>
 #include <map>
+using std::string;
+using std::map;
+
 #include "inputkeyboard.hh"
 #include "inputmouse.hh"
 #include "gamemode.hh"

@@ -20,8 +20,19 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 /* This is the implementation of the keyboard input to event handling */
-#include <GL/glut.h>
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
+#include <iostream>
+using std::cout;
+using std::cerr;
+using std::endl;
+
 #include <map>
+using std::map;
+
+#include <GL/glut.h>
 #include "inputkeyboard.hh"
 
 /* **********************************************************************

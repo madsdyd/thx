@@ -24,6 +24,9 @@
 #include <list>
 #include <vector>
 
+using std::list;
+using std::vector;
+
 #include <GL/glut.h>
 #include "vector.hh"
 #include "triangle.hh"

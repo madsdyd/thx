@@ -22,6 +22,9 @@
 #include "aifactory.hh"
 #include "aibaltazar.hh"
 #include "aicasper.hh"
+
+#include <iostream>
+using std::cerr;
 /* **********************************************************************
  * The factory
  * *********************************************************************/

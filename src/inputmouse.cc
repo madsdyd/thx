@@ -20,9 +20,18 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 /* This is the implementation of the mouse input to event handling */
-#include <GL/glut.h>
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+#include <sstream>
+using std::ostringstream;
+using std::istringstream;
+using std::ends;
+
 #include <map>
-#include <strstream>
+using std::map;
+
+#include <GL/glut.h>
 #include "debug.hh"
 #include "inputmouse.hh"
 
@@ -74,7 +83,7 @@ TMouseInputEvent::TMouseInputEvent(mousebutton_action_t naction,
  * *********************************************************************/
 string TMouseInputEvent::ToString() {
   string result; 
-  ostrstream tmpstream;
+  ostringstream tmpstream;
   /* We write a marker to be able to skip stuff in a string we do not
      need */
   tmpstream << " |+| " << (int) mouse_inputevent_event.action 
@@ -88,7 +97,7 @@ string TMouseInputEvent::ToString() {
  * *********************************************************************/
 TMouseInputEvent::TMouseInputEvent(string value) 
   : TInputEvent(inputevent_type_pointer) {
-  istrstream tmpstream(value.c_str());
+  istringstream tmpstream(value.c_str());
   string magic;
   do {
     tmpstream >> magic;

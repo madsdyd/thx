@@ -41,7 +41,12 @@
 
 /** Added to maintain mapping between names and sound numbers */
 #include <string>
-#include <map.h>
+#include <map>
+
+using std::map;
+using std::string;
+using std::pair;
+
 map<string, int> names_to_nums;
 
 /** ********************************************************************** */

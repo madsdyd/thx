@@ -21,8 +21,20 @@
 */
 /* The commands */
 #include <iostream>
+using std::cout;
+using std::cerr;
+using std::endl;
+
 #include <fstream>
-#include <strstream>
+using std::ifstream;
+using std::ofstream;
+
+#include <sstream>
+
+using std::ostringstream;
+using std::iostream;
+using std::fstream;
+using std::ends;
 
 
 #include "inputconsumer.hh"
@@ -388,7 +400,7 @@ int TInputToCommand::Consume() {
 	       << " in raw is" << "raw " 
 	       << KeyEvent->keyboard_inputevent_event.key << endl;
 #endif
-	  ostrstream tmparg;
+	  ostringstream tmparg;
 	  tmparg << KeyEvent->keyboard_inputevent_event.key << ends;
 	  CommandQueue.push(new TCommand(KeyEvent->timestamp,
 					 "raw-keydown", tmparg.str()));

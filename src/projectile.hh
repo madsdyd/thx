@@ -21,6 +21,15 @@
 */
 #ifndef __PROJECTILE_H__
 #define __PROJECTILE_H__
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+#include <iostream>
+using std::cerr;
+using std::cout;
+using std::endl;
+
+
 #include "entities.hh"
 #include "vector.hh"
 

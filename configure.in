@@ -26,6 +26,10 @@ AC_PROG_RANLIB
 dnl ------------------------------------------------------------
 dnl Checks for libraries.
 
+dnl Check for the math lib
+AC_CHECK_LIB(m, main)
+
+
 dnl This checks for opengl. 
 MDL_HAVE_OPENGL
 gl_error=no
@@ -49,9 +53,6 @@ fi
 dnl AC_MSG_RESULT([$PACKAGE is using the following for compiling and linking OpenGL programs: 
 dnl   GL_CFLAGS: $GL_CFLAGS
 dnl    GL_LIBS: $GL_LIBS])                                                
-
-dnl Check for the math lib
-AC_CHECK_LIB(m, main)
 
 dnl ------------------------------------------------------------
 dnl Checks for header files.

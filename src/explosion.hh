@@ -21,6 +21,11 @@
 */
 #ifndef __EXPLOSION_HH__
 #define __EXPLOSION_HH__
+#include <iostream>
+using std::cout;
+using std::endl;
+
+
 #include "entities.hh"
 #include "vector.hh"
 /* This should probably be a parameter on an explosion/projectile */

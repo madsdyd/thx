@@ -22,8 +22,13 @@
 #include "menu_score.hh"
 #include "player.hh"
 
-#include <strstream>
+#include <sstream>
+using std::ostringstream;
+using std::ends;
+
 #include <multimap.h>
+using std::multimap;
+
 
 /* Global score menu */
 TScoreMenu * ScoreMenu;
@@ -47,7 +52,7 @@ TScoreMenu::TScoreMenu(string title, TPlayerInfos * playerinfos,
     }
     for (map<string, int>::iterator it = teamscores.begin();
 	 it != teamscores.end(); it++) {
-      ostrstream tmp;
+      ostringstream tmp;
       tmp << (*it).first << " - " << (*it).second << ends;
       tmpinfo->AddLine(tmp.str());
     }
@@ -63,7 +68,7 @@ TScoreMenu::TScoreMenu(string title, TPlayerInfos * playerinfos,
   }
   for (multimap<int, const TPlayerInfo *>::iterator it = scores.begin();
        it != scores.end(); it++) {
-    ostrstream tmp;
+    ostringstream tmp;
     TPlayer * player = (*it).second->player;
     tmp << player->name << " - " << player->score << ends;
     tmpinfo->AddLine(tmp.str());

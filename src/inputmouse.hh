@@ -23,6 +23,8 @@
 #define __INPUTMOUSE_HH__
 #include <string>
 
+using std::string;
+
 /* This is for input events generated from the mouse */
 #include "inputevent.hh"
 

@@ -21,8 +21,13 @@
 */
 #include "menu_buy.hh"
 
-#include <iomanip.h> /* for setw ... sic */
-#include <strstream>
+#include <iomanip> /* for setw ... sic */
+using std::setw;
+
+#include <sstream>
+
+using std::ostringstream;
+using std::ends;
 
 #include "menuitem.hh"
 
@@ -41,7 +46,7 @@ public:
   /* Set the caption */
   void SetCaption() {
     /* Num  -  quantity @ price */
-    ostrstream tmp;
+    ostringstream tmp;
     tmp << setw(4) << element->num << " - " << setw(5) << element->price
 	<< "/" << setw(2) << element->units << setw(0) << " : " 
 	<< element->name << ends;

@@ -23,6 +23,11 @@
 #define __INPUTKEYBOARD_HH__
 #include <string>
 #include <iostream>
+
+using std::string;
+using std::ostream;
+using std::istream;
+
 /* This is for input events generated from the keyboard */
 #include "inputevent.hh"
 /* Subtype of event */

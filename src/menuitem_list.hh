@@ -22,7 +22,13 @@
 #ifndef __MENUITEM_LIST_HH__
 #define __MENUITEM_LIST_HH__
 
+#include <iostream>
+using std::cout;
+using std::endl;
+
 #include "menuitem.hh"
+
+
 
 /* **********************************************************************
  * TListMenuItem

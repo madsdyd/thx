@@ -19,8 +19,19 @@
     along with this program; if not, write to the Free Software
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
+#include <iostream>
+using std::cerr;
+using std::cout;
+using std::endl;
+
 #include <GL/glut.h>
-#include <strstream>
+#include <sstream>
+using std::ostringstream;
+
 #include "debug.hh"
 
 #include "menu.hh"

@@ -22,7 +22,15 @@
 #ifdef HAVE_CONFIG_H
 #include "config.h"
 #endif
-#include <strstream>
+#include <iostream>
+using std::cout;
+using std::cerr;
+using std::endl;
+
+#include <sstream>
+using std::ostringstream;
+using std::ends;
+
 #include "client.hh"
 #include "color.hh"
 #include "types.hh"
@@ -345,7 +353,7 @@ void BuyMenu_Budget() {
   // cout << "BuyMenu_Budget" << endl;
   if (BuyMenu) {
     /* Need to construct new caption for this */
-    ostrstream tmp;
+    ostringstream tmp;
     tmp << (*PlayerInfosIterator)->player->name << " - " 
 	<< (*PlayerInfosIterator)->player->money << ends; 
     BuyMenu->Budget(tmp.str());
@@ -374,7 +382,7 @@ void BuyMenu_Continue() {
   
   if (PlayerInfosIterator != Game->GetPlayerInfos()->end()) {
     /* Create new BuyMenu, based on player information */
-    ostrstream tmp;
+    ostringstream tmp;
     tmp << (*PlayerInfosIterator)->player->name << " - " 
 	<< (*PlayerInfosIterator)->player->money << ends; 
     BuyMenu = new TBuyMenu(tmp.str(), 

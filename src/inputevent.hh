@@ -25,6 +25,8 @@
    be converted into commands, that are to be interprented by the game
    engine. This may or may not be a good design - I have no clue */
 #include <queue>
+using std::queue;
+
 #include "types.hh"
 
 /* This defines the type of input, keyboard and pointer (mouse) for

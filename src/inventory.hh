@@ -25,6 +25,10 @@
    construct instances of projectiles with. */
 #include <vector>
 #include <string>
+
+using std::string;
+using std::vector;
+
 #include "vector.hh"
 
 /* Forward declare player and projectile */

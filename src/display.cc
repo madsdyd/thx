@@ -28,7 +28,21 @@
 #include <stdlib.h>
 #include <math.h>
 #include <string>
-#include <strstream>
+#include <sstream>
+
+#include <iostream>
+using std::cerr;
+using std::cout;
+using std::endl;
+using std::ostringstream;
+
+using std::ends;
+
+#include <iomanip>
+using std::setprecision;
+using std::fixed;
+
+#define leftprec(x,y) (x - (((int)floor(x) - (((int)floor(x))% ((int)(pow(10,y)))))))
 
 #include "display.hh"
 #include "text.hh"
@@ -109,19 +123,28 @@ TDisplay::TDisplay(int argc, char** argv) {
     glutInitWindowSize(width, height);
   }
 
+  /* Testing game mode stuff */
+#define GLUTGAMEMODEOK
+#ifdef GLUTGAMEMODEOK
+  glutGameModeString("800x600:24@60");
+  glutEnterGameMode();
+#ifdef GED
+  // enter full screen
+  if (0 != glutGameModeGet(GLUT_GAME_MODE_POSSIBLE)) 
+    glutEnterGameMode();
+  else {
+    printf("The selected glutGameMode is not available\n");
+    exit(1);        
+  }  
+#endif
+
+#else
   glutInitWindowPosition(0, 0);
   glutCreateWindow("Tank Hill eXtreme");
   
-  /* Testing game mode stuff */
-  /*  glutGameModeString("1280x1024");
-  // enter full screen
-  if (glutGameModeGet(GLUT_GAME_MODE_POSSIBLE)) 
-    glutEnterGameMode();
-  else {
-    printf("The selected mode is not available\n");
-    exit(1);        
-    } */
-	
+
+
+#endif
 
   /* Light colors, placements etc */
   GLfloat mat_specular[] = { 0.0, 0.0, 0.0, 1.0 };
@@ -447,7 +470,7 @@ void TDisplay::Render(void) {
      Draw translation information stuff - mostly for debug */
 #ifdef NEVER
   {
-    ostrstream tmp;
+    ostringstream tmp;
     tmp.form("POS: %4.1f, %4.1f, %4.1f", viewpoint->translation.x,
 	     viewpoint->translation.y, viewpoint->translation.z)
 	       << ends; 
@@ -465,8 +488,10 @@ void TDisplay::Render(void) {
   /* ************************************************************
      Draw fps stuff */
   {
-    ostrstream tmp;
-    tmp.form("FPS: %4.1f", framerate_get()) << ends;
+    ostringstream tmp;
+    // tmp.form("FPS: %4.1f", framerate_get()) << ends;
+    tmp << "FPS: " << fixed << setprecision(1) << leftprec(framerate_get(), 4) 
+	<< ends;
     textrender->Pos(Display->width-10*textrender->size, 2*textrender->size);
     textrender->Print(tmp.str());
   }
@@ -499,27 +524,36 @@ void TDisplay::Render(void) {
     
     /* Print name money and health */
     {
-      ostrstream tmp;
+      ostringstream tmp;
       tmp << Game->GetCurrentPlayer()->name << "'s turn.";
       if (Game->GetTeamMode()) {
 	tmp << " (" << Game->GetCurrentPlayer()->team << ")";
       }
-      tmp.form(" Score:%i Health:%0.1f",
+      /*tmp.form(" Score:%i Health:%0.1f",
 	       Game->GetCurrentPlayer()->score,
-	       Game->GetCurrentPlayer()->tank->health);
-      tmp << ends;
+	       Game->GetCurrentPlayer()->tank->health); */
+      
+      tmp << " Score:" << Game->GetCurrentPlayer()->score
+	  << " Health:" << fixed << setprecision(1) 
+	  << leftprec(Game->GetCurrentPlayer()->tank->health, 3) << ends;
       textrender->Pos(0, textrender->size);
       textrender->PrintLn(tmp.str());
     }
     {
       /* Print selected projectile, rotation, angle and force */
-      ostrstream tmp;
-      tmp.form("Rotation:%1.0f Angle:%1.0f Force:%1.0f Weapon:", 
+      ostringstream tmp;
+      /*      tmp.form("Rotation:%1.0f Angle:%1.0f Force:%1.0f Weapon:", 
 	       Game->GetCurrentPlayer()->tank->cannon.rotation,
 	       Game->GetCurrentPlayer()->tank->cannon.angle,
-	       Game->GetCurrentPlayer()->tank->cannon.force);
-      tmp << Game->GetCurrentPlayer()->inventory->DescribeSelected() 
-	  << ends;
+	       Game->GetCurrentPlayer()->tank->cannon.force); */
+      tmp << "Rotation:" << fixed << setprecision(0) 
+	  << leftprec(Game->GetCurrentPlayer()->tank->cannon.rotation, 3)
+	  << " Angle: " 
+	  << leftprec(Game->GetCurrentPlayer()->tank->cannon.angle, 3)
+	  << " Force: " 
+	  << leftprec(Game->GetCurrentPlayer()->tank->cannon.force, 3)
+	  << " Weapon:" 
+	  << Game->GetCurrentPlayer()->inventory->DescribeSelected() << ends;
       textrender->Print(tmp.str());
     }
   }
@@ -564,10 +598,13 @@ void TDisplay::RefreshRate() {
   }
   end = system_gettime();
   total = end - start;
-  ostrstream otmp;
-  otmp.form("%i frames in %5.2f secs, %4.1f frames pr. sec",
-	    num_frames - tmp, total, (num_frames-tmp)/total);
-  otmp << ends;
+  ostringstream otmp;
+  // otmp.form("%i frames in %5.2f secs, %4.1f frames pr. sec",
+  // num_frames - tmp, total, (num_frames-tmp)/total);
+  otmp << num_frames - tmp << " frames in " << fixed << setprecision(2)
+       << leftprec(total, 5) << " secs, " << setprecision(1) 
+       << leftprec((num_frames-tmp)/total, 4) << " frames pr. sec"
+       << ends;
   console->AddLine(otmp.str(), total);
   // cout << otmp.str() << endl;
 }

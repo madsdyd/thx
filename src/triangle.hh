@@ -23,6 +23,8 @@
 #define __TRIANGLE_HH__
 #include <list>
 
+using std::list;
+
 class Triangle {
 public:
 

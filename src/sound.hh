@@ -38,6 +38,10 @@
 /** Record types */
 #include <string>
 #include <map>
+
+using std::string;
+using std::map;
+
 extern map<string, int> names_to_nums;
 
 typedef enum {play, loop, stop} request;

@@ -23,6 +23,9 @@
 #ifdef DEBUG
 #include <iostream>
 
+using std::cerr;
+using std::endl;
+
 /* If this works well, I want to extend this assert to do some
    interaction with the user */
 bool CustomAssert(bool expr, char * description, int linenum, char * filename) {

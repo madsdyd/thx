@@ -27,6 +27,10 @@
    the gamestate, it should be OK */
 #include <string>
 #include <map>
+
+using std::string;
+using std::map;
+
 /* The first class defines a base class for classes that wants to consume 
    commands. */
 class TCommand;

@@ -22,10 +22,16 @@
 #ifndef __TANK_H__
 #define __TANK_H__
 
+#include <iostream>
+using std::cout;
+using std::endl;
+
+
 #include "types.hh"
 #include "entities.hh"
 #include "vector.hh"
 #include "color.hh"
+
 
 typedef struct {
   double angle;

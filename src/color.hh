@@ -26,6 +26,9 @@
 #include <string>
 #include <map>
 
+using std::string;
+using std::map;
+
 class TColor {
 public:
   GLfloat data[4];

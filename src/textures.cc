@@ -25,7 +25,10 @@
 #include <GL/glu.h>
 #include "textures.hh"
 
-#include <iostream.h>
+#include <iostream>
+using std::cout;
+using std::cerr;
+using std::endl;
 
 /* Data structures for the texture subsystem 
    We load textures as unsigned bytes. */

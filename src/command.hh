@@ -24,6 +24,10 @@
 
 #include <string>
 #include <queue>
+
+using std::string;
+using std::queue;
+
 #include "types.hh"
 #include "inputmouse.hh"
 

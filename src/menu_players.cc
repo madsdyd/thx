@@ -19,7 +19,10 @@
     along with this program; if not, write to the Free Software
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
-#include <strstream>
+#include <sstream>
+using std::ostringstream;
+// using std::ends;
+
 #include "menu_players.hh"
 /* **********************************************************************
  * TPlayerMenu constructor - sets variables
@@ -42,18 +45,22 @@ void TPlayerMenu::SyncPlayerSettings() {
   while(PlayerSettings->size() < *NumPlayers) {
     // cout << "Adding a playersetting" << endl;
     TPlayerSetting tmpset;
-    ostrstream tmp1, tmp2, tmp3, tmp4;
+    ostringstream tmp1, tmp2, tmp3, tmp4;
     /* Set default values for name, team and color */
-    tmp1.form("Player %i", PlayerSettings->size() + 1) << ends;
+    // tmp1.form("Player %i", PlayerSettings->size() + 1) << ends;
+    tmp1 << "Player " << PlayerSettings->size() + 1;
     tmpset.name = tmp1.str();
-    tmp2.form("player-%i", PlayerSettings->size() + 1) << ends;
+    // tmp2.form("player-%i", PlayerSettings->size() + 1) << ends;
+    tmp2 << "player-" << PlayerSettings->size() + 1;
     tmpset.color = ColorDefinitions.GetColor(tmp2.str());
-    tmp3.form("team-%i", PlayerSettings->size() + 1) << ends;
+    // tmp3.form("team-%i", PlayerSettings->size() + 1) << ends;
+    tmp3 << "team-" << PlayerSettings->size() + 1;
     tmpset.team  = tmp3.str();
-    if (3 >= PlayerSettings->size()) {
+    if (2 >= PlayerSettings->size()) {
       // tmpset.name        = "Baltazar";
       // tmpset.playerclass = "baltazar";
-      tmp4.form("Casper (%i)", PlayerSettings->size() + 1) << ends;
+      // tmp4.form("Casper (%i)", PlayerSettings->size() + 1) << ends;
+      tmp4 << "Casper (" << PlayerSettings->size() + 1 << ")";
       tmpset.name        = tmp4.str();
       tmpset.playerclass = "casper";
     } else {
@@ -99,15 +106,19 @@ void TPlayerMenu::Show() {
   for (TPlayerSettingsIterator i = PlayerSettings->begin();
        i != PlayerSettings->end();
        i++) {
-    ostrstream tmp1, tmp2, tmp3, tmp4, tmp5, tmp6, tmp7, tmp8;
+    ostringstream tmp1, tmp2, tmp3, tmp4, tmp5, tmp6, tmp7, tmp8;
     /* fix the player names here */
-    tmp1.form("Player %i name", count) << ends;
-    tmp2.form("Enter the name of player %i here", count) << ends;
+    // tmp1.form("Player %i name", count) << ends;
+    tmp1 << "Player " << count << " name";
+    // tmp2.form("Enter the name of player %i here", count) << ends;
+    tmp2 << "Enter the name of player " << count << " here";
     AddMenuItem(new TStringMenuItem(this, tmp1.str(), tmp2.str(), 
 				    &(*i).name));
     /* and the players type */
-    tmp7.form("Player %i type", count) << ends;
-    tmp8.form("Select the type of player %i here", count) << ends;
+    // tmp7.form("Player %i type", count) << ends;
+    tmp7 << "Player " << count << " type";
+    // tmp8.form("Select the type of player %i here", count) << ends;
+    tmp8 << "Select the type of player " << count << " here";
     TStringListMenuItem * stmpitem
       = new TStringListMenuItem(this, tmp7.str(), tmp8.str(),
 			    &(*i).playerclass);
@@ -118,17 +129,21 @@ void TPlayerMenu::Show() {
 
     /* and the players team */
     if (*TeamMode) {
-      tmp5.form("Player %i teamname", count) << ends;
-      tmp6.form("Enter the team of player %i here", count) << ends;
+      // tmp5.form("Player %i teamname", count) << ends;
+      tmp5 << "Player " << count << " teamname";
+      // tmp6.form("Enter the team of player %i here", count) << ends;
+      tmp6 << "Enter the team of player " << count << " here";
       AddMenuItem(new TStringMenuItem(this, tmp5.str(), tmp6.str(),
 				      &(*i).team));
     }
 
     /* and, the players color */
-    tmp3.form("Player %i color", count) << ends;
-    tmp4.form("Select the color of player %i", count) << ends;
+    // tmp3.form("Player %i color", count) << ends;
+    tmp3 << "Player " << count << " color";
+    // tmp4.form("Select the color of player %i", count) << ends;
+    tmp4 << "Select the color of player " << count;
     TColorMenuItem * ctmpitem
-      = new TColorMenuItem(this, tmp3.str(), tmp3.str(),
+      = new TColorMenuItem(this, tmp3.str(), tmp4.str(),
 			   &(*i).color);
     ctmpitem->AddOption("", ColorDefinitions.GetColor("player-1"));
     ctmpitem->AddOption("", ColorDefinitions.GetColor("player-2"));

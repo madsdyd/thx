@@ -24,6 +24,10 @@
 /* This unit defines a menu to set up the players. This does not
    include the number - which is supposed to be set in another menu */
 #include <list>
+#include <vector>
+using std::list;
+using std::vector;
+
 #include "menu.hh"
 #include "menuitem_color.hh"
 /* This declares a class to hold some player information.

@@ -19,8 +19,21 @@
     along with this program; if not, write to the Free Software
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+#include <iostream>
+using std::cout;
+using std::cerr;
+using std::endl;
+
+#include <sstream>
+using std::ostringstream;
+using std::istringstream;
+
 #include <string>
-#include <strstream>
+using std::string;
+
 
 #include "menu_controls.hh"
 #include "menuitem.hh"
@@ -112,7 +125,7 @@ public:
       }
       /* Keyboard down? */
       else if ("raw-keydown" == Command->name) {
-	istrstream tmpargs(Command->args.c_str());
+	istringstream tmpargs(Command->args.c_str());
 	keyboard_inputevent_event_t tmpev;
 	tmpargs >> tmpev.key;
 	tmpev.type = keydown;

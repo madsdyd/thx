@@ -23,10 +23,19 @@
 #include "config.h"
 #endif
 
+#include <iostream>
+using std::cerr;
+using std::cout;
+using std::endl;
+
+
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <vector>
+
+using std::vector;
+
 #include <algorithm>
 
 #include "map.hh"
@@ -310,9 +319,9 @@ void TMap::lsNormals(int xlow, int xhigh, int ylow, int yhigh) {
   /* Presize normals */
   vector<TVector> tmp;
   TVector tmp2;
-  normals.insert(0, xdiff, tmp);
+  normals.insert(normals.begin(), xdiff, tmp);
   for (x = 0; x < xdiff; x++) {
-    normals[x].insert(0, ydiff, tmp2);
+    normals[x].insert(normals[x].begin(), ydiff, tmp2);
   }
   /* Make normals for all triangles in area (2 for each square) */
   for(x = xlow; x < xhigh; x++) {
@@ -508,10 +517,10 @@ void TMap::Slide(int x, int y) {
   //	 x, y, PointAt(x, y).z);
   // printf("map_slide Looping i over %i, %i\n",
   //  	 max(0,x-1), min(map->width-1, x+1));
-  for(i = max(0,x-1); i <= min(width-1, x+1); i++) {
+  for(i = mymax(0,x-1); i <= mymin(width-1, x+1); i++) {
     // printf("map_slide Looping j over %i, %i\n",
     // max(0,y-1), min(map->length-1, y+1));
-    for(j = max(0,y-1); j <= min(length-1, y+1); j++) {
+    for(j = mymax(0,y-1); j <= mymin(length-1, y+1); j++) {
       // printf("map_slide checking %i, %i\n", i, j);
       while ( ((PointAt(i, j)->z - PointAt(x, y)->z) 
 	       > max_steepness)

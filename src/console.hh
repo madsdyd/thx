@@ -26,6 +26,10 @@
    For now, it is simply a couple of lines in the upper left corner */
 #include <string>
 #include <vector>
+
+using std::string;
+using std::vector;
+
 #include "types.hh"  /* system_time */
 #include "commandconsumer.hh"
 #include "command.hh"

@@ -23,7 +23,7 @@
 #define __VECTOR_HH__
 
 #include <list>
-
+using std::list;
 /* This seemed to be an OK place to put this declaration */
 #define RadToDegree(r) ((r)/M_PI*180.0)
 

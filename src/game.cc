@@ -22,6 +22,12 @@
 #ifdef HAVE_CONFIG_H
 #include "config.h"
 #endif
+#include <iostream>
+using std::cout;
+using std::cerr;
+using std::endl;
+
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>

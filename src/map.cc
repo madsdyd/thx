@@ -623,11 +623,8 @@ void TMap::LevelArea(TVector * location) {
 
 /* **********************************************************************
    Check for a collision with the map. 
-   TODO: Implement proper collision detecting. How the hell do I do that?
-   We probably need to look at all the triangles we pass between old and 
-   new, and check if we went through any of them.
-   For now, we simply check if we are below the nearest corner, and in that
-   case, return that corner as the point of collision */
+   TODO: I think there are problems with the solution below, since sorting
+   by "triangletime" is not the same as sorting by absolute time. */
 bool TMap::CollisionDetect(TVector * old_location, TVector * new_location) {
 
   int xmin, xmax, ymin, ymax;
@@ -693,9 +690,9 @@ bool TMap::CollisionDetect(TVector * old_location, TVector * new_location) {
     /* Well, duuuuh... */
     /* TODO: This hack is to make sure that some weird errors don't 
        happen - it is not the correct solution ... */
-    if (new_location->z <= HeightAt(new_location->x, new_location->y)) {
-      return true;
-    }
+    /* if (new_location->z <= HeightAt(new_location->x, new_location->y)) {
+       return true;
+       } */
     return false;
   }
 

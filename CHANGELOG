@@ -1,5 +1,8 @@
 20010607
   - Added displaying of team to "hud".
+  - Added a few messages going to the console from TTank.
+  - Made the score screen show a crude display of the team scores
+  - Tagging 0.3.5.2
 
 20010605
   - Modified all entities to carry around a reference to the game they

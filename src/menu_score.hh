@@ -31,7 +31,7 @@
 class TScoreMenu : public TMenu {
 public:
   TScoreMenu(string title, TPlayerInfos * playerinfos, 
-	     TAction CancelFunc);
+	     bool teammode, TAction CancelFunc);
 };
 
 extern TScoreMenu * ScoreMenu;

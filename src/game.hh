@@ -199,5 +199,7 @@ public:
   bool GetTeamMode() {
     return teammode;
   }
+  /* Wheter or not two players are on the same team */
+  bool OnSameTeam(TPlayer * a, TPlayer * b);
 };
 #endif

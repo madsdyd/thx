@@ -429,7 +429,8 @@ void TGame::Explosion(TExplosion * Explosion) {
  * *********************************************************************/
 
 /* **********************************************************************
-   Start the level */
+ * Start the level
+ * *********************************************************************/
 bool TGame::RoundStart() {
   /* If first or following round */
 
@@ -538,8 +539,9 @@ void TGame::AbortRound() {
 }
 
 /* **********************************************************************
-   Find the nextplayer/check for end of round 
-   This is a mess */
+ * Find the nextplayer/check for end of round
+ * This is a mess
+ * *********************************************************************/
 void TGame::NextPlayer() {
   // cerr << "TGame::NextPlayer()" << endl;
 
@@ -597,7 +599,8 @@ void TGame::NextPlayer() {
 }
 
 /* **********************************************************************
-   IsGameOver() */
+ * IsGameOver()
+ * *********************************************************************/
 bool TGame::IsGameOver() {
   return (gamestate_done == gamestate);
 }
@@ -612,6 +615,19 @@ bool TGame::CommandConsume(TCommand * Command) {
     return FireProjectile();
   }
   return false;
+}
+
+/* **********************************************************************
+ * Wheter or not two players are on the same team
+ * *********************************************************************/
+bool TGame::OnSameTeam(TPlayer * a, TPlayer * b) {
+  if (teammode) {
+    /* They are on the same team, if there teams are equal */
+    return a->team == b->team;
+  } else {
+    /* No teams, there are on same teams, if they are equal */
+    return a == b;
+  }
 }
 
 /* **********************************************************************

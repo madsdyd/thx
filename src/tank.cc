@@ -39,6 +39,7 @@
 #include "explosion.hh"
 #include "object.hh"
 #include "models.hh"
+#include "console.hh"
 
 /* **********************************************************************
  * Initialize a tank
@@ -145,18 +146,22 @@ void TTank::Explosion(TExplosion * Explosion) {
 		     *(Explosion->location.y-location.y) +
 		      (Explosion->location.z-location.z)
 		     *(Explosion->location.z-location.z));
+  /* Calculate damage, if close enough to explosion */
   if (dist < Explosion->maxradius) {
     dist = mymax(dist, 1.0);
     taken_damage = (1/dist * Explosion->damage);
     health -= taken_damage;
-    // cout << "Took" << taken_damage << " in damage from explosion";
     if (Explosion->owner) {
-      // cout << " from " << Explosion->owner->name;
       /* Grant the player that caused the damage some money, only
-	 if different from self. Also update score.
+	 if different from self/team. Also update score.
       TODO: This allows for more then 100 % of damage "granting" - 
       is this OK?.*/
-      if (Explosion->owner != owner) {
+      Display->console->AddLine(Explosion->owner->name + " inflicted pain onto "
+				+ owner->name);
+      if (game->OnSameTeam(Explosion->owner, owner)) {
+	/* Uh/Oh - the attacker was not on our team. Sad for him */
+	Explosion->owner->score -= (int) rint(taken_damage * 100) / 2;
+      } else {
 	Explosion->owner->money += (int) rint(taken_damage * 100) / 2;
 	Explosion->owner->score += (int) rint(taken_damage * 100) / 2;
       }
@@ -235,6 +240,7 @@ void TTank::Update(system_time_t deltatime) {
       if (levitation >= 5.0) {
 	game->AddEntity(new TExplosion(game, owner, location, 
 				       3.0, 3.0, 25));
+	Display->console->AddLine(owner->name + " ran out of luck");
 #ifdef SOUND_ON
 	sound_play(names_to_nums["data/sounds/explosion2.raw"]);
 #endif

@@ -416,7 +416,8 @@ void ScoreMenu_Go() {
     delete ScoreMenu;
     ScoreMenu = NULL;
   }
-  ScoreMenu = new TScoreMenu("Score", Game->GetPlayerInfos(), ScoreMenuFunc);
+  ScoreMenu = new TScoreMenu("Score", Game->GetPlayerInfos(), 
+			     Game->GetTeamMode(), ScoreMenuFunc);
   ScoreMenu->Show();
   Client->has |= CLIENT_HAS_SCORE;
 }

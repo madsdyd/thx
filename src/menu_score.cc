@@ -29,17 +29,35 @@
 TScoreMenu * ScoreMenu;
 
 /* **********************************************************************
-   The constructor simply uses the playerinfos to build a list of the 
-   scores */
+ * The constructor simply uses the playerinfos to build a list of the
+ * scores
+ * *********************************************************************/
 TScoreMenu::TScoreMenu(string title, TPlayerInfos * playerinfos, 
-		       TAction CancelFunc) : TMenu(title) {
+		       bool teammode, TAction CancelFunc) : TMenu(title) {
   /* The list of players is a TInfoMenuItem */
   TInfoMenuItem * tmpinfo = new TInfoMenuItem(this, "not used", "");
+  
+  TPlayerInfosIterator End = playerinfos->end();
+  /* If it is a team game, start by listing the team scores */
+  if (teammode) {
+    tmpinfo->AddLine("Team scores");
+    map<string, int> teamscores;
+    for (TPlayerInfosIterator i = playerinfos->begin(); i != End; i++) {
+      teamscores[(*i)->player->team] += (*i)->player->score;
+    }
+    for (map<string, int>::iterator it = teamscores.begin();
+	 it != teamscores.end(); it++) {
+      ostrstream tmp;
+      tmp << (*it).first << " - " << (*it).second << ends;
+      tmpinfo->AddLine(tmp.str());
+    }
+    tmpinfo->AddLine("");
+    tmpinfo->AddLine("Player scores");
+  }
   
 
   /* Need to sort this, somehow */
   multimap<int, const TPlayerInfo *> scores;
-  TPlayerInfosIterator End = playerinfos->end();
   for (TPlayerInfosIterator i = playerinfos->begin(); i != End; i++) {
     scores.insert(pair<int, const TPlayerInfo *>((*i)->player->score, (*i)));
   }

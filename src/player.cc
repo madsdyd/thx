@@ -343,7 +343,8 @@ bool TPlayer::CommandConsume(TCommand * Command) {
     // Remove/insert into active commands, PerformCommandUpdate
     /* Check the first character in the args */
     string plus_minus = Command->args.substr(0, 1);
-    string cmd_key    = Command->name + "%" + Command->args.substr(1,Command->args.size()-1);
+    string cmd_key    
+      = Command->name + "%" + Command->args.substr(1,Command->args.size()-1);
     if ("+" == plus_minus) {
       /* This command needs to be added, unless it is a duplicate */
       TActiveCommandsIterator i = active_commands.find(cmd_key);

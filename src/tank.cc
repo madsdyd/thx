@@ -220,7 +220,8 @@ void TTank::Render(TViewpoint * viewpoint) {
   glRotatef(cannon.rotation, 0.0, 0.0, 1.0);
   glRotatef(90.0-cannon.angle, 1.0, 0.0, 0.0);
   /* Scale to make a long, sleek barrel for the tank */
-  glScalef(0.15,0.15,1.5);
+  // glScalef(0.15,0.15,1.5);
+  glScalef(0.075,0.075,0.75);
 
   /* "Push" the barrel half its length to have it rotate around the bottom */
   //  glTranslatef(0.0, 0.0, 0.5);
@@ -244,7 +245,7 @@ void TTank::Render(TViewpoint * viewpoint) {
   glTranslatef(0.0, 0.75, 0.0);
   glColor4fv(color.data);
   glPushMatrix();
-  glScalef(2.0, 2.0, 2.0);
+  //  glScalef(2.0, 2.0, 2.0);
   model->draw();
   glPopMatrix();
   

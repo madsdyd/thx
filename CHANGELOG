@@ -1,3 +1,8 @@
+20010405
+  - Fiddled with the slide code
+  - Made the tanks smaller - for larger map feeling...
+  - Think I fixed the TMap::HeightAt function
+
 20010404
   - Made the map fall down code more smooth
   - Edited README slightly

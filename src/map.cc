@@ -39,7 +39,8 @@
 /* **********************************************************************
  * Configuration stuff that is changable from the outside
  * *********************************************************************/
-float map_max_steepness = 2.0;
+/* Only used when slide is on */
+float map_max_steepness = 10.0;
 
 /* This is to avoid the map sinking into total void */
 #define MIN_Z -25
@@ -446,18 +447,18 @@ float TMap::HeightAt(float x, float y) {
   float y1 = y-floor(y);
   float z, xz, yz;
   cout << "x1 " << x1 << ", yz " << y1 << endl;
-  /* We draw triangles in a certain way, diagonal is where x+y == 1 */
-  if (x+y > 1.0) {
+  /* We draw triangles in a certain way, diagonal is where x1+y1 == 1 */
+  if (x1+y1 > 1.0) {
     /* Upper right triangle */
-    z  = PointAt(floor(x+1), floor(y+1))->z;
-    xz = PointAt(floor(x), floor(y)+1)->z - z;
-    yz = PointAt(floor(x)+1, floor(y))->z - z;
+    z  = PointAt(floor(x)+1, floor(y)+1)->z;
+    xz = PointAt(floor(x),   floor(y)+1)->z - z;
+    yz = PointAt(floor(x)+1, floor(y)  )->z - z;
     return xz*(1.0-x1)+yz*(1.0-y1)+z;
   } else {
     /* Lower left triangle */
-    z  = PointAt(floor(x), floor(y))->z;
-    xz = PointAt(floor(x)+1, floor(y))->z - z;
-    yz = PointAt(floor(x), floor(y)+1)->z - z;
+    z  = PointAt(floor(x),   floor(y)  )->z;
+    xz = PointAt(floor(x)+1, floor(y)  )->z - z;
+    yz = PointAt(floor(x),   floor(y)+1)->z - z;
     return xz*x1+yz*y1+z;
   }
 }
@@ -543,11 +544,20 @@ void TMap::LowerAll(TVector * location, float radius) {
       LowerPoint(i, j, location, radius);
     }
   }
-  /* TODO: Now slide the same points. I know this is not really effecient, but
-     it will probably change when the map format change anyway */
 
+  //#define SLIDE_ON
+#ifdef SLIDE_ON
+  for(int i = x_min; i <= x_max; i++) {
+    for(int j = y_min; j <= y_max; j++) {
+      // cout << "Lowering " << i << ", " << j << endl;
+      Slide(i, j);
+    }
+  }
   /* Recalc point/lighting normals */
+  lsNormals(0, width, 0, length);
+#else
   lsNormals(x_min, x_max, y_min, y_max);
+#endif
 }
 
 

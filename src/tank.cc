@@ -262,6 +262,10 @@ void TTank::Render(TViewpoint * viewpoint) {
   /* Translate to the origion of our entity */
   glTranslatef(location.x, location.y, location.z);
 
+  /* This is required to make the model appear correctly on the
+     map. This is a mess. */
+  glTranslatef(0.0, 0.0, -0.50);
+
   /* We want to do this with lighting */
   glEnable(GL_LIGHTING);
 

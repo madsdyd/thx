@@ -1,5 +1,7 @@
 #include "inventory.hh"
 
+#include <strstream>
+
 #include "projectile.hh"
 
 /* For sprintf - sigh */
@@ -45,19 +47,19 @@ TInventory::TInventory(TPlayer * Owner) {
 #define NUM_PROJ_TEST 0
   data.push_back(new TInventoryElement("Missile", 
 				       new TProjectile(owner, 4.0, 45.0),     
-				       5, 500, NUM_PROJ_TEST));
+				       5, 1875, NUM_PROJ_TEST));
   data.push_back(new TInventoryElement("Baby Nuke", 
 				       new TProjectile(owner, 6.0, 50.0),     
-				       3, 2000, NUM_PROJ_TEST));
+				       3, 10000, NUM_PROJ_TEST));
   data.push_back(new TInventoryElement("Nuke", 
 				       new TProjectile(owner, 8.0, 55.0),     
-				       1, 4000, NUM_PROJ_TEST));
+				       1, 12000, NUM_PROJ_TEST));
   data.push_back(new TInventoryElement("Funky Bomb", 
 				       new TSpawnProjectile(owner, 4.0, 100.0),
-				       2, 1500, NUM_PROJ_TEST));
+				       2, 7000, NUM_PROJ_TEST));
   data.push_back(new TInventoryElement("MIRV",  
 				       new TMirvProjectile(owner, 4.0, 100.0),  
-				       3, 3000, NUM_PROJ_TEST));
+				       3, 10000, NUM_PROJ_TEST));
   selected = 0; /* Always assume that baby missiles are present */
 }
 
@@ -110,10 +112,10 @@ TProjectile * TInventory::FireSelected(TVector * loc, TVector * vel) {
 /* **********************************************************************
    Describes the currently selected missile */
 string TInventory::DescribeSelected() {
-  /* Argh, if I only knew some more C++ */
-  char buf[256];
-  sprintf(buf, "%i", data[selected]->num);
-  return (data[selected]->name + " " + buf);
+  ostrstream tmp;
+  tmp << data[selected]->name;
+  tmp.form(" %i", data[selected]->num) << ends;
+  return tmp.str();
 }
 
 /* **********************************************************************

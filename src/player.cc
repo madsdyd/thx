@@ -1,6 +1,9 @@
 #include "player.hh"
 /* Implements functions related to the players */
 
+#include "inventory.hh"
+#include "tank.hh"
+
 /* **********************************************************************
    The constructor */
 TPlayer::TPlayer(string nname) { 
@@ -8,6 +11,13 @@ TPlayer::TPlayer(string nname) {
   money = 500;
   score = 0;
   inventory = new TInventory(this);
+}
+
+/* **********************************************************************
+   The destructor */
+TPlayer::~TPlayer() {
+  cout << "TPlayer::~TPlayer() - clean up stuff?" << endl;
+  delete inventory;
 }
 
 /* **********************************************************************

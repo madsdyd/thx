@@ -3,13 +3,12 @@
 
 #include <string>
 
-#include "tank.hh"
-#include "types.hh"
-#include "inventory.hh"
 #include "color.hh"
 #include "viewpoint.hh"
 
 /* A player is either a human or bot controlled participiant in the world */
+class TInventory;
+class TTank;
 class TPlayer {
 public:
   string name;            /* The players name */
@@ -20,9 +19,7 @@ public:
   TColor color;           /* Used at all? */
   TViewpoint viewpoint;   /* The players viewpoint */
   TPlayer(string nname);
-  ~TPlayer() {
-    delete inventory;
-  }
+  ~TPlayer();
   void PrepareRound(TVector * location);
 };
 #endif

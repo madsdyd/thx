@@ -4,18 +4,17 @@
 #include <unistd.h>
 #include <stdlib.h>
 
-#include "display.hh"
 #include "tank.hh"
-#include "map.hh"
 
 #ifdef SOUND_ON
 #include "sound.hh"
 #endif
 
-#include "types.hh"
-#include "marker.hh"
+#include "player.hh"
+#include "game.hh"
 #include "explosion.hh"
-#include "models.hh"
+#include "map.hh"
+#include "marker.hh"
 
 /* **********************************************************************
    Initialize a tank */
@@ -29,7 +28,6 @@ TTank::TTank(TPlayer * owner) : TEntity(owner) {
 /* **********************************************************************
    Set the location of a tank and prepare it for a new round */
 void TTank::PrepareRound(TVector * loc) {
-
   keep            = true;
   location        = *loc;
   health          = 100.0;
@@ -38,8 +36,6 @@ void TTank::PrepareRound(TVector * loc) {
   cannon.angle    = 45;
   cannon.rotation = 0;
   cannon.force    = 15;
-  default_tank(&model,&color);
-
 }
 
 /* **********************************************************************
@@ -165,40 +161,18 @@ void TTank::Update(TGame * game, system_time_t deltatime) {
 void TTank::Render(TViewpoint * viewpoint) {
   glPushMatrix();
   glTranslatef(location.x, location.y, location.z);
-  glPushMatrix();
+  //  printf("tank: translating to %i %i %f\n",
+  //	 x, y, height);
+  glColor4fv(color.data);  
+  glutSolidCube(1.0);
 
   /* Just above the tank, render a canon */
-  glTranslatef(0.0, 0.0, 0.5);
-
+  glTranslatef(0.0, 0.0, 1.0);
   /* This is needed to make OpenGL agree with me on rotation */
   glRotatef(90.0, 0.0, 0.0, 1.0);
   glRotatef(cannon.rotation, 0.0, 0.0, 1.0);
   glRotatef(90.0-cannon.angle, 1.0, 0.0, 0.0);
-
-  /* Scale to make a long, sleek barrel for the tank */
-  glScalef(0.15,0.15,1.5);
-
-  /* "Push" the barrel half its length to have it rotate around the bottom */
-  //  glTranslatef(0.0, 0.0, 0.5);
-  glColor3f(0.25 * color.red + 0.15
-	    , 0.25 * color.green + 0.15
-	    , 0.25 * color.blue + 0.15);
-  glShadeModel(GL_SMOOTH);
-  glEnable(GL_LIGHTING);
-  glutSolidCone(1.0,1.0,8,8);
-
-  glPopMatrix();
-
-
-  // Rotate back to compensate for... errrr... something...
-  // Now the Y-axis in the tank model is actually up...
-  glRotatef(90.0, 1.0, 0.0, 0.0);
-
-  glColor4f(color.red, color.green, 
-	    color.blue, color.alpha);
-  glDisable(GL_LIGHTING);
-  model.draw();
-
-
+  glColor3f(0.3, 0.3, 0.3);
+  glutSolidCone(0.5, 2.5, 8, 8);
   glPopMatrix();
 }

@@ -1,12 +1,17 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#ifdef SOUND_ON
 #include "sound.hh"
+#endif
 
 #include "game.hh"
+#include "player.hh"
+#include "map.hh"
 #include "projectile.hh"
 #include "explosion.hh"
-
+#include "tank.hh"
+#include "inventory.hh"
 
 /* The deltatime min and max are used like this:
 

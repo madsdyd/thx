@@ -395,6 +395,7 @@ void TStringMenuItem::Render(int xlow, int xhigh) {
     cursorpos = mymax(0, cursorpos);
     cursorpos = mymin(cursorpos, new_value.size());
     tmp += new_value.substr(0, cursorpos);
+    /* Really ugly hack to get something that looks like a cursor */
     char buf[] = " ";
     buf[0] = 25;
     tmp += buf;

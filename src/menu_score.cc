@@ -1,4 +1,5 @@
 #include "menu_score.hh"
+#include "player.hh"
 
 #include <strstream>
 #include <multimap.h>

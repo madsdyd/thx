@@ -20,18 +20,6 @@
    but it makes it easier to refer to.
 */
 
-
-
-#define CLIENT_HAS_NOTHING        0x00000000 /* The client has no menu/game */
-#define CLIENT_HAS_GAME           0x00000001 /* The Game object needs stuff */
-#define CLIENT_HAS_INGAMEMENU     0x00000002 /* In-between handling */
-#define CLIENT_HAS_ROUNDOVERMENU  0x00000004 /* In-between handling */
-#define CLIENT_HAS_BUYMENU        0x00000008 /* Menu for buying, displayed between games */
-#define CLIENT_HAS_GAMEOVERMENU   0x00000010 /* In-between handling */
-#define CLIENT_HAS_SCORE          0x00000020 /* Score board */
-
-//#define CLIENT_HAS_CONSOLE    0x00000008 /* Nonexistant console :-) */
-
 class TClient {
 public:
   bool game_running; /* If we do not have a game running, we show the 
@@ -44,6 +32,7 @@ public:
      well. This includes the menu, sound and display system, but not the 
      (nonpresent) server */
   TClient(int argc, char ** argv);
+  ~TClient();
   /* Run the game - Used to dispatch the glut events, and so on... */
   void Run();
 };

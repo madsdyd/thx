@@ -1,7 +1,9 @@
 #include "client.hh"
-
+#include "color.hh"
 #include "types.hh"
 #include "server.hh"
+#include "tank.hh"
+#include "player.hh"
 
 #include "display.hh"
 #include "framerate.hh"
@@ -22,6 +24,17 @@
 TClient * Client;
 
 static int selfcount = 0;
+
+#define CLIENT_HAS_NOTHING        0x00000000 /* The client has no menu/game */
+#define CLIENT_HAS_GAME           0x00000001 /* The Game object needs stuff */
+#define CLIENT_HAS_INGAMEMENU     0x00000002 /* In-between handling */
+#define CLIENT_HAS_ROUNDOVERMENU  0x00000004 /* In-between handling */
+#define CLIENT_HAS_BUYMENU        0x00000008 /* Menu for buying, displayed between games */
+#define CLIENT_HAS_GAMEOVERMENU   0x00000010 /* In-between handling */
+#define CLIENT_HAS_SCORE          0x00000020 /* Score board */
+
+//#define CLIENT_HAS_CONSOLE    0x00000008 /* Nonexistant console :-) */
+
 
 /* **********************************************************************
  * Callback function - need to be global or static.
@@ -240,7 +253,6 @@ void GameMenu_StartFunc() {
 
   /* ************************************************************
      Initialize the game. This should maybe go somewhere else */
-  color_t tmpcolor;
   
   /* Initialize stuff as selected from the menu system */
   int game_numrounds = atoi(GameMenu->numrounds.c_str());
@@ -270,8 +282,7 @@ void GameMenu_StartFunc() {
   case 4:
     player = new TPlayer(GameMenu->playernames[3]);
     tank   = new TTank(player);
-    color_setmagenta(&tmpcolor);
-    tank->color      = tmpcolor;
+    tank->color      =  ColorDefinitions.Colors["yellow"];
     player->tank     = tank;
     if (!Game->AddPlayer(player)) {
       cerr << "Error adding player " << player->name << endl;
@@ -282,8 +293,7 @@ void GameMenu_StartFunc() {
   case 3:
     player = new TPlayer(GameMenu->playernames[2]);
     tank   = new TTank(player);
-    color_setblue(&tmpcolor);
-    tank->color      = tmpcolor;
+    tank->color      = ColorDefinitions.Colors["blue"];;
     player->tank     = tank;
     if (!Game->AddPlayer(player)) {
       cerr << "Error adding player " << player->name << endl;
@@ -294,8 +304,7 @@ void GameMenu_StartFunc() {
   default:
     player = new TPlayer(GameMenu->playernames[1]);
     tank   = new TTank(player);
-    color_setgreen(&tmpcolor);
-    tank->color      = tmpcolor;
+    tank->color      = ColorDefinitions.Colors["green"];;
     player->tank     = tank;
     if (!Game->AddPlayer(player)) {
       cerr << "Error adding player " << player->name << endl;
@@ -305,8 +314,7 @@ void GameMenu_StartFunc() {
 
     player = new TPlayer(GameMenu->playernames[0]);
     tank   = new TTank(player);
-    color_setred(&tmpcolor);
-    tank->color      = tmpcolor;
+    tank->color      = ColorDefinitions.Colors["red"];;
     player->tank     = tank;
     if (!Game->AddPlayer(player)) {
       cerr << "Error adding player " << player->name << endl;
@@ -511,7 +519,6 @@ TClient::TClient(int argc, char ** argv) {
   game_running = false;
   has          = CLIENT_HAS_NOTHING;
 
-
   /* Check that we never get instantiated more the once */
   if (selfcount != 0) {
     cerr << "TClient must never be instantiated more then once" << endl;
@@ -572,6 +579,38 @@ TClient::TClient(int argc, char ** argv) {
   InGameMenu->Show();
 
   /* The BuyMenu and ScoreMenu is not constructed here */
+}
+
+/* **********************************************************************
+   Phony NULL function 
+ * *********************************************************************/
+
+void MyNULL() {};
+
+/* **********************************************************************
+   Destructor shuts stuff down 
+ * *********************************************************************/
+TClient::~TClient() {
+  /* Stop GLUT */
+  glutDisplayFunc(MyNULL);
+  glutKeyboardFunc(NULL);
+  glutIdleFunc(NULL);
+
+  /* Free the menus */
+  delete InGameMenu; InGameMenu = NULL;
+  delete GameOverMenu; GameOverMenu = NULL;
+  delete RoundOverMenu; RoundOverMenu = NULL;
+  delete GameMenu; GameMenu = NULL;
+  if (NULL != BuyMenu) {
+    delete BuyMenu; BuyMenu = NULL;
+  }
+  /* Free the displays */
+  delete Display; Display = NULL;
+#ifdef SOUND_ON
+#warning "LAME SOUND CODE ON"
+  /* Shutdown the sound */
+  sound_shutdown();
+#endif
 }
 
 /* **********************************************************************

@@ -5,7 +5,7 @@
    For now, it is simply a couple of lines in the upper left corner */
 #include <string>
 #include <vector>
-#include "types.hh"
+#include "types.hh"  /* system_time */
 
 class TDisplay;
 class TConsole {

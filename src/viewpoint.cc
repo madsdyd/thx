@@ -1,6 +1,5 @@
 #include "viewpoint.hh"
 #include "map.hh"
-/* Methods to manipulate a viewpoint */
 
 /* ************************************************************
    Reset the viewpoint to the center of the map */

@@ -1,8 +1,7 @@
 #ifndef __PROJECTILE_H__
 #define __PROJECTILE_H__
-#include "types.hh"
-#include "game.hh"
 #include "entities.hh"
+#include "vector.hh"
 
 /* This controls wheter the projectile base class will spawn markers 
    during flight or not */
@@ -16,6 +15,9 @@ extern bool spawn_markers;
    are more elegant ways to do this then the approach below */
 
 /* Standard projectile */
+class TGame;
+class TPlayer;
+class TViewpoint;
 class TProjectile : public TEntity {
 protected:
   TVector location;

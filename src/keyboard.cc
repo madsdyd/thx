@@ -1,9 +1,12 @@
 #include <math.h>
 #include <GL/glut.h>
+
 #include "keyboard.hh"
 #include "display.hh"
 #include "console.hh"
 #include "tank.hh"
+#include "player.hh"
+#include "inventory.hh"
 
 #include "viewpoint.hh"
 #include "server.hh"

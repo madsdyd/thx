@@ -20,6 +20,10 @@ TObject::TObject(int numPts, int numTris) {
   numTriangles = 0;
   triangles = new Triangle[maxTriangles];
 
+  // Add mem for normals
+  normals = new TVector[maxTriangles];
+  ptsnormals = new TVector[maxPoints];
+
   // Add an empty list to each points neighbour list
   ptsNbour.resize(maxPoints);
 
@@ -162,6 +166,11 @@ void TObject::draw() {
   int i, j, idx[3];
   Point pts[3];
   TVector normal,foo,bar;
+  GLfloat shininess[] = { 100.0 };
+
+  glMaterialfv(GL_FRONT, GL_SPECULAR, points[0].color);
+  glMaterialfv(GL_FRONT, GL_SHININESS, shininess);
+  glMaterialfv(GL_FRONT, GL_DIFFUSE, points[0].color);
 
   for (i=0;i<numTriangles;i++) {
     triangles[i].getPoints(idx);
@@ -169,24 +178,25 @@ void TObject::draw() {
       pts[j] = points[idx[j]];
     }
 
-
-    foo = pts[1].coords - pts[0].coords;
-    bar = pts[2].coords - pts[0].coords;
-    normal = foo.cross(bar);
-    normal.Normalize();
+    /*
+      foo = pts[1].coords - pts[0].coords;
+      bar = pts[2].coords - pts[0].coords;
+      normal = foo.cross(bar);
+      normal.Normalize();
+    */
 
     glBegin(GL_TRIANGLES);
 
     glColor4fv(pts[0].color);
-    glNormal3f(normal.x, normal.y, normal.z);
+    glNormal3f(normals[i].x, normals[i].y, normals[i].z);
     glVertex3f(pts[0].coords.x , pts[0].coords.y , pts[0].coords.z);
 
     glColor4fv(pts[1].color);
-    glNormal3f(normal.x, normal.y, normal.z);
+    glNormal3f(normals[i].x, normals[i].y, normals[i].z);
     glVertex3f(pts[1].coords.x , pts[1].coords.y , pts[1].coords.z);
 
     glColor4fv(pts[2].color);
-    glNormal3f(normal.x, normal.y, normal.z);
+    glNormal3f(normals[i].x, normals[i].y, normals[i].z);
     glVertex3f(pts[2].coords.x , pts[2].coords.y , pts[2].coords.z);
 
     glEnd();
@@ -319,6 +329,187 @@ bool TObject::CollisionDetect(TVector * old_location, TVector * new_location) {
   }
 }
 
+
+void TObject::calcNormals() {
+  //  TVector Normals[numTriangles];
+  TVector P0, P1, P2, u, v;
+  TrianglePtrList::iterator ite, end;
+
+  int i,idx[3];
+assert(numTriangles<=maxTriangles);
+  for (i = 0; i < numTriangles; i++) {
+    triangles[i].getPoints(idx);
+    P0 = TVector(points[idx[0]].coords.x,points[idx[0]].coords.y,points[idx[0]].coords.z);
+    P1 = TVector(points[idx[1]].coords.x,points[idx[1]].coords.y,points[idx[1]].coords.z);
+    P2 = TVector(points[idx[2]].coords.x,points[idx[2]].coords.y,points[idx[2]].coords.z);
+    u = P1 - P0;
+    v = P2 - P0;
+    normals[i] = u.cross(v);
+    normals[i].Normalize();
+  }
+  /*
+    for (i = 0; i < numPoints; i++) {
+    ite = ptsNbour[i].begin();
+    end = ptsNbour[i].end();
+    u = TVector(0.0, 0.0, 0.0);
+    while (ite != end) {
+      u = u + normals[(*ite)];
+      ite++;
+    }
+    u.Normalize();
+    ptsnormals[i] = u;
+  }
+  */
+}
+
+
+/* Transformation functions */
+
+// Rotate theta degrees around Q-P
+void TObject::rotate(TVector P, TVector Q, float theta) {
+  int i,j;
+  float rotation[16],newtransform[16];
+  TVector v;
+  float xx,xy,xz,yy,yz,zz;
+  float cost, sint;
+
+  // We translate back to "origo" to rotate around the
+  // objects center/origo
+  translate(TVector(-P.x, -P.y, -P.z));
+
+  // Find the axis we're rotating around
+  v = Q - P;
+  v.Normalize();
+
+  // Elements in v*v'
+  xx = v.x * v.x;
+  xy = v.x * v.y;
+  xz = v.x * v.z;
+  yy = v.y * v.y;
+  yz = v.y * v.z;
+  zz = v.z * v.z;
+
+  // cos(theta) and sin(theta)
+  cost = cos(M_PI * theta / 180.0);
+  if (fabs(cost) < 1e-6) {
+    cost = 0.0;
+  }
+  sint = sin(M_PI * theta / 180.0);
+  if (fabs(sint) < 1e-6) {
+    sint = 0.0;
+  }
+
+  // First column in R
+  rotation[ 0] = xx + cost * (1.0 - xx);
+  rotation[ 1] = xy + cost * (0.0 - xy) + sint * v.z;
+  rotation[ 2] = xz + cost * (0.0 - xz) - sint * v.y;
+  rotation[ 3] = 0.0;
+
+  // Second column in R
+  rotation[ 4] = xy + cost * (0.0 - xy) - sint * v.z;
+  rotation[ 5] = yy + cost * (1.0 - yy);
+  rotation[ 6] = yz + cost * (0.0 - yz) + sint * v.x;
+  rotation[ 7] = 0.0;
+
+  // Third column in R
+  rotation[ 8] = xz + cost * (0.0 - xz) + sint * v.y;
+  rotation[ 9] = yz + cost * (0.0 - yz) - sint * v.x;
+  rotation[10] = zz + cost * (1.0 - zz);
+  rotation[11] = 0.0;
+
+  // Fourth column in R
+  rotation[12] = 0.0;
+  rotation[13] = 0.0;
+  rotation[14] = 0.0;
+  rotation[15] = 1.0;
+
+  // Compute new transformation matrix
+  matrixmult(transform,rotation,newtransform);
+
+  // Assign new transformation matrix
+  for (i = 0; i < 4; i++) {
+    for (j = 0; j < 4; j++) {
+      transform[i*4 + j] = newtransform[i*4 + j];
+    }
+  }  
+
+  // Move the object back in it place
+  translate(TVector(P.x, P.y, P.z));
+}
+
+
+// Translate with vector T
+void TObject::translate(TVector T) {
+  int i,j;
+  float translate[16],newtransform[16];
+
+  // Translation matrix
+  translate[0] = 1.0; translate[4] = 0.0; translate[8]  = 0.0; translate[12] = T.x;
+  translate[1] = 0.0; translate[5] = 1.0; translate[9]  = 0.0; translate[13] = T.y;
+  translate[2] = 0.0; translate[6] = 0.0; translate[10] = 1.0; translate[14] = T.z;
+  translate[3] = 0.0; translate[7] = 0.0; translate[11] = 0.0; translate[15] = 1.0;
+  // Calculate new transformation matrix
+  matrixmult(transform,translate,newtransform);
+  for (i = 0; i < 4; i++) {
+    for (j = 0; j < 4; j++) {
+      transform[i*4 + j] = newtransform[i*4 + j];
+    }
+  }  
+  // Update bounding box
+  /*
+  matrixmult(origbbox,transform,newtransform);
+  bbox[0][0] = newtransform[0];
+  bbox[1][0] = newtransform[1];
+  bbox[2][0] = newtransform[2];
+  bbox[0][1] = newtransform[4];
+  bbox[1][1] = newtransform[5];
+  bbox[2][1] = newtransform[6];
+  */
+}
+
+// Scale around origo, S holds scalefactors for each axis
+void TObject::scale(TVector S) {
+  int i,j;
+  float scale[16],newtransform[16];
+
+  // Translation matrix
+  scale[0] = S.x; scale[4] = 0.0; scale[8]  = 0.0; scale[12] = 0.0;
+  scale[1] = 0.0; scale[5] = S.y; scale[9]  = 0.0; scale[13] = 0.0;
+  scale[2] = 0.0; scale[6] = 0.0; scale[10] = S.z; scale[14] = 0.0;
+  scale[3] = 0.0; scale[7] = 0.0; scale[11] = 0.0; scale[15] = 1.0;
+  // Calculate new transformation matrix
+  matrixmult(scale,transform,newtransform);
+  for (i = 0; i < 4; i++) {
+    for (j = 0; j < 4; j++) {
+      transform[i*4 + j] = newtransform[i*4 + j];
+    }
+  }  
+  // Update bounding box
+  /*
+  matrixmult(origbbox,transform,newtransform);
+  bbox[0][0] = newtransform[0];
+  bbox[1][0] = newtransform[1];
+  bbox[2][0] = newtransform[2];
+  bbox[0][1] = newtransform[4];
+  bbox[1][1] = newtransform[5];
+  bbox[2][1] = newtransform[6];
+  */
+}
+
+void TObject::matrixmult(float *A, float *B, float *C) {
+  int i,j;
+
+  for (i = 0; i < 4; i++) {
+    for (j = 0; j < 4; j++) {
+      C[i*4 + j] =
+	A[i*4] * B[j]
+	+ A[i*4 + 1] * B[j + 4]
+	+ A[i*4 + 2] * B[j + 8]
+	+ A[i*4 + 3] * B[j + 12];
+    }
+  }
+
+}
 
 // Destructor
 TObject::~TObject() {

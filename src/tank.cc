@@ -23,6 +23,7 @@
    Initialize a tank */
 TTank::TTank(TPlayer * owner) : TEntity(owner) {
   model = new TObject;
+  barrel = new TObject;
   /* Override default behaviour, we do not want to be freed be the game, 
      since players still reference us */
   free = false;
@@ -48,6 +49,7 @@ void TTank::PrepareRound(TVector * loc) {
   cannon.rotation = 0;
   cannon.force    = 15;
   default_tank(model, &color);
+  abrams_barrel(barrel, &color);
 }
 
 /* **********************************************************************
@@ -170,12 +172,21 @@ void TTank::Update(TGame * game, system_time_t deltatime) {
 /* **********************************************************************
    Render a tank */
 void TTank::Render(TViewpoint * viewpoint) {
+  /***********************************************
+   ** WARNING
+   ** This kind of changing the material properties
+   ** are BAD - and not only for the I
+   ***********************************************/
+  GLfloat mat_specular[] = { 0.0, 0.0, 0.0, 1.0 };
+  GLfloat mat_diffuse[] = { 1.0, 1.0, 1.0, 1.0 };
+  GLfloat mat_shininess[] = { 10.0 };
+
   glPushMatrix();
   glTranslatef(location.x, location.y, location.z);
   glPushMatrix();
 
   /* Just above the tank, render a canon */
-  glTranslatef(0.0, 0.0, 0.5);
+  glTranslatef(0.0, 0.0, 0.65);
 
   /* This is needed to make OpenGL agree with me on rotation */
   glRotatef(90.0, 0.0, 0.0, 1.0);
@@ -192,17 +203,28 @@ void TTank::Render(TViewpoint * viewpoint) {
 	    , 0.25 * color.data[2] + 0.15);
   glShadeModel(GL_SMOOTH);
   glEnable(GL_LIGHTING);
-  glutSolidCone(1.0,1.0,8,8);
 
+  glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular);
+  glMaterialfv(GL_FRONT, GL_SHININESS, mat_shininess);
+  glMaterialfv(GL_FRONT, GL_DIFFUSE, mat_diffuse);
+  glutSolidCone(1.0,1.0,8,8);
+  //barrel->draw();
   glPopMatrix();
 
 
   // Rotate back to compensate for... errrr... something...
   // Now the Y-axis in the tank model is actually up...
   glRotatef(90.0, 1.0, 0.0, 0.0);
-
+  glTranslatef(0.0, 0.75, 0.0);
   glColor4fv(color.data);
-  glDisable(GL_LIGHTING);
+  //  glDisable(GL_LIGHTING);
+  glPushMatrix();
+  glScalef(2.0, 2.0, 2.0);
   model->draw();
   glPopMatrix();
+  glPopMatrix();
+
+  glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular);
+  glMaterialfv(GL_FRONT, GL_SHININESS, mat_shininess);
+  glMaterialfv(GL_FRONT, GL_DIFFUSE, mat_diffuse);
 }

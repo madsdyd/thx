@@ -38,12 +38,21 @@ public:
 
   void print();
   void printBbox();
+  void calcNormals();
+
+  // Rotate theta degrees around Q-P
+  void rotate(TVector P, TVector Q, float theta);
+  // Translate with vector T
+  void translate(TVector T);
+  // Scale around origo, S holds scalefactors for each axis
+  void scale(TVector S);
 
   float bbox[3][2],vel[3];
   bool collision;
 
   PointPtr points;
   TrianglePtr triangles;
+  TVector *normals,*ptsnormals;
 
   int numPoints, maxPoints;
   int numTriangles, maxTriangles;
@@ -51,6 +60,16 @@ public:
 private:
 
   bool bboxused;
+  void matrixmult(float *A, float *B, float *C);
+
+  /*
+   * Transformation matrix
+   * IMPORTANT!
+   * This matrix does NOT conform with the OpenGL standard
+   * for matrices, so we transpose the matrix of all
+   * the transformations!
+   */
+  float transform[16];
 
   vector<TrianglePtrList> ptsNbour;
 

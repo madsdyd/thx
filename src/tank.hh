@@ -27,6 +27,7 @@ protected:
   tankstate_t tankstate;
 public:
   TObject * model;
+  TObject * barrel;
   TColor color;
   TVector location;
   cannon_t cannon;

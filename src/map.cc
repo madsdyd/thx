@@ -646,6 +646,10 @@ void TMap::SetTexture(float h) {
    way to do it, but... */
 void TMap::Render(TViewpoint * viewpoint) {
   int x, y;
+  GLfloat mat_specular[] = { 0.0, 0.0, 0.0, 1.0 };
+  GLfloat mat_diffuse[] = { 1.0, 1.0, 1.0, 1.0 };
+  GLfloat mat_shininess[] = { 10.0 };
+
   if (GL_NO_ERROR != glGetError()) {
     cerr << "TMap::Render: GL was in error condition" << endl;
   } 
@@ -674,6 +678,14 @@ void TMap::Render(TViewpoint * viewpoint) {
     /* Light or not */
     if (render_light) {
       glEnable(GL_LIGHTING);
+  /***********************************************
+   ** WARNING
+   ** This kind of changing the material properties
+   ** are BAD - and not only for the I
+   ***********************************************/
+      glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular);
+      glMaterialfv(GL_FRONT, GL_SHININESS, mat_shininess);
+      glMaterialfv(GL_FRONT, GL_DIFFUSE, mat_diffuse);
     } else {
       glDisable(GL_LIGHTING);
     }

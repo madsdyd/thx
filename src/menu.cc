@@ -30,6 +30,8 @@
 #include "display.hh"
 #include "text.hh"
 
+#define DEBUG_MENU 0
+
 /* This renders text for the menus */
 TTextRender MenuTextRender;
 
@@ -315,16 +317,26 @@ bool TMenu::CommandConsume(TCommand * Command) {
 	// cout << "Got a hit on " << (*i)->GetDescription() << endl;
 	if (count != focuseditem) {
 	  /* This is not the focuseditem - we should try to change focus */
-	  // cout << "This is not the focused item!" << endl;
+#if (DEBUG_MENU)
+	  cout << "mouse-move : this is not the focused item" << endl;
+#endif
 	  if (menuitems[focuseditem]->Blur()) {
+#if (DEBUG_MENU)
+	    cout << "mouse-move : blurred focused item" << endl;
+#endif
 	    if ((*i)->Focus()) {
+#if (DEBUG_MENU)
+	      cout << "mouse-move : focused item under mouse" << endl;
+#endif
 	      focuseditem = count;
 #ifdef SOUND_ON
 	      sound_play(names_to_nums["data/sounds/menu_move.raw"]);
 #endif
 	    } else {
 	      /* Ups, refocus */
-	      // cout << "Try and refocus!" << endl;
+#if (DEBUG_MENU)
+	      cout << "mouse-move : could not focus new, refocus old" << endl;
+#endif
 	      menuitems[focuseditem]->Focus();
 	    }
 	  }
@@ -363,31 +375,51 @@ bool TMenu::CommandConsume(TCommand * Command) {
 	/* Got a hit - Cancel the current */
 	if (focuseditem == count && (*i)->Selected()) {
 	  /* Ignore this, the user clicked a selected entry */
+#if (DEBUG_MENU)
+	  cout << "mouse-down : ignoring event - item already selected" << endl;
+#endif
 	  return true;
 	} else {
-	  menuitems[focuseditem]->Cancel();	
-	  if ((*i)->Focus()) {
-	    /* Now try to select it with a temporary command */
-	    TCommand * tmpcmd = new TCommand(Command->timestamp, "menuitem", "select");
-	    if ((*i)->CommandConsume(tmpcmd)) {
-	      // cout << "Command accepted" << endl;
-	      
-	      focuseditem = count;
-#ifdef SOUND_ON
-	      sound_play(names_to_nums["data/sounds/menu_move.raw"]);
+	  if (focuseditem != count) {
+	    /* Have to make sure the old one is canceled, this one fucosed */
+#if (DEBUG_MENU)
+	    cout << "mouse-down : trying to force focus change" << endl
+		 << "mouse-down : canceling current" << endl;
 #endif
-	      
-	    } else {
-	      /* It did not accept the command */
-	      cerr << "TMenu, mouse command not accepted" << endl;
-	      (*i)->Blur();
+	    menuitems[focuseditem]->Cancel();
+	    if (!(*i)->Focus()) {
+	      /* Uh, oh, we can not focus this one. Refocus the old one */
+#if (DEBUG_MENU)
+	      cout << "mouse-down : item under mouse did not want focus. Refocusing" 
+		   << endl;
+#endif
 	      menuitems[focuseditem]->Focus();
+	      return true;
+	    } else {
+#if (DEBUG_MENU)
+	      cout << "mouse-down : succesfully focused item under mouse" << endl;
+#endif
+	      focuseditem = count;
 	    }
-	    delete tmpcmd;
+	  } /* Check or set focus to the one the mouse is above */
+
+	  /* At this point, the item the mouse is above is focused. */
+	  /* Now try to select it with a temporary command */
+	  TCommand * tmpcmd = new TCommand(Command->timestamp, "menuitem", "select");
+	  if ((*i)->CommandConsume(tmpcmd)) {
+#if (DEBUG_MENU)
+	    cout << "mouse-down : succesfully selected item under mouse" << endl;
+#endif
 	  } else {
-	    /* The new entry did not want to focus */
-	    menuitems[focuseditem]->Focus();
+	    /* It did not accept the command */
+	    /* Make a focus sound */
+#ifdef SOUND_ON
+	    sound_play(names_to_nums["data/sounds/menu_move.raw"]);
+#endif
+	    // This is most likely an error?
+	    cerr << "TMenu, mouse command not accepted" << endl;
 	  }
+	  delete tmpcmd;
 	  return true;
 	} /* User clicked on something else */
       } /* Testhit */

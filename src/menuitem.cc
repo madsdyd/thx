@@ -26,6 +26,8 @@
 #include "menu.hh"
 #include "sound.hh"
 #include "command.hh"
+
+#define DEBUG_MENUITEM 0
 /* **********************************************************************
  * **********************************************************************
  *  TMenuItem 
@@ -50,6 +52,9 @@ TMenuItem::TMenuItem(TMenu * owner, string cap, string desc) {
  * TMenuItem Enable and Disable 
  * *********************************************************************/
 bool TMenuItem::Enable() {
+#if (DEBUG_MENUITEM)
+  cout << "TMenuItem::Enable() - " << caption << endl;
+#endif
   if (menuitem_state_disabled == state) {
     state = menuitem_state_blurred;
     return true;
@@ -57,7 +62,11 @@ bool TMenuItem::Enable() {
     return false;
   }
 };
+
 bool TMenuItem::Disable() {
+#if (DEBUG_MENUITEM)
+  cout << "TMenuItem::Disable() - " << caption << endl;
+#endif
   if (menuitem_state_blurred == state) {
     state = menuitem_state_disabled;
     return true;
@@ -70,29 +79,43 @@ bool TMenuItem::Disable() {
  * TMenuItem Focus, Blur, Cancel, Selected
  * *********************************************************************/
 bool TMenuItem::Focus() {
+#if (DEBUG_MENUITEM)
+  cout << "TMenuItem::Focus() - " << caption << endl;
+#endif
   if (menuitem_state_blurred == state) {
     state = menuitem_state_focused;
     /* Register commands that the menuitem will handle */
     CommandDispatcher.RegisterConsumer("menuitem", this);
     return true;
-    } else {
-      return false;
-    }
+  } else {
+    return false;
+  }
 };
 /* If we are in state editing, we wont allow disfocus */
 bool TMenuItem::Blur() {
-  if (menuitem_state_selected == state 
-      || menuitem_state_disabled) {
+#if (DEBUG_MENUITEM)
+  cout << "TMenuItem::Blur() - " << caption << endl;
+#endif
+  /* We wont blur in selected */
+  if (menuitem_state_selected == state) {
     return false;
   }
-  state = menuitem_state_blurred;
-  CommandDispatcher.UnregisterConsumer("menuitem");
+  /* If we are disabled, we ok the blur, but do not change our state */
+  if (menuitem_state_disabled != state) {
+    state = menuitem_state_blurred;
+    CommandDispatcher.UnregisterConsumer("menuitem");
+  }
   return true;
 };
 
 void TMenuItem::Cancel() {
-  state = menuitem_state_blurred;
-  CommandDispatcher.UnregisterConsumer("menuitem");
+#if (DEBUG_MENUITEM)
+  cout << "TMenuItem::Cancel - " << caption << endl;
+#endif
+  if (menuitem_state_disabled != state) {
+    state = menuitem_state_blurred;
+    CommandDispatcher.UnregisterConsumer("menuitem");
+  }
 }
 
 bool TMenuItem::Selected() {
@@ -284,11 +307,16 @@ bool TValueMenuItem::UnregisterCommands() {
 
 /* Cancel must be like receiving a cancel */
 void TValueMenuItem::Cancel() {
+#if (DEBUG_MENUITEM)
+  cout << "TValueMenuItem::Cancel - " << caption << endl;
+#endif
   if (menuitem_state_selected == state) {
     DiscardNewValue();
   }
-  CommandDispatcher.UnregisterConsumer("menuitem");
-  state = menuitem_state_blurred;
+  if (menuitem_state_disabled != state) {
+    CommandDispatcher.UnregisterConsumer("menuitem");
+    state = menuitem_state_blurred;
+  }
 }
 
 /* This is called when we leave focus state and go into editing state..

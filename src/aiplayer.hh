@@ -23,10 +23,13 @@
 #define __AIPLAYER_HH__
 /* This is an AI player - based on a normal player */
 
+#include "tank.hh"
 #include "player.hh"
 
 class TAIPlayer : public TPlayer {
 protected:
+  /* variable used to store the target for cannon */
+  cannon_t cannon_target;
   void RegisterCommands();
   void UnregisterCommands();
   // void PerformCommandUpdate(system_time_t timenow);

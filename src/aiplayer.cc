@@ -61,6 +61,11 @@ void TAIPlayer::BeginTurn() {
   TPlayer::BeginTurn();
   /* In here, the turn goals are set - actually meeting them is done
      in "Update" */
+  cannon_target.angle    = 15;
+  cannon_target.rotation = 170;
+  cannon_target.force    = 8;
+  cout << "TAIPlayer::BeginTurn - setting goals" << endl;
+
 }
 
 void TAIPlayer::EndTurn() {
@@ -70,7 +75,39 @@ void TAIPlayer::EndTurn() {
 }
 
 void TAIPlayer::Update(system_time_t timenow) {
+  /* Call our parents update */
+  TPlayer::Update(timenow);
+  
   /* In here, we check if our turngoal is met, and if that is the case, 
      we kinda fire */
-  game->FireProjectile();
+  bool ca, cr, cf;
+  if (fabs(cannon_target.angle - tank->cannon.angle) < 1.0) {
+    // cout << "TAIPlayer::Update - goal met" << endl;
+    /* If we are close enough, stop adjusting the cannon 
+       This should work, since we are on simulated time */
+    CommandConsume(new TCommand(timenow, "cannon", "-lower"));
+    CommandConsume(new TCommand(timenow, "cannon", "-raise"));
+    ca = true;
+  } else {
+    if (cannon_target.angle < tank->cannon.angle) {
+      cout << "TAIPlayer::Cannon too high " << tank->cannon.angle << endl;
+      /* Stop any pending raises, insert lower (duplicates will not
+	 be inserted) */
+      CommandConsume(new TCommand(timenow, "cannon", "-raise"));
+      CommandConsume(new TCommand(timenow, "cannon", "+lower"));
+    } else {
+      cout << "TAIPlayer::Cannon too low: " << tank->cannon.angle << endl;
+      /* Stop any pending lowers, insert raise (duplicates will not
+	 be inserted */
+      CommandConsume(new TCommand(timenow, "cannon", "-lower"));
+      CommandConsume(new TCommand(timenow, "cannon", "+raise"));
+    }
+    ca = false;
+  }
+
+  /* If all our objectives are meet, fire the projectile. */
+  if (ca) {
+    game->FireProjectile();
+  }
 }
+

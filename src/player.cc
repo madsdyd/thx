@@ -163,6 +163,9 @@ void TPlayer::PerformCommandUpdate(system_time_t timenow) {
 	else if ("+backward" == Command->args) {
 	  viewpoint.translation.x 
 	    -= scale_move * sin(viewpoint.rotation.z * M_PI / 180.0);
+
+
+
 	  viewpoint.translation.y 
 	    -= scale_move * cos(viewpoint.rotation.z * M_PI / 180.0);
 	  viewpoint.translation.z 
@@ -276,6 +279,7 @@ void TPlayer::Update(system_time_t timenow) {
  * *********************************************************************/
 bool TPlayer::CommandConsume(TCommand * Command) {
   // TODO: Some state checking?
+  // cout << "TPlayer::CommandConsume" << endl;
   
   /* Handle inventory commands */
   if ("inventory" == Command->name) {
@@ -355,6 +359,8 @@ bool TPlayer::CommandConsume(TCommand * Command) {
     }
   }
   
+  // cout << "TPlayer::CommandConsumer, reaching +/- ("
+  //     << Command->name << "," << Command->args << ")" << endl;
   /* Handle commands that have a +/- stuff */
   {
     // Check if this is one we handle, check for +/-, 
@@ -371,6 +377,8 @@ bool TPlayer::CommandConsume(TCommand * Command) {
 	   This should use the copy constructor */
 	active_commands.insert(TActiveCommandsElement(cmd_key, Command));
 	// cout << "CommandConsume - inserting " << cmd_key << " into active " << endl;
+      } else {
+	// cout << "Duplicates?" << endl;
       }
       return true;
     }

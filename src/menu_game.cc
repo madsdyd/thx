@@ -51,7 +51,7 @@ TGameMenu::TGameMenu(string title,
   ExitMenu    = new TMenu("Really Exit?");
 
   /* Initialize default values */
-  numplayers = 3;
+  numplayers = 2;
   numrounds  = 3;
   mapsize    = 32;
   maptype    = 1.4;

@@ -50,7 +50,12 @@ void TPlayerMenu::SyncPlayerSettings() {
     tmpset.color = ColorDefinitions.GetColor(tmp2.str());
     tmp3.form("team-%i", PlayerSettings->size() + 1) << ends;
     tmpset.team  = tmp3.str();
-    tmpset.playerclass = "human";
+    if (0 == PlayerSettings->size()) {
+      tmpset.name        = "Baltazar";
+      tmpset.playerclass = "baltazar";
+    } else {
+      tmpset.playerclass = "human";
+    }
     PlayerSettings->push_back(tmpset);
   }
   while(PlayerSettings->size() > *NumPlayers) {

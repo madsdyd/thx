@@ -244,27 +244,19 @@ void TScrollMenuItem::DoAction() {
   OtherEnd->SetCanScroll();
   if (IsUp) {
     /* We scroll Up - then test if it can be done again */
-    if (Owner->ScrollUp()) {
-#ifdef SOUND_ON
-      sound_play(names_to_nums["data/sounds/menu_deselect.raw"]);      
-#endif
-    }
-    if (!Owner->ScrollUp()) {
+    Owner->ScrollUp(true);
+    if (!Owner->ScrollUp(false)) {
       caption = "--";
     } else {
-      Owner->ScrollDown();
+      Owner->ScrollDown(false);
       caption = "^^";
     }
   } else {
-    if (Owner->ScrollDown()) {
-#ifdef SOUND_ON
-      sound_play(names_to_nums["data/sounds/menu_deselect.raw"]);      
-#endif
-    }
-    if (!Owner->ScrollDown()) {
+    Owner->ScrollDown(true);
+    if (!Owner->ScrollDown(false)) {
       caption = "--";
     } else {
-      Owner->ScrollUp();
+      Owner->ScrollUp(false);
       caption = "vv";
     }
   }

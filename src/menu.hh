@@ -119,8 +119,8 @@ public:
      items */
   void CloseScrollArea(int size, TMenuItem * item);
   /* Move the scroll area, so the visible items goes the opposite direction */  
-  bool ScrollUp(); 
-  bool ScrollDown();
+  bool ScrollUp(bool playsound); 
+  bool ScrollDown(bool playsound);
 
   /* This is to get the current menu - which is a hack */
   TMenu * GetCurrentMenu();

@@ -323,6 +323,20 @@ bool TMenu::CommandConsume(TCommand * Command) {
       }
       return true;
     }
+    /* Scroll stuff */
+    if ("scroll-up" == Command->args) {
+      if (hasscrollarea) {
+	ScrollUp(true);
+      }
+      return true;
+    }
+    if ("scroll-down" == Command->args) {
+      if (hasscrollarea) {
+	ScrollDown(true);
+      }
+      return true;
+    }
+    /* Escape */
     if ("escape" == Command->args) { 
       bool handled = false;
       if (-1 != cancelitem) {
@@ -543,9 +557,15 @@ void TMenu::CloseScrollArea(int size, TMenuItem * item) {
 /* **********************************************************************
  * Scroll up. Decrease scrollpos, if room.
  * *********************************************************************/
-bool TMenu::ScrollUp() {
+bool TMenu::ScrollUp(bool playsound) {
+  Assert(hasscrollarea, "TMenu::ScrollUp - no scrollarea");
   if (scrollpos > (scrollmin + 1)) {
     scrollpos--;
+#ifdef SOUND_ON
+    if (playsound) {
+      sound_play(names_to_nums["data/sounds/menu_deselect.raw"]);      
+    }
+#endif
     return true;
   }
   return false;
@@ -554,9 +574,15 @@ bool TMenu::ScrollUp() {
 /* **********************************************************************
  * Scroll down. Increase scrollpos, if room.
  * *********************************************************************/
-bool TMenu::ScrollDown() {
+bool TMenu::ScrollDown(bool playsound) {
+  Assert(hasscrollarea, "TMenu::ScrollDown - no scrollarea");
   if (scrollpos < (scrollmax - scrollsize)) {
     scrollpos++;
+#ifdef SOUND_ON
+    if (playsound) {
+      sound_play(names_to_nums["data/sounds/menu_deselect.raw"]);      
+    }
+#endif
     return true;
   }
   return false;

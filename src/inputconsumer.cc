@@ -62,6 +62,8 @@ keymap_t key_map_std[] =
   /* MENU */
   {gamemode_menu, {KEY_UP,        keydown}, "focus-change", "up"},
   {gamemode_menu, {KEY_DOWN,      keydown}, "focus-change", "down"},
+  {gamemode_menu, {KEY_PAGEUP,    keydown}, "focus-change", "scroll-up"},
+  {gamemode_menu, {KEY_PAGEDOWN,  keydown}, "focus-change", "scroll-down"},
   {gamemode_menu, {KEY_ESCAPE,    keydown}, "focus-change", "escape"},
   {gamemode_menu, {KEY_ENTER,     keydown}, "menuitem", "select"},
   {gamemode_menu, {' ',           keydown}, "menuitem", "select"},

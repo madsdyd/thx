@@ -2,24 +2,27 @@ Version schedule.
 
 This is an overview of what features go where. This is subject to change.
 
-- Fix the public interface in a lot of classes.
-- Still problems with the starting position of tanks
-- Why do tanks hang in the air? Related to scaling??
-- a lot of files depends on vector.hh!
+** 0.3.2 (Mostly input, but some cosmetic changes as well).
+  - explosions take place below the surface? Or is it only when they hit _exactly_
+    at the corner of a triangle?
+  - explosions above the map, does damage...
+  - Fix that we do not get our viewpoint rotation "stuck"...
+  - Still problem with repeat, when leaving the game through the menu?
 
-** 0.3.2 (Moving on with input)
-  - Probably convert all angle, force, etc. stuff to doubles.
-  - Do some mouse stuff?
-  - joystick - time?
-  - The inputmappings need to be aware of the mode (not?)
+** 0.3.3 (Mouseinput)
   - XGrabPointer?
+  - The mouse input mappings need to be aware of the mode (not?)
+  - Do some menu stuff with the mouse, maybe also animate the menu text?
 
-** 0.3.5 (Command generation)
+** 0.3.5 (Clean up)
   - Clean up dependencies between the different state variables
     especially the menu stuff and TGame stuff.
   - Remove dead code.
+  - Fix the public interface in a lot of classes.
+  - a lot of files depends on vector.hh!
 
 ** 0.4.0 (AI)
+  - Implement wind before going AI.
   - Implement AI entities
   - Connect to event pipelines
 
@@ -72,6 +75,7 @@ This is an overview of what features go where. This is subject to change.
   - Make the menu system smarter, wrt the way it uses variables from the
     gamestate
   - Render nice background image?
+  - Make provisions for setting stuff about the players, like colors, etc.
 
 * Design
   - all references from display to the current map, should go through the 
@@ -81,7 +85,6 @@ This is an overview of what features go where. This is subject to change.
   - make all types of entities capable of damaging eachoter?
   - should the display have the role of the client class, with respect to the
     rendering of menus?
-  - Input handling should be more intelligent then it is now
 
 * Bugs
   - visual bugs sometimes - underside drawn? Related to texturing or culling?
@@ -99,7 +102,7 @@ This is an overview of what features go where. This is subject to change.
   - A vertical projectile sometimes never seem to hit anything!!!!
   - Projectiles hit to low on the landscape!!!
   - The top 4 lines seems to have a wrong color?
-  - The tanks are rather "dusty" - the lighting is probably fucked.
+  - The tanks are rather "dusty" - the lighting is probably fucked
   - There are quite a bit of dead code.
   - TMap::LowerAll does not take into account explosions that take place in the
     air??? Or?
@@ -113,7 +116,6 @@ This is an overview of what features go where. This is subject to change.
   - seperate gamestate from "client" side?
   - help button - at least describe keys.
   - config/variable/alias/console system
-  - keyboard input scale to time
   - team support
   - computer players
   - simultanous mode

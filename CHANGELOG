@@ -1,3 +1,18 @@
+20010407
+  - Encapsulated width, lenght and has_changed in TMap.
+  - Encapsulated the current player in TGame.
+  - Added methods to make an entity affect or not affect the turn in TGame
+  - Made the tanks fall down during update, if not on ground
+  - Made the tanks appear correctly in the z direction
+  - Made the tanks appear correctly in the z direction at start of a round
+  - Rotated the tanks 45 degrees
+  - Made the cannon use doubles, changed adjust to reflect this, 
+    updated the command handler in TPlayer
+  - Fixed the normal recalculation to handle the borders of explosion, and leveling.
+  - Removed a lot of debug messages. Mostly errors left now ;-)
+  - Removed the pos display from display, and a very minor change to angle, etc.
+  - Removed some dead code from tank.cc
+
 20010405
   - Fiddled with the slide code
   - Made the tanks smaller - for larger map feeling...

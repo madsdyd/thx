@@ -55,9 +55,9 @@ keymap_t key_map_std[] =
      be typed into names and so on */
   // TODO: Remove q?
   {gamemode_any,  {'q',           keydown}, "quit", ""},
-  {gamemode_edit, {'q',           keydown}, "keydown", "q"},
+  // {gamemode_edit, {'q',           keydown}, "keydown", "q"},
   {gamemode_any,  {'a',           keydown}, "toggle-pointer-grab", ""},
-  {gamemode_edit, {'a',           keydown}, "keydown", "a"},
+  //{gamemode_edit, {'a',           keydown}, "keydown", "a"},
   
   /* MENU */
   {gamemode_menu, {KEY_UP,        keydown}, "focus-change", "up"},
@@ -284,11 +284,12 @@ int TInputToCommand::Consume() {
 	break;
       }
       /* **********************************************************************
-       * Normal handling
+       * Normal handling - find the command in one of the keyboard maps
        * *********************************************************************/
 
-      /* Find the command in the keyboard map */
-      /* Check the current mode */
+      /* **********************************************************************
+       * Check the current game mode mappings
+       * *********************************************************************/
       TKeyboardCommandMapIterator loc 
 	= KeyboardCommandMap[GameMode.GetMode()].find(KeyEvent->keyboard_inputevent_event);
       if (loc != KeyboardCommandMap[GameMode.GetMode()].end()) {
@@ -300,9 +301,14 @@ int TInputToCommand::Consume() {
 #endif
 	CommandQueue.push(new TCommand(KeyEvent->timestamp,
 				       (*loc).second.cmd, (*loc).second.arg));
-      } else {
-	/* No mapping found for the current mode, check 
-	   for the any mode */
+	break;
+      };
+      
+      /* **********************************************************************
+       * No mappings found for current mode, check the any mode mappings 
+       * but only if not in gamemode_edit. (Yes, this is becomming muddy)
+       * *********************************************************************/
+      if (gamemode_edit != GameMode.GetMode()) {
 	TKeyboardCommandMapIterator loc 
 	  = KeyboardCommandMap[gamemode_any].find(KeyEvent->keyboard_inputevent_event);
 	if (loc != KeyboardCommandMap[gamemode_any].end()) {
@@ -314,44 +320,49 @@ int TInputToCommand::Consume() {
 #endif
 	  CommandQueue.push(new TCommand(KeyEvent->timestamp,
 					 (*loc).second.cmd, (*loc).second.arg));       
-	} else {
-	  /* No mapping found -
-	     Keyboard events for "down" that are not mapped,
-	     with key < 128
-	     generate a command that has the name of the key 
-	     if the key is within a certain range. */
-	  if (keydown 
-	      == KeyEvent->keyboard_inputevent_event.type 
-	      && KeyEvent->keyboard_inputevent_event.key < 128) {
+	  break;
+	};
+      };
+
+      /* **********************************************************************
+       * No mappings found, automap 
+       * Keyboard events for "down" that are not mapped, with key <
+       * 128 generate a command that has the name of the key if the
+       * key is within a certain range. 
+       * *********************************************************************/
+      if (keydown 
+	  == KeyEvent->keyboard_inputevent_event.type 
+	  && KeyEvent->keyboard_inputevent_event.key < 128) {
 #if(INPUT_DEBUG)
-	    cout << "TInputToCommand::Consume, key (down)"
-		 << KeyEvent->keyboard_inputevent_event.key
-		 << " automaps to " << "keydown " 
-		 << KeyEvent->keyboard_inputevent_event.key << endl;
+	cout << "TInputToCommand::Consume, key (down)"
+	     << KeyEvent->keyboard_inputevent_event.key
+	     << " automaps to " << "keydown " 
+	     << KeyEvent->keyboard_inputevent_event.key << endl;
 #endif
-	    /* I do not know how to do this properly... */
-	    char tmp[2];
-	    tmp[0] = KeyEvent->keyboard_inputevent_event.key;
-	    tmp[1] = 0;
-	    CommandQueue.push(new TCommand(KeyEvent->timestamp,
-					   "keydown", tmp));
-	  } 
+	/* I do not know how to do this properly... */
+	char tmp[2];
+	tmp[0] = KeyEvent->keyboard_inputevent_event.key;
+	tmp[1] = 0;
+	CommandQueue.push(new TCommand(KeyEvent->timestamp,
+				       "keydown", tmp));
+	break;
+      } 
+
+      /* **********************************************************************
+       * Lastly, if debug, print that no mapping was found
+       * *********************************************************************/
 #if(INPUT_DEBUG)
-	  else {
-	    cout << "TInputToCommand::Consume, no mapping found for key "
-		 << ((TKeyboardInputEvent *) 
-		     InputEvent)->keyboard_inputevent_event.key;
-	    if (KeyEvent->keyboard_inputevent_event.type == 
-		keydown) {
-	      cout << " down";
-	    } else {
-	      cout << " up";
-	    }
-	    cout << endl;
-	  } /* Implicit mapping */
+      cout << "TInputToCommand::Consume, no mapping found for key "
+	   << ((TKeyboardInputEvent *) 
+	       InputEvent)->keyboard_inputevent_event.key;
+      if (KeyEvent->keyboard_inputevent_event.type == 
+	  keydown) {
+	cout << " down";
+      } else {
+	cout << " up";
+      }
+      cout << endl;
 #endif
-	} /* Any mode mapping */
-      } /* Current mode mapping */
       break;
     } /* Keyboard */
 
@@ -428,17 +439,18 @@ int TInputToCommand::Consume() {
 /* **********************************************************************
  * GeMappingsForCommand 
  * Get a string describing what keys or mouse clicks are mapped to
- * this command.  Only return mapping for gamemode and keydown events.
+ * this command.  Only return mapping for keydown and mousedown events.
  * This is pretty ugly code, but only used from the ControlsMenu
  * *********************************************************************/
-string TInputToCommand::GetMappingsForCommand(string command, string args) {
+string TInputToCommand::GetMappingsForCommand(string command, string args, 
+					      gamemode_t mode) {
   string res = "";
   string pre = "";
   /* KeyboardMappings */
   {
-    TKeyboardCommandMapIterator End = KeyboardCommandMap[gamemode_game].end();
+    TKeyboardCommandMapIterator End = KeyboardCommandMap[mode].end();
     TKeyboardCommandMapIterator i;
-    for (i = KeyboardCommandMap[gamemode_game].begin(); i != End; i++) {
+    for (i = KeyboardCommandMap[mode].begin(); i != End; i++) {
       if ((*i).second.cmd == command && (*i).second.arg == args) {
 	/* Found a match - add to res */
 	res += pre + (*i).first.AsString();
@@ -450,9 +462,9 @@ string TInputToCommand::GetMappingsForCommand(string command, string args) {
   }
   /* MouseMappings */
   {
-    TMouseCommandMapIterator End = MouseCommandMap[gamemode_game].end();
+    TMouseCommandMapIterator End = MouseCommandMap[mode].end();
     TMouseCommandMapIterator i;
-    for (i = MouseCommandMap[gamemode_game].begin(); i != End; i++) {
+    for (i = MouseCommandMap[mode].begin(); i != End; i++) {
       if ((*i).second.cmd == command && (*i).second.arg == args) {
 	/* Found a match - add to res */
 	res += pre + (*i).first.AsString2();
@@ -466,11 +478,15 @@ string TInputToCommand::GetMappingsForCommand(string command, string args) {
      << res << endl; */
   return res;
 }
+
+/* **********************************************************************
+ * ADD mappings
+ * *********************************************************************/
   
 /* **********************************************************************
  * The AddKeyboardMapping method.
  * *********************************************************************/
-bool TInputToCommand::AddKeyboardMapping(gamemode_t mode, 
+void TInputToCommand::AddKeyboardMapping(gamemode_t mode, 
 					 keyboard_inputevent_event_t event,
 					 string cmd, string arg) {
   KeyboardCommandMap[mode][event] = TCmdArg(cmd, arg);
@@ -480,13 +496,12 @@ bool TInputToCommand::AddKeyboardMapping(gamemode_t mode,
     arg[0] = '-';
     KeyboardCommandMap[mode][event] = TCmdArg(cmd, arg);
   }
-  return true;
 }
 
 /* **********************************************************************
  * The AddMouseMapping method.
  * *********************************************************************/
-bool TInputToCommand::AddMouseMapping(gamemode_t mode, 
+void TInputToCommand::AddMouseMapping(gamemode_t mode, 
 				      mouse_inputevent_event_t event,
 				      string cmd, string arg) {
   MouseCommandMap[mode][event] = TCmdArg(cmd, arg);
@@ -496,5 +511,70 @@ bool TInputToCommand::AddMouseMapping(gamemode_t mode,
     arg[0] = '-';
     MouseCommandMap[mode][event] = TCmdArg(cmd, arg);
   }
-  return true;
+}
+
+/* **********************************************************************
+ * REMOVE mappings
+ * *********************************************************************/
+/* **********************************************************************
+ * The RemoveKeyboardMapping method.
+ * *********************************************************************/
+void TInputToCommand::RemoveKeyboardMapping(gamemode_t mode, 
+					    keyboard_inputevent_event_t event) {
+  
+  KeyboardCommandMap[mode].erase(event);
+}
+
+/* **********************************************************************
+ * The RemoveMouseMapping method.
+ * *********************************************************************/
+void TInputToCommand::RemoveMouseMapping(gamemode_t mode, 
+					 mouse_inputevent_event_t event) {
+  MouseCommandMap[mode].erase(event);
+}
+
+/* **********************************************************************
+ * TOGGLE mappings
+ * *********************************************************************/
+
+/* **********************************************************************
+ * The ToggleKeyboardMapping method.
+ * *********************************************************************/
+void TInputToCommand::ToggleKeyboardMapping(gamemode_t mode, 
+					    keyboard_inputevent_event_t event,
+					    string cmd, string arg) {
+  if (KeyboardCommandMap[mode][event].cmd == cmd 
+      && KeyboardCommandMap[mode][event].arg == arg) {
+    /* Already mapped, remove mapping */
+    RemoveKeyboardMapping(mode, event);
+    /* Check if we need to add a - mapping to a + mapping */
+    if (keydown == event.type && arg.size() > 0 && '+' == arg[0]) {
+      event.type = keyup;
+      arg[0] = '-';
+      RemoveKeyboardMapping(mode, event);
+    }
+  } else {
+    AddKeyboardMapping(mode, event, cmd, arg);
+  }
+}
+
+/* **********************************************************************
+ * The ToggleMouseMapping method.
+ * *********************************************************************/
+void TInputToCommand::ToggleMouseMapping(gamemode_t mode, 
+					 mouse_inputevent_event_t event,
+					 string cmd, string arg) {
+  if (MouseCommandMap[mode][event].cmd == cmd 
+      && MouseCommandMap[mode][event].arg == arg) {
+    /* Already mapped, remove mapping */
+    RemoveMouseMapping(mode, event);
+    /* Check if we need to add a - mapping to a + mapping */
+    if (mousedown == event.action && arg.size() > 0 && '+' == arg[0]) {
+      event.action = mouseup;
+      arg[0] = '-';
+      RemoveMouseMapping(mode, event);
+    }
+  } else {
+    AddMouseMapping(mode, event, cmd, arg);
+  }
 }

@@ -34,18 +34,20 @@ TControlsMenu * ControlsMenu = NULL;
 
 /* **********************************************************************
  * A special menuitem for the controls menu
- * This menuitem can bind only to keydown, and only to gamemode_game
+ * This menuitem can bind only to keydown and mousedown events
  * *********************************************************************/
 class TControlsMenuItem : public TValueMenuItem {
 protected:
-  string command;
-  string args;
+  string     command;
+  string     args;
+  gamemode_t mode;
 public:
   TControlsMenuItem(TMenu * owner, string cap, string desc,
-		    string cmd, string arg) 
+		    string cmd, string arg, gamemode_t nmode = gamemode_game) 
     : TValueMenuItem(owner, cap, desc) {
     command = cmd;
     args    = arg;
+    mode    = nmode;
   }
   /* Override render
      Renders the mappings, center about a : */
@@ -55,7 +57,7 @@ public:
     /* Render everything */
     MenuTextRender.CenterLn(xlow, xhigh, 
 			    caption + " : " + 
-			    InputToCommand.GetMappingsForCommand(command, args),
+			    InputToCommand.GetMappingsForCommand(command, args, mode),
 			    ":");
   }
   /* Override {Unr,R}egisterCommands 
@@ -100,7 +102,7 @@ public:
 	/* Figure out if within */
 	if (TestHit(tmpev.x, tmpev.y)) {
 	  /* Accept this - add mapping */
-	  InputToCommand.AddMouseMapping(gamemode_game, tmpev.mouse_inputevent_event,
+	  InputToCommand.ToggleMouseMapping(mode, tmpev.mouse_inputevent_event,
 					 command, args);
 #ifdef SOUND_ON
 	  sound_play(names_to_nums["data/sounds/menu_deselect.raw"]);
@@ -122,7 +124,7 @@ public:
 	tmpargs >> tmpev.key;
 	tmpev.type = keydown;
 	/* Add a mapping between this key, and the command this item has */
-	InputToCommand.AddKeyboardMapping(gamemode_game, tmpev, 
+	InputToCommand.ToggleKeyboardMapping(mode, tmpev, 
 					  command, args);
 #ifdef SOUND_ON
 	sound_play(names_to_nums["data/sounds/menu_deselect.raw"]);
@@ -136,6 +138,7 @@ public:
     return TValueMenuItem::CommandConsume(Command);
   }
 };
+
 /* **********************************************************************
  * The constructor for the controls menu
  * *********************************************************************/
@@ -209,6 +212,11 @@ TControlsMenu::TControlsMenu(string title) : TMenu(title) {
   AddMenuItem(new TControlsMenuItem(this, "Fire", 
 				    "Change what key fires the cannon",
 				    "fire", ""));
+
+  /* System */
+  AddMenuItem(new TControlsMenuItem(this, "Grab mouse", 
+				    "Change what key grabs your mouse",
+				    "toggle-pointer-grab", "", gamemode_any));
 
   CloseScrollArea(10, tmpitem2);
 

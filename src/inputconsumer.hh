@@ -72,13 +72,26 @@ public:
    * Mostly used by the TControlsMenu and related objects.
    * *********************************************************************/
   /* Get the keys or mouse clicks - in a string - that are mapped to the command
-     NOTE: Only "down" events from gamemode_game are returned by this. */
-  string GetMappingsForCommand(string command, string args);
-  /* Add a translation to the commandmap - true == added */
-  bool AddKeyboardMapping(gamemode_t mode, keyboard_inputevent_event_t event,
+     NOTE: Only "down" events (keydown, mousedown) are returned by this. */
+  string GetMappingsForCommand(string command, string args, gamemode_t mode);
+  /* Add a translation to the commandmap 
+     If event is "down" and args start with "+", then an up event is also 
+     added */
+  void AddKeyboardMapping(gamemode_t mode, keyboard_inputevent_event_t event,
 			  string cmd, string arg);
-  bool AddMouseMapping(gamemode_t mode, mouse_inputevent_event_t event,
+  void AddMouseMapping(gamemode_t mode, mouse_inputevent_event_t event,
 		       string cmd, string arg);
+  /* Remove a translation */
+  void RemoveKeyboardMapping(gamemode_t mode, keyboard_inputevent_event_t event);
+  void RemoveMouseMapping(gamemode_t mode, mouse_inputevent_event_t event);
+  /* Toogle a translation - that is, if the key is already mapped to this
+     command, set it to nothing 
+     Toggle uses the same approach as Add - removing a down event, if event is
+     up and args use "+" */
+  void ToggleKeyboardMapping(gamemode_t mode, keyboard_inputevent_event_t event,
+			     string cmd, string arg);
+  void ToggleMouseMapping(gamemode_t mode, mouse_inputevent_event_t event,
+			  string cmd, string arg);
 };
 
 /* The input consumer */

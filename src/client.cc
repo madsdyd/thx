@@ -297,6 +297,7 @@ void GameMenu_StartFunc() {
   int game_numrounds = atoi(GameMenu->numrounds.c_str());
   
   int game_mapsize;
+  float game_mapsteepness;
   /* Find the mapsize. 3 fixed values for now */
   if ("small" == GameMenu->mapsize) {
     game_mapsize = 16;
@@ -307,10 +308,28 @@ void GameMenu_StartFunc() {
       game_mapsize = 64;
     }
   }
+
+  /* Find the map type */
+  if ("flatlands" == GameMenu->maptype) {
+    game_mapsteepness = 0.2;
+  } else {
+    if ("bumby" == GameMenu->maptype) {
+      game_mapsteepness = 0.8;
+    } else {
+      if ("highlands" == GameMenu->maptype) {
+	game_mapsteepness = 1.4;
+      } else {
+	if ("mountains" == GameMenu->maptype) {
+	  game_mapsteepness = 2.0;
+	}
+      }
+    }
+  }
   
+
   /* Setup a game. This is pretty simple at this point. 
      max 4 players allowed */
-  Game = new TGame(game_mapsize, game_mapsize, game_numrounds);
+  Game = new TGame(game_mapsize, game_mapsize, game_numrounds, game_mapsteepness);
 
   TTank * tank;
   TPlayer * player;

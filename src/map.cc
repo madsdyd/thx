@@ -39,15 +39,15 @@ typedef  vector<TVectorVector> TVectorMap;
 
 /* ************************************************************
    Initialize map. Set size, etc */
-TMap::TMap(int w, int l) {
+TMap::TMap(int w, int l, float nmapsteepness) {
   // cout << "TMap::TMap entering" << endl;
   width         = w;
   length        = l;
   max_steepness = map_max_steepness;
   has_changed   = true;
   data          = (TMappoint *) malloc ((w+1)*(l+1)*sizeof(TMappoint));
-  mapsteepness  = 1.0;
-  bumpiness     = 1.0;
+  mapsteepness  = nmapsteepness;
+  bumpiness     = 1.2;
 
   /* Check that width and length is equal */
   if (w != l || !w || !l) {

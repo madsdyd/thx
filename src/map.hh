@@ -45,12 +45,12 @@ private:
   /* The meat of RandomSpots */
   void DoRandomSpots(TVectors * spots, int remaining, int border);
 public:
-  int width, length;   /* The max steepness after a slide */
-  float max_steepness; /* Set to TRUE when init, impact or rendertype changes */
-  bool has_changed;
+  int width, length;   
+  float max_steepness; /* The max steepness after a slide */
+  bool has_changed;    /* Set to TRUE when init, impact or rendertype changes */
   float mapsteepness;  // Scalefactor for landscape generation.
   float bumpiness;     // How bumpy the map should be
-  TMap(int w, int l);
+  TMap(int w, int l, float nmapsteepness);
   ~TMap();
   /* Return a random spot within the map, within border */
   TVector RandomSpot(int border);

@@ -19,7 +19,6 @@ of playable game in version 0.3.0 that could actually be enjoyed.
   - tighten includes
   - memory check code
   - tidy code
-  - fix it so that the map type/style can be modified from the menu
 
 ** 0.3.0 (Beta/Sourceforge)
   - Write some documentation

@@ -51,10 +51,11 @@ float min_deltatime = 0.025; /* 40 Hz */
 
 /* **********************************************************************
    Constructor. Initializes everything, including roundstate, etc. */
-TGame::TGame(int nwidth, int nlenght, int nnum_rounds) {
+TGame::TGame(int nwidth, int nlenght, int nnum_rounds, float nmapsteepness) {
   /* Setup the game state */
   width               = nwidth;
   lenght              = nlenght;
+  mapsteepness       = nmapsteepness;
   gamestate           = gamestate_joining;
   num_players         = 0;
   current_player      = NULL;
@@ -311,7 +312,7 @@ void TGame::SetMap() {
   if (map) { 
     delete map; /* Free old map */
   }
-  map = new TMap(width, lenght);
+  map = new TMap(width, lenght, mapsteepness);
   map->InitRender();
 }
 

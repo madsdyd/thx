@@ -72,6 +72,7 @@ private:
 
   TMap * map;
   int width, lenght;
+  float mapsteepness;
   void SetMap();             /* Creates a new map and stores it in map */
 
   /* The player infos.  */
@@ -108,7 +109,7 @@ private:
 public:
   TPlayer * current_player;  /* Pointer to current player.
 				Accessed from keyboard.c :-/ */
-  TGame(int nwidth, int nlenght, int max_num);
+  TGame(int nwidth, int nlenght, int nnum_rounds, float nmapsteepness);
   ~TGame();
   TMap * GetMap();
   bool AddPlayer(TPlayer * player);

@@ -15,6 +15,7 @@ public:
   string mapsize;
   string numplayers;
   string numrounds;
+  string maptype;
 
   string playernames[4];
 

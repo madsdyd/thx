@@ -37,6 +37,9 @@
 #define NULL 0
 #endif
 
+/* Floating offset */
+#define EPSILON 0.001
+
 /* Time measurement. Under Linux/BSD this will be gettimeofday
    On other systems it should be redefined */
 #if 1

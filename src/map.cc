@@ -136,6 +136,27 @@ TMap::~TMap() {
 
 /* **********************************************************************
  * **********************************************************************
+ * Width, length and invalidate
+ * **********************************************************************
+ * *********************************************************************/
+int TMap::GetWidth() {
+  return width;
+}
+
+int TMap::GetLength() {
+  return length;
+}
+
+/* **********************************************************************
+ * Makes sure that the map will invalidate its internal representation
+ * before it renders next time
+ * *********************************************************************/
+void TMap::Invalidate() {
+  has_changed = true;
+}
+
+/* **********************************************************************
+ * **********************************************************************
  * Map generating stuff
  * **********************************************************************
  * *********************************************************************/
@@ -356,9 +377,12 @@ void TMap::lsNormals(int xlow, int xhigh, int ylow, int yhigh) {
  * *********************************************************************/
 TVector TMap::RandomSpot(int border) {
   TVector tmp;
-  tmp.x      = rint(border + ((double) width-(2*border))*rand()/(RAND_MAX+1.0));
+  /*  tmp.x      = rint(border + ((double) width-(2*border))*rand()/(RAND_MAX+1.0));
   tmp.y      = rint(border + ((double) length-(2*border))*rand()/(RAND_MAX+1.0));
-  tmp.z      = PointAt(tmp.x, tmp.y)->z; 
+  tmp.z      = PointAt(tmp.x, tmp.y)->z; */
+  tmp.x      = border + ((double) width-(2*border))*rand()/(RAND_MAX+1.0);
+  tmp.y      = border + ((double) length-(2*border))*rand()/(RAND_MAX+1.0);
+  tmp.z      = HeightAt(tmp.x, tmp.y); 
   return tmp;
 }
 
@@ -442,11 +466,9 @@ TMappoint * TMap::PointAt(int x, int y) {
 // TODO: Does this work as expected?
 float TMap::HeightAt(float x, float y) {
   /* Convert to relativ within a triangle */
-  // double tmp; 
   float x1 = x-floor(x);
   float y1 = y-floor(y);
   float z, xz, yz;
-  cout << "x1 " << x1 << ", yz " << y1 << endl;
   /* We draw triangles in a certain way, diagonal is where x1+y1 == 1 */
   if (x1+y1 > 1.0) {
     /* Upper right triangle */
@@ -545,7 +567,7 @@ void TMap::LowerAll(TVector * location, float radius) {
     }
   }
 
-  //#define SLIDE_ON
+#define NO_SLIDE_ON
 #ifdef SLIDE_ON
   for(int i = x_min; i <= x_max; i++) {
     for(int j = y_min; j <= y_max; j++) {
@@ -571,7 +593,7 @@ void TMap::Explosion(TExplosion * Explosion) {
   /* Actually take damage */
   LowerAll(&(Explosion->location), Explosion->maxradius);
   /* Map was changed. Displays etc can use this. */
-  has_changed = true;
+  Invalidate();
 }
 
 /* **********************************************************************

@@ -33,15 +33,13 @@
 #include "sound.hh"
 #endif
 
-#define GRAVITY 9.82
-//#define GRAVITY 15
-
 /* **********************************************************************
    Configuration stuff, accessible from the outside */
 bool spawn_markers = false;
 
 /* **********************************************************************
-   Constructors */
+ * Constructors
+ * *********************************************************************/
 TProjectile::TProjectile(TPlayer * owner, float rad, float str) 
   : TEntity(owner) {
   radius   = rad;
@@ -61,13 +59,15 @@ TProjectile::TProjectile(TPlayer * owner, float rad, float str,
 };
 
 /* **********************************************************************
-   CopyThis method */
+ * CopyThis method
+ * *********************************************************************/
 TProjectile * TProjectile::CopyThis() {
   return new TProjectile(owner, radius, strength);
 }
 
 /* **********************************************************************
-   Fire method */
+ * Fire method
+ * *********************************************************************/
 TProjectile * TProjectile::Fire(TVector * loc, TVector * vel) {
   TProjectile * tmp = CopyThis();
   tmp->location = *loc;
@@ -76,7 +76,8 @@ TProjectile * TProjectile::Fire(TVector * loc, TVector * vel) {
 }
 
 /* **********************************************************************
-   OnOrbit - default spawns little explosion */
+ * OnOrbit - default spawns little explosion
+ * *********************************************************************/
 void TProjectile::OnOrbit(TGame * game, system_time_t deltatime) {
   Display->console->AddLine("projectile went into orbit");
   /* Insert small explosion entity */
@@ -90,7 +91,8 @@ void TProjectile::OnOrbit(TGame * game, system_time_t deltatime) {
 }
 
 /* **********************************************************************
-   OnCollision - default spawns explosion */
+ * OnCollision - default spawns explosion
+ * *********************************************************************/
 void TProjectile::OnCollision(TGame * game, system_time_t deltatime, 
 			      TVector loc) {
   // cout << "TProjectile impact detected" << endl;
@@ -102,14 +104,16 @@ void TProjectile::OnCollision(TGame * game, system_time_t deltatime,
 }
 
 /* **********************************************************************
-   OnPosUpdate - called on succesfull update. The position _has_ been 
-   changed, velocity updated */
+ * OnPosUpdate - called on succesfull update. The position _has_ been
+ * changed, velocity updated
+ * *********************************************************************/
 void TProjectile::OnPosUpdate(TGame * game, system_time_t deltatime) {
   /* Do nothing */
 }
 
 /* **********************************************************************
-   Update - explanation goes here */
+ * Update - explanation goes here
+ * *********************************************************************/
 void TProjectile::Update(TGame * game, system_time_t deltatime) {
   TVector new_location = location;
   

@@ -296,14 +296,14 @@ void TDisplay::Render(void) {
   if (viewpoint->translation.y < TRANSOFFSET) {
     viewpoint->translation.y = TRANSOFFSET;
   };
-  if (viewpoint->translation.y > Game->GetMap()->length-TRANSOFFSET) {
-    viewpoint->translation.y = Game->GetMap()->length-TRANSOFFSET;
+  if (viewpoint->translation.y > Game->GetMap()->GetLength()-TRANSOFFSET) {
+    viewpoint->translation.y = Game->GetMap()->GetLength()-TRANSOFFSET;
   }
   if (viewpoint->translation.x < TRANSOFFSET) {
     viewpoint->translation.x = TRANSOFFSET;
   };
-  if (viewpoint->translation.x > Game->GetMap()->width-TRANSOFFSET) {
-    viewpoint->translation.x = Game->GetMap()->width-TRANSOFFSET;
+  if (viewpoint->translation.x > Game->GetMap()->GetWidth()-TRANSOFFSET) {
+    viewpoint->translation.x = Game->GetMap()->GetWidth()-TRANSOFFSET;
   }
   /* Set our z viewpoint to never go below the landscape and
      go 3 above it in non fly mode (unless we are not clipping */
@@ -393,9 +393,9 @@ void TDisplay::Render(void) {
     /* Argh, I can not make alpha blending work? Why not? */
     // glEnable(GL_BLEND);
     // glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); 
-    glColor4f(Game->current_player->tank->color.data[0],
-	      Game->current_player->tank->color.data[1],
-	      Game->current_player->tank->color.data[2],
+    glColor4f(Game->GetCurrentPlayer()->tank->color.data[0],
+	      Game->GetCurrentPlayer()->tank->color.data[1],
+	      Game->GetCurrentPlayer()->tank->color.data[2],
 	      0.90);
     glBegin(GL_QUADS);
     glVertex2i(0,2*textrender->size);
@@ -406,18 +406,18 @@ void TDisplay::Render(void) {
     // glDisable(GL_BLEND); 
 
     /* Foreground colored complementary
-    glColor3f(1.0 - Game->current_player->tank->color.red,
-	      1.0 - Game->current_player->tank->color.green,
-	      1.0 - Game->current_player->tank->color.blue);
+    glColor3f(1.0 - Game->GetCurrentPlayer()->tank->color.red,
+	      1.0 - Game->GetCurrentPlayer()->tank->color.green,
+	      1.0 - Game->GetCurrentPlayer()->tank->color.blue);
     */
     
     /* Print name money and health */
     {
       ostrstream tmp;
-      tmp << Game->current_player->name;
+      tmp << Game->GetCurrentPlayer()->name;
       tmp.form("'s turn. Score:%i Health:%0.1f",
-	       Game->current_player->score,
-	       Game->current_player->tank->health);
+	       Game->GetCurrentPlayer()->score,
+	       Game->GetCurrentPlayer()->tank->health);
       tmp << ends;
       textrender->Pos(0, textrender->size);
       textrender->PrintLn(tmp.str());
@@ -426,10 +426,10 @@ void TDisplay::Render(void) {
       /* Print selected projectile, rotation, angle and force */
       ostrstream tmp;
       tmp.form("Rotation:%i Angle:%i Force:%i Weapon:", 
-	       Game->current_player->tank->cannon.rotation,
-	       Game->current_player->tank->cannon.angle,
-	       Game->current_player->tank->cannon.force);
-      tmp << Game->current_player->inventory->DescribeSelected() 
+	       Game->GetCurrentPlayer()->tank->cannon.rotation,
+	       Game->GetCurrentPlayer()->tank->cannon.angle,
+	       Game->GetCurrentPlayer()->tank->cannon.force);
+      tmp << Game->GetCurrentPlayer()->inventory->DescribeSelected() 
 	  << ends;
       textrender->Print(tmp.str());
     }
@@ -509,17 +509,17 @@ bool TDisplay::CommandConsume(TCommand * Command) {
   else if ("render" == Command->name) {
     if ("lines" == Command->args) {
       render_type = render_type_lines;
-      Game->GetMap()->has_changed = true;
+      Game->GetMap()->Invalidate();
       return true;
     }
     else if ("polygons" == Command->args) {
       render_type = render_type_triangles;
-      Game->GetMap()->has_changed = true;
+      Game->GetMap()->Invalidate();
       return true;
     }
     else if ("textures" == Command->args) {
       render_type = render_type_textures;
-      Game->GetMap()->has_changed = true;
+      Game->GetMap()->Invalidate();
       return true;
     }
     else if ("toggle-lights" == Command->args) {
@@ -529,7 +529,7 @@ bool TDisplay::CommandConsume(TCommand * Command) {
       } else {
 	console->AddLine("Lights OFF");
       }
-      Game->GetMap()->has_changed = true;
+      Game->GetMap()->Invalidate();
       return true;
     }
     else if ("toggle-shademode" == Command->args) {
@@ -539,7 +539,7 @@ bool TDisplay::CommandConsume(TCommand * Command) {
       } else {
 	console->AddLine("Shademode : flat");
       }
-      Game->GetMap()->has_changed = true;
+      Game->GetMap()->Invalidate();
       return true;
     }
     else if ("toggle-normals" == Command->args) {
@@ -549,7 +549,7 @@ bool TDisplay::CommandConsume(TCommand * Command) {
       } else {
 	console->AddLine("Normals OFF");
       }
-      Game->GetMap()->has_changed = true;
+      Game->GetMap()->Invalidate();
       return true;
     }
     else if ("toggle-markers" == Command->args) {
@@ -560,7 +560,7 @@ bool TDisplay::CommandConsume(TCommand * Command) {
 	console->AddLine("Markers OFF");
       }
       return true;
-    // Game->GetMap()->has_changed = true;
+    // Game->GetMap()->Invalidate();
     }
   } /* (render) */
 

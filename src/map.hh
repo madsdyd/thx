@@ -45,6 +45,8 @@ typedef struct {
 
 class TMap {
 private:
+  int width, length;   
+  bool has_changed;    /* Set to TRUE when init, impact or rendertype changes */
   TMappoint * data;
   /* The landscape generating stuff */
   void lsGenerate();
@@ -70,13 +72,16 @@ private:
   //#define mappoint_at(map,x,y) (&(((map)->data[(int) (((x)*((map)->length)+(y)))])))
   TMappoint * PointAt(int x, int y);
 public:
-  int width, length;   
   float max_steepness; /* The max steepness after a slide */
-  bool has_changed;    /* Set to TRUE when init, impact or rendertype changes */
   float mapsteepness;  // Scalefactor for landscape generation.
   float bumpiness;     // How bumpy the map should be
   TMap(int w, int l, float nmapsteepness);
   ~TMap();
+  /* Get the width and length of the map */
+  int GetWidth(); 
+  int GetLength();
+  /* Make the map invalidate its internal representation */
+  void Invalidate();
   /* Return n random spots within the map, with min border dist from border
      and other spots */
   TVectors * RandomSpots(int n, int border);

@@ -46,9 +46,10 @@ class TTank : public TEntity {
 protected:
   float levitation;               /* Used for death animation */
   tankstate_t tankstate;
-public:
   TObject * model;
   TObject * barrel;
+  TVector velocity;               /* Mostly used when faling down */
+public:
   TColor color;
   TVector location;
   cannon_t cannon;
@@ -63,7 +64,7 @@ public:
   void AdjustAngle(int adjust);
   /* Adjust the rotation of the cannon */
   void AdjustRotation(int adjust);
-  /* Update the tank. Not used at the moment */
+  /* Update the tank. */
   virtual void Update(TGame * game, system_time_t deltatime);
   /* Render the tank */
   virtual void Render(TViewpoint * viewpoint);

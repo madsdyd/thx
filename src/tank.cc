@@ -41,7 +41,8 @@
 #include "models.hh"
 
 /* **********************************************************************
-   Initialize a tank */
+ * Initialize a tank
+ * *********************************************************************/
 TTank::TTank(TPlayer * owner) : TEntity(owner) {
   model = new TObject;
   barrel = new TObject;
@@ -52,17 +53,22 @@ TTank::TTank(TPlayer * owner) : TEntity(owner) {
 }
 
 /* **********************************************************************
-   Destruct a tank */
+ * Destruct a tank
+ * *********************************************************************/
 TTank::~TTank() {
   delete model;
 }
 
 /* **********************************************************************
-   Set the location of a tank and prepare it for a new round */
+ * Set the location of a tank and prepare it for a new round
+ * *********************************************************************/
 void TTank::PrepareRound(TVector * loc) {
 
   keep            = true;
   location        = *loc;
+  velocity.x      = 0;
+  velocity.y      = 0;
+  velocity.z      = 0;
   health          = 100.0;
   tankstate       = tankstate_alive;
   levitation      = 0; 
@@ -74,7 +80,8 @@ void TTank::PrepareRound(TVector * loc) {
 }
 
 /* **********************************************************************
-   Adjust the strength of the current tank, within 0-100 */
+ * Adjust the strength of the current tank, within 0-100
+ * *********************************************************************/
 void TTank::AdjustForce(int adjust) {
   cannon.force+=adjust;
   if (cannon.force < 0) {
@@ -86,7 +93,8 @@ void TTank::AdjustForce(int adjust) {
 }
 
 /* **********************************************************************
-   Set the angle of a tank within 0-90 */
+ * Set the angle of a tank within 0-90
+ * *********************************************************************/
 void TTank::AdjustAngle(int adjust) {
   cannon.angle+=adjust;
   if (cannon.angle < 0) {
@@ -98,7 +106,8 @@ void TTank::AdjustAngle(int adjust) {
 }
 
 /* **********************************************************************
-   Set the angle of a tank within 0-360 */
+ * Set the angle of a tank within 0-360
+ * *********************************************************************/
 void TTank::AdjustRotation(int adjust) {
   cannon.rotation+=adjust;
   while (cannon.rotation < 0) {
@@ -110,7 +119,8 @@ void TTank::AdjustRotation(int adjust) {
 }
 
 /* **********************************************************************
-   Handle an explosion */
+ * Handle an explosion
+ * *********************************************************************/
 void TTank::Explosion(TMap * map, TExplosion * Explosion) {
   /* Only matters if the tank is alive */
   if (tankstate_alive != tankstate) {
@@ -143,6 +153,7 @@ void TTank::Explosion(TMap * map, TExplosion * Explosion) {
     // cout << endl;
   }
   
+#ifdef NEVER
   /* Move tank to land level take damage from falling */
   dist = location.z 
     - map->HeightAt(location.x, location.y);
@@ -151,7 +162,7 @@ void TTank::Explosion(TMap * map, TExplosion * Explosion) {
   location.z 
     = map->HeightAt(location.x, location.y);
   // printf("Took %f in damage from faling\n", taken_damage);
-
+#endif
   /* Never go below 0 */
   if (health <= 0) {
     health = 0;
@@ -161,18 +172,59 @@ void TTank::Explosion(TMap * map, TExplosion * Explosion) {
 }
 
 /* **********************************************************************
-   Update 
-   If we are dead, we float for a while, then explode... */
+ * Update 
+ * If we are alive, we may need to fall down
+ * If we are dead, we float for a while, then explode...
+ * *********************************************************************/
 void TTank::Update(TGame * game, system_time_t deltatime) {
-  // cout << "TTank::Update" << endl;
-  /* If health is at 0 then make the tank do a funny little stunt */
+
+  /* If alive, check if we need to fall down 
+     NOTE; This is down _only_ */
+  if (tankstate_alive == tankstate) {
+    /* If we are above the ground, we could be faling. Update position and 
+       possible velocity */
+    if (location.z > game->GetMap()->HeightAt(location.x, location.y) + EPSILON) {
+      cout << "TTank::Update - falling" << endl;
+      cout << "TTank::Update - location.z ; " << location.z 
+	   << ", HeightAt ; " << game->GetMap()->HeightAt(location.x, location.y)
+	   << endl;
+      if (!affect_turn) {
+	game->AddAffectTurn(this);
+      }
+      location.z += velocity.z * deltatime;
+      velocity.z -= GRAVITY * deltatime;
+    }
+    if (velocity.z != 0 && 
+	location.z <= game->GetMap()->HeightAt(location.x, location.y)) {
+      cout << "TTank::Update - damage from fall" << endl;
+      /* We are at or below the map && our velocity in the z direction is
+	 != 0 -- we should take damage - possible die... 
+	 The calculations here are a little uncorrect, but hey, such is life. */
+      // health -= (velocity.z*velocity.z);
+      health += velocity.z;
+      velocity.z = 0;
+      location.z = game->GetMap()->HeightAt(location.x, location.y);
+      // TODO; fix the surroindings to be "flat"
+      /* Never go below 0 */
+      if (health <= 0) {
+	health = 0;
+	tankstate = tankstate_dead;
+      }
+      /* Make sure that we are not used for round, but add a sligth delay */
+      game->RemoveAffectTurn(this);
+      game->AddEntity(new TDelay(owner, 2)); 
+    }
+  }
+
+  /* If death, then make the tank do a funny little stunt */
   if (tankstate_dead == tankstate) {
     /* Start the animation - make sure it does not stop until we
-       have exploded. This is a kludge for now. <-- TODO fix 
-       6 seconds should be enough */
-    game->AddEntity(new TDelay(owner, 6));
+       have exploded. */
     tankstate = tankstate_animdead;
+    game->AddAffectTurn(this);
   }
+
+  /* Make sure we animate the death sequence */
   if (tankstate_animdead == tankstate) {
     if (levitation < 5.0) { /* run for 5 seconds */
       levitation += 1.0*deltatime;
@@ -185,13 +237,15 @@ void TTank::Update(TGame * game, system_time_t deltatime) {
 #endif
 	keep = false;
 	tankstate = tankstate_rip; /* Will stop us from animating */
+	game->RemoveAffectTurn(this);
       }
     }
   }
 }
 
 /* **********************************************************************
-   Render a tank */
+ * Render a tank
+ * *********************************************************************/
 void TTank::Render(TViewpoint * viewpoint) {
   /***********************************************
    ** WARNING

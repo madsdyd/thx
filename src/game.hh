@@ -83,6 +83,8 @@ public:
 typedef std::vector<TPlayerInfo *> TPlayerInfos;
 typedef TPlayerInfos::iterator TPlayerInfosIterator;
 
+#define GRAVITY 9.82
+
 class TMap;
 class TExplosion;
 class TCommand;
@@ -101,6 +103,7 @@ private:
   /* The player infos.  */
   TPlayerInfos playerInfos;
   int num_players;
+  TPlayer * current_player;  /* Pointer to current player. */
 
   /* The entities */
   TEntities entities;
@@ -130,28 +133,46 @@ private:
   void UpdateGameDone(system_time_t updatetime);
 
 public:
-  // TODO: Fix this reference to keyboard.c
-  TPlayer * current_player;  /* Pointer to current player.
-				Accessed from keyboard.c :-/ */
   TGame(int nwidth, int nlenght, int nnum_rounds, float nmapsteepness);
   virtual ~TGame();
   TMap * GetMap();
+
+  /* **********************************************************************
+   * Handling players
+   * *********************************************************************/  
   bool AddPlayer(TPlayer * player);
   /* Return a list of the playerinfos - used for menu manipulation */
   TPlayerInfos * GetPlayerInfos() {
     return &playerInfos;
   }
-  
+  TPlayer * GetCurrentPlayer();
+
+  /* **********************************************************************
+   * Handling entities
+   * *********************************************************************/
   /* Adds an entity to the game. Ownership _is_ taken, unless the entities
      "free" attribute is false */
   void AddEntity(TEntity * Entity);
-  void RenderEntities(TViewpoint * viewpoint);
   /* Will drop all entities, freeing those that have free=true */
   void ClearEntities();
+  /* Render all entities */
+  void RenderEntities(TViewpoint * viewpoint);
+  /* Make this entity affect the turn. The entity _must_ be one of 
+     those managed by the game already */
+  void AddAffectTurn(TEntity * Entity);
+  /* Make this entity not affect the turn. The entity _must_ be one of 
+     those managed by the game already */
+  void RemoveAffectTurn(TEntity * Entity);
 
+  /* **********************************************************************
+   * Doing projectiles and explosions
+   * *********************************************************************/
   bool FireProjectile();
   void Explosion(TExplosion * Explosion);
 
+  /* **********************************************************************
+   * Running the game/rounds/etc
+   * *********************************************************************/
   /* Start a round */
   bool RoundStart();
   /* Abort current round - may end game */

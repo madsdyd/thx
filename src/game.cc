@@ -21,6 +21,7 @@
 */
 #include <stdio.h>
 #include <stdlib.h>
+#include <math.h>
 
 #ifdef SOUND_ON
 #include "sound.hh"
@@ -97,15 +98,15 @@ TGame::~TGame() {
 }
 
 /* **********************************************************************
-   Add a player to the game
-   Various values will be reset for each level */
+ * Add a player to the game
+ * Various values will be reset for each level
+ * *********************************************************************/
 bool TGame::AddPlayer(TPlayer * player) {
   if (gamestate_joining == gamestate) {
     /* Add to players */
     playerInfos.push_back(new TPlayerInfo(player));
     num_players++;
     /* Tanks are added to entities in RoundStart() */
-    // AddEntity(player->tank);
     return true;
   } else {
     cerr << "TGame::AddPlayer called, wrong state " << endl;
@@ -113,6 +114,15 @@ bool TGame::AddPlayer(TPlayer * player) {
   }
 }
 
+/* **********************************************************************
+ * Get a pointer to the current player
+ * *********************************************************************/
+TPlayer * TGame::GetCurrentPlayer() {
+  if (!current_player) {
+    cerr << "TGame::GetCurrentPlayer - current player is NULL!" << endl;
+  }
+  return current_player;
+}
 
 /* **********************************************************************
  * **********************************************************************
@@ -121,9 +131,10 @@ bool TGame::AddPlayer(TPlayer * player) {
  * *********************************************************************/
 
 /* **********************************************************************
-   DoUpdateRoundRunning() - called from UpdateRoundRunning() with rather "homogenous" deltatimes
-   to ensure smooth animation on "slower" systems.
-*/
+ * DoUpdateRoundRunning()
+ * called from UpdateRoundRunning() with rather "homogenous" deltatimes 
+ * to ensure smooth animation on "slower" systems
+ * *********************************************************************/
 void TGame::DoUpdateRoundRunning(system_time_t deltatime) {
   /* Check if we need to change the turn of the players. */
   if (roundstate_no_fire == roundstate) {
@@ -232,7 +243,8 @@ void TGame::Update(system_time_t updatetime) {
  * *********************************************************************/
 
 /* **********************************************************************
-   Add an entity to the game */
+ * Add an entity to the game
+ * *********************************************************************/
 void TGame::AddEntity(TEntity * Entity) {
   // cout << "TGame::AddEntity" << endl;
   entities.push_back(Entity);
@@ -242,18 +254,9 @@ void TGame::AddEntity(TEntity * Entity) {
   }
 }
 
-
 /* **********************************************************************
-   Render each entity in the game from the viewpoint */
-void TGame::RenderEntities(TViewpoint * viewpoint) {
-  TEntitiesIterator End = entities.end();
-  for (TEntitiesIterator i = entities.begin(); i != End; i++) {
-    (*i)->Render(viewpoint);
-  }
-}
-
-/* **********************************************************************
-   Will drop all entities, freeing those that have free=true */
+ * Will drop all entities, freeing those that have free=true
+ * *********************************************************************/
 void TGame::ClearEntities() {
   TEntitiesIterator End = entities.end();
   TEntitiesIterator tmp = NULL;
@@ -266,10 +269,55 @@ void TGame::ClearEntities() {
     }
     entities.erase(tmp);
   }
+  num_stoppers = 0;
 }
 
 /* **********************************************************************
-   Fire a projectile */
+ * Render each entity in the game from the viewpoint
+ * *********************************************************************/
+void TGame::RenderEntities(TViewpoint * viewpoint) {
+  TEntitiesIterator End = entities.end();
+  for (TEntitiesIterator i = entities.begin(); i != End; i++) {
+    (*i)->Render(viewpoint);
+  }
+}
+
+/* **********************************************************************
+ * Make the entity passed as an argument affect the current turn
+ * *********************************************************************/
+void TGame::AddAffectTurn(TEntity * Entity) {
+  // TODO: Look it up in the entities
+  /* Sanity check */
+  if (Entity->affect_turn) {
+    cout << "TGame::AddAffectTurn - entity already counted" << endl;
+    return;
+  }
+  /* Make sure we count it */
+  num_stoppers++;
+  /* Toogling the flag makes sure we catch this entity when removing it */
+  Entity->affect_turn = true;
+}
+
+/* **********************************************************************
+ * Make the entity passed as an argument NOT affect the current turn
+ * *********************************************************************/
+void TGame::RemoveAffectTurn(TEntity * Entity) {
+  // TODO: Look it up in the entities
+  /* Sanity check */
+  if (!Entity->affect_turn) {
+    cout << "TGame::AddAffectTurn - entity not counted" << endl;
+    return;
+  }
+  /* Make sure we count it */
+  num_stoppers--;
+  /* Toogling the flag makes sure we don't catch this entity when
+     removing it */
+  Entity->affect_turn = false;
+}
+
+/* **********************************************************************
+ * Fire a projectile
+ * *********************************************************************/
 bool TGame::FireProjectile() {
   /* The current player can insert a projectile, if we are in 
      roundstate_can_fire, and his num_fired < num_this_round.
@@ -334,7 +382,8 @@ bool TGame::FireProjectile() {
  * *********************************************************************/
 
 /* **********************************************************************
-   Set and get the map */
+ * Set and get the map
+ * *********************************************************************/
 void TGame::SetMap() {
   if (map) { 
     delete map; /* Free old map */
@@ -344,14 +393,16 @@ void TGame::SetMap() {
 }
 
 /* **********************************************************************
-   GetMap - simply return a pointer to the map */
+ * GetMap - simply return a pointer to the map
+ * *********************************************************************/
 TMap * TGame::GetMap() {
   return map;
 }
 
 /* **********************************************************************
-   An explosion 
-   Handles impact on the map, tank damage, etc. */
+ * An explosion 
+ * Handles impact on the map, tank damage, etc.
+ * *********************************************************************/
 void TGame::Explosion(TExplosion * Explosion) {
   int i;
   /* Make impact on the map */
@@ -380,7 +431,6 @@ bool TGame::RoundStart() {
 	  && roundstate_done == roundstate)) {
     /* Clean out the entities */
     ClearEntities();
-    num_stoppers = 0;
 
     /* Get a fresh map */
     if (GL_NO_ERROR != glGetError()) {
@@ -430,7 +480,6 @@ bool TGame::RoundStart() {
 
     /* This turn has number 1 */
     num_this_turn      = 1;
-    num_stoppers       = 0; /* The number of entities that blocks rounds here */
     
     /* Update the states to reflect we are now running */
     gamestate          = gamestate_round_running;
@@ -451,8 +500,9 @@ bool TGame::RoundStart() {
 
 
 /* **********************************************************************
-   Update the active flag on players, according to their health.
-   Returns the number of active players */
+ * Update the active flag on players, according to their health. 
+ * Returns the number of active players
+ * *********************************************************************/
 int TGame::UpdateActivePlayers() {
   int num_active_players = 0;
   TPlayerInfosIterator End = playerInfos.end();
@@ -467,7 +517,8 @@ int TGame::UpdateActivePlayers() {
 }
 
 /* **********************************************************************
-   Aborts the current round, by updating the state */
+ * Aborts the current round, by updating the state
+ * *********************************************************************/
 void TGame::AbortRound() {
   roundstate = roundstate_done;
   current_player->EndTurn();

@@ -78,6 +78,8 @@ system_time_t last_time = 0;
 void Client_Idle() {
   /* Get the current time */
   system_time_t time_now   = system_gettime();
+  /* Make sure the first update uses 0 time */
+  if (0 == last_time) { last_time = time_now; };
   system_time_t delta_time = time_now - last_time;
   last_time                = time_now;
   /* Empty the command chain */
@@ -175,7 +177,7 @@ void Client_Display() {
       
       /* Normal mode */
       Display->NormalMode();
-      Display->viewpoint = &(Game->current_player->viewpoint);
+      Display->viewpoint = &(Game->GetCurrentPlayer()->viewpoint);
       Display->Render();
       
       /* The different menus are only displayed if we have them */
@@ -376,7 +378,7 @@ void GameMenu_StartFunc() {
   Client->has           = CLIENT_HAS_GAME;
 
   /* TODO: The global viewpoint should probably go */
-  Display->viewpoint = &(Game->current_player->viewpoint);
+  Display->viewpoint = &(Game->GetCurrentPlayer()->viewpoint);
 
   /* Actually get us going */
   if (GL_NO_ERROR != glGetError()) {

@@ -36,6 +36,10 @@ My development machine is a PPro 232 Mhz, 128 MB ram, with two V2 3dfx cards.
 I get about 40 fps on medium maps on this machine, which is enough for me,
 but probably will not allow me to implement fancy graphics.
 
+There are several performance enhancement to be implemented in the
+game.  Eventually this should improve the performance and visual
+look of the game.
+
 ----------------------------------------------------------------------
 * COMPILING
 
@@ -47,7 +51,10 @@ You may have to fix some includes and stuff, especially for
 conversions than others. Yes, I know about autoconf, but not about how
 to make it work. I will eventually. :-)
 
-You will get several warnings. Most should be safe to ignore for now.
+You will probably get some warnings. Most should be safe to ignore for
+now. You should be able to compile without problems on RedHat 7.0, 
+Mandrake 7.2 and Mandrake 8.0. If you have problems, please let me
+know.
 
 ----------------------------------------------------------------------
 * RUNNING
@@ -66,34 +73,24 @@ complain at startup, if it can not open /dev/dsp, and you will hear no
 sound.
 
 ----------------------------------------------------------------------
-* GOTCHAS
-
-The program tries to keep the mouse in the window by warping the
-pointer. (Disable this by pressing 'a' at any time, look under
-controls below).
-
-If you get a full screen window, that does not react to your input,
-you may be stuck with the mouse outside the window. This could
-possible happen if another application grabs global focus, and in this
-case you may no longer be able to control thx. (This happens for me,
-when I use my 3dfx card, and my mail box pops a message up. In this
-case, I blind switch to a virtual console, log in, and run "killall
-thx", which solves my problems). This may be fixed with the warping.
-
-----------------------------------------------------------------------
 * CONTROLS DURING GAME
 
 The below describes the default bindings. Please use the Controls menu
-to change (most of) these in the game (save and load, coming
-soon. Please check inputconsumer.cc, if you wish to change the default
-bindings. This will also be necessary if you wish to change the bindings
-for the mouse movement.)
+to change (most of) these in the game. If you wish for THX to store your
+bindings between games, please crate a directory called .thx in your
+home directory, like this
+mkdir $HOME/.thx
+THX will then store your bindings in a file called mappings.cfg. 
 
-When you change the bindings, please note that if you bind e.g. "move
-forward" to "r" and "quit immediate" to "r", "move forward" will have
-precedence. The effect will be, that "r" will not quit while playing
-the game, but will quit if pressed while viewing a menu, result screen
-or similar.
+Please edit inputconsumer.cc (and recompile), if you wish to change
+the default bindings. This will also be necessary if you wish to
+change the bindings for the mouse movement.
+
+If you change the bindings in the game, please note that if you bind
+e.g. "move forward" to "r" and "quit immediate" to "r", "move forward"
+will have precedence. The effect will be, that "r" will not quit while
+playing the game, but will quit if pressed while viewing a menu,
+result screen or similar.
 
 For key bindings please note that 'a' is different from 'A' - and so
 on.
@@ -146,3 +143,22 @@ toggle fly mode   : 8
 toggle clip mode  : 9
 test refresh rate : 0 
 
+----------------------------------------------------------------------
+* GOTCHAS
+
+The program tries to keep the mouse in the window by warping the
+pointer. (Disable this by pressing 'a' at any time, look under
+controls below).
+
+If you get a full screen window, that does not react to your input,
+you may be stuck with the mouse outside the window. This could
+possible happen if another application grabs global focus, and in this
+case you may no longer be able to control thx. (This happens for me,
+when I use my 3dfx card, and my mail box pops a message up. In this
+case, I blind switch to a virtual console, log in, and run "killall
+thx", which solves my problems). This may be fixed with the warping.
+
+----------------------------------------------------------------------
+* Final notes
+
+You read this far? Amazing....

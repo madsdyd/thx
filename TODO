@@ -49,6 +49,7 @@ however, is the final release of the previous series.
   - Renderer
   - model for missiles
   - model for tanks
+  - object::draw uses immediate mode! uses more then 1/3 of my CPU.
 
 ** 0.7.0 (Map)
   - Change format to allow for LOD, culling, etc.

@@ -5,6 +5,8 @@
   - Fixed some problems with scrolling up and down, and focus changes
   - Made round delays be 1 second (using TDelays).
   - Tagging 0.3.4.5
+  - Updated README
+  - Tagging 0.3.5.0 and releasing it
 
 20010428
   - Made TScollMenuItem and made all menus potentially have such a beast.

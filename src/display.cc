@@ -60,7 +60,6 @@ TDisplay::TDisplay(int argc, char** argv) {
   glutInitWindowPosition(0,0);
   glutCreateWindow("Tank Hill eXtreme");
   
-
   /* Testing game mode stuff */
   /*  glutGameModeString("1280x1024");
   // enter full screen
@@ -338,7 +337,7 @@ void TDisplay::Render(void) {
   {
     ostrstream tmp;
     tmp.form("FPS: %4.1f", framerate_get()) << ends;
-    textrender->Pos(525, 2*textrender->size);
+    textrender->Pos(Display->width-115, 2*textrender->size);
     textrender->Print(tmp.str());
   }
   

@@ -112,7 +112,7 @@ void Client_Display() {
       if (Client->has & CLIENT_HAS_BUYMENU) {
 	if (BuyMenu) {
 	  Display->FlatMode();
-	  BuyMenu->Render(0, 640, 0, 480);
+	  BuyMenu->Render(0, Display->width, 0, Display->height);
 	  glutSwapBuffers();
 	} else {
 	  cerr << "Client::Render - client has buymenu that is NULL!" << endl;
@@ -125,7 +125,7 @@ void Client_Display() {
       if (Client->has & CLIENT_HAS_SCORE) {
 	if (ScoreMenu) {
 	  Display->FlatMode();
-	  ScoreMenu->Render(0, 640, 0, 480);
+	  ScoreMenu->Render(0, Display->width, 0, Display->height);
 	  glutSwapBuffers();
 	} else {
 	  cerr << "Client::Render - client has scoremenu that is NULL!" << endl;
@@ -158,7 +158,7 @@ void Client_Display() {
       /* The in game menu is only displayed if we are .. in the game */
       if (Client->has & CLIENT_HAS_GAME && 
 	  Client->has & CLIENT_HAS_INGAMEMENU) {
-	InGameMenu->Render(0, 640, 100, 380);
+	InGameMenu->Render(0, Display->width, 0, Display->height);
       }
       /* Swap the buffers to show what we've just drawn */
       glutSwapBuffers();
@@ -175,7 +175,7 @@ void Client_Display() {
     /*Clear screen and set appropriate options */
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     Display->FlatMode();
-    GameMenu->Render(0, 640, 0, 480);
+    GameMenu->Render(0, Display->width, 0, Display->height);
     
     /* Swap the buffers to show what we've just drawn */
     // cout << "Swapping buffers" << endl;
@@ -640,6 +640,15 @@ TClient::~TClient() {
 }
 
 /* **********************************************************************
+   Reshape the display 
+ * *********************************************************************/ 
+void Client_Reshape(int w, int h) {
+  Display->width=w;
+  Display->height=h;
+  glViewport(0, 0, (GLsizei) w, (GLsizei) h);
+}
+
+/* **********************************************************************
    Run - Setup the GLUT s
  * *********************************************************************/
 void TClient::Run() {
@@ -648,7 +657,12 @@ void TClient::Run() {
   glutKeyboardFunc(Client_Keyboard);
   glutSpecialFunc(Client_Special);
   glutIdleFunc(Client_Idle);
+  glutReshapeFunc(Client_Reshape);
   
-    /* Start GLUT mainloop */
+  /* Request fullscreen */
+  // If fullscreen is enabled, my 3dfx breaks.
+  // glutFullScreen();
+  
+  /* Start GLUT mainloop */
   glutMainLoop();
 }

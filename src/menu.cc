@@ -71,7 +71,7 @@ void TMenu::Render(int xlow, int xhigh, int ylow, int yhigh) {
        at the bottom of the screen in yellow */
     MenuTextRender.color = ColorDefinitions.Colors["yellow"];
     MenuTextRender.size = 14;
-    MenuTextRender.PosY(ylow+2*MenuTextRender.size);
+    MenuTextRender.PosY(ylow+4*MenuTextRender.size);
     MenuTextRender.Center(xlow, xhigh, menuitems[focuseditem]->GetDescription());
     
     /* Render the menu items */

@@ -1,3 +1,6 @@
+20010412 
+  - Tagging version 0.3.3.3
+
 20010411
   - Changed the Makefile to drop -g - makes final linking faster
   - Added a "centermode" to the inputmouse - made gamemode change to/from it.

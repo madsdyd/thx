@@ -1,3 +1,11 @@
+20010428
+  - Made TScollMenuItem and made all menus potentially have such a beast.
+  - Made the Control menu use the scroll stuff.
+  - Implemented support for clearing a mapping
+  - Added remaining control selections to menu_controls (I hope).
+  - Updated README to reflect the controls thingy.
+  - Tagging 0.3.4.3
+
 20010423
   - Finally figured out why we had a segfault. I hate implicit type conversion in 
     C++.

@@ -2,22 +2,32 @@ Version schedule.
 
 This is an overview of what features go where. This is subject to change.
 
-- Fix it, so that we can have many menu items on a screen
-- Loosen up on registering and unregistering commands - should not keep 
-  a command, if failing to release another. (Maybe registering and release should
-  always work?)
-
-- Make a radar
-- Make a ceiling?
-
 
 ** 0.3.5 (Input customization)
   - Make a controls menu, that allow for in game configuration of keys and 	
     mouse actions. (ALMOST DONE)
-  - make global variables to adjust the axis on the mouse
   - Save and load bindings.
+  - Loosen up on registering and unregistering commands - should not keep 
+    a command, if failing to release another. (Maybe registering and release should
+    always work?)
 
-** 0.3.7 (Clean up)
+** 0.4.0 (AI)
+  - Console
+  - Team support
+  - Make a ceiling?
+  - Implement wind before going AI.
+  - Implement AI entities
+  - Connect to event pipelines
+
+** 0.4.8 (Postponed menu and controls stuff)
+  - mouse Click on multiselect should change value
+  - mouse bindings to axis
+  - Variable number of players will require menu to be able to handle
+    adding players (or, maybe show/hide on individual entries?)
+  - make global variables to adjust the axis on the mouse
+  - make listitems use templates, and make them more clever
+
+** 0.4.9 (Postponed clean up)
   - Clean up dependencies between the different state variables
     especially the menu stuff and TGame stuff.
   - Remove dead code.
@@ -25,10 +35,6 @@ This is an overview of what features go where. This is subject to change.
   - a lot of files depends on vector.hh!
   - make copy constructors explicit.
 
-** 0.4.0 (AI)
-  - Implement wind before going AI.
-  - Implement AI entities
-  - Connect to event pipelines
 
 ** 0.5.0 (Ressource management)
   - make flexible path support
@@ -83,6 +89,7 @@ This is an overview of what features go where. This is subject to change.
   - configuration files
 
 ** 0.9.0 (Sound)
+  - lots of sound names are wrong and confusing
   - use OpenAL for sound
   - how to get sound into the design at present
   - missile fligth sound
@@ -92,6 +99,7 @@ This is an overview of what features go where. This is subject to change.
   - better sounds! (Really needed)
 
 ** 0.9.5 (Graphics)
+  - Make a radar display
   - find better textures
   - blend textures when height changes. What does tuxracer do?
   - better heigth related texturing

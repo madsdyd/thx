@@ -30,10 +30,11 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 This program has only been tested under Linux. You need support for OpenGL
 (Mesa3D) and probably some sort of hardware support to run this program.
 Also, a sound card for effects (and a screen of some sort for display, and
-so on ;-)
+so on ;-). You need GLUT version 3.7 installed.
 
 My development machine is a PPro 232 Mhz, 128 MB ram, with two V2 3dfx cards.
-I get about 40 fps on medium maps on this machine, which is good enough.
+I get about 40 fps on medium maps on this machine, which is enough for me,
+but probably will not allow me to implement fancy graphics.
 
 ----------------------------------------------------------------------
 * COMPILING
@@ -82,11 +83,22 @@ thx", which solves my problems). This may be fixed with the warping.
 ----------------------------------------------------------------------
 * CONTROLS DURING GAME
 
-(Please check inputconsumer.cc, if you wish to change the default
-bindings.)
+The below describes the default bindings. Please use the Controls menu
+to change (most of) these in the game (save and load, coming
+soon. Please check inputconsumer.cc, if you wish to change the default
+bindings. This will also be necessary if you wish to change the bindings
+for the mouse movement.)
+
+When you change the bindings, please note that if you bind e.g. "move
+forward" to "r" and "quit immediate" to "r", "move forward" will have
+precedence. The effect will be, that "r" will not quit while playing
+the game, but will quit if pressed while viewing a menu, result screen
+or similar.
 
 For key bindings please note that 'a' is different from 'A' - and so
 on.
+
+Default keys:
 
 * Menus 
 use the usual keys or the mouse to navigate the menus. Use the arrow
@@ -124,7 +136,7 @@ fire              : space or enter
 
 * Controlling various options
 render lines      : 1
-render polys      : 2
+render polygons   : 2
 render textures   : 3
 toggle lights     : 4
 toggle shade mode : 5

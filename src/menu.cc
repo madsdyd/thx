@@ -112,7 +112,6 @@ bool TMenu::KeyboardHandler(unsigned char key) {
 	    focuseditem = ( focuseditem - 1 + menuitems.size() ) % menuitems.size();
 	  } while(!menuitems[focuseditem]->Focus());
 #ifdef SOUND_ON
-#warning "LAME SOUND CODE ON"
 	  sound_play(names_to_nums["data/sounds/menu_move.raw"]);
 #endif
 	}
@@ -124,7 +123,6 @@ bool TMenu::KeyboardHandler(unsigned char key) {
 	    focuseditem = (focuseditem + 1) % menuitems.size();
 	  } while(!menuitems[focuseditem]->Focus());
 #ifdef SOUND_ON
-#warning "LAME SOUND CODE ON"
 	  sound_play(names_to_nums["data/sounds/menu_move.raw"]);
 #endif
 	}

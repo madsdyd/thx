@@ -150,7 +150,6 @@ void TTank::Update(TGame * game, system_time_t deltatime) {
       if (levitation >= 5.0) {
 	game->AddEntity(new TExplosion(owner, location, 3.0, 3.0, 25));
 #ifdef SOUND_ON
-#warning "LAME SOUND CODE ON"
 	sound_play(names_to_nums["data/sounds/explosion2.raw"]);
 #endif
 	keep = false;
@@ -198,7 +197,4 @@ void TTank::Render(TViewpoint * viewpoint) {
   glDisable(GL_LIGHTING);
   model.draw();
   glPopMatrix();
-
-  /* MADS TODO : Fix so that it is globally known */
-  glDisable(GL_LIGHTING);
 }

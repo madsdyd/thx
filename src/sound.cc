@@ -53,7 +53,7 @@ struct SoundInfo {
 //struct SoundInfo LoadedSounds[SFX_NUM_SFX];
 struct SoundInfo * LoadedSounds;
 /** The number of sounds we will allocate */
-int NumSoundsAllocated;
+unsigned int NumSoundsAllocated;
 
 /** Sound of/on - defaults to off, until initialized */
 int SoundOn = 0;
@@ -121,8 +121,8 @@ struct sound_elem * soundlist;
 
 /** Initialize the hardware, initialize memory structures,
     start a thread, setup a mutex, etc. */
-int sound_init(char * dev, int num_fxs) {
-  int i;
+int sound_init(char * dev, unsigned int num_fxs) {
+  unsigned int i;
 
   /** Check if already initialized */
   if (1 == SoundInitOK) {
@@ -455,7 +455,7 @@ int sound_on() {
 /** ********************************************************************** */
 /** Kill the thread, release the hardware */
 void sound_shutdown() {
-  int i;
+  unsigned int i;
   /** Shutdown the soundthread */
   if (1 == SoundInitOK) {
     if (0 != pthread_cancel(SoundThread)) {

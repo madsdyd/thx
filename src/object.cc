@@ -280,7 +280,7 @@ void TObject::setColor(float *col) {
 
 bool TObject::CollisionDetect(TVector * old_location, TVector * new_location) {
 
-  int i,j;
+  int i;
   vector<float> times;
   float t;
   TVector P0, P1, P2;

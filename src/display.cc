@@ -64,7 +64,7 @@ TDisplay::TDisplay(int argc, char** argv) {
   GLfloat mat_shininess[] = { 10.0 };
 
   GLfloat light_position[] = { 16.0, 16.0, 10.0, 1.0 };
-  GLfloat light1_position[] = { 0.0, 56.0, 16.0, 0.0 };
+  //  GLfloat light1_position[] = { 0.0, 56.0, 16.0, 0.0 };
 
   //  GLfloat black_light[] = { 0.0, 0.0, 0.0, 1.0 };
   GLfloat white_light[] = { 1.0, 1.0, 1.0, 1.0 };

@@ -57,7 +57,7 @@ struct SoundRequest {
 
 /** Initialize the sound module. If 0 is returned, the call is succesfull, if
     anything !=0 is returned, the sound module could not be initialized. */ 
-int sound_init(char* dev, int num_fxs);
+int sound_init(char* dev, unsigned int num_fxs);
 
 /** Will load a sound into the array at place "num" 
     returns 0 OK, !=0 else */

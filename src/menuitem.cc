@@ -62,7 +62,6 @@ bool TSubMenuItem::KeyboardHandler(unsigned char key) {
     // cout << "TSubMenuItem wants to show child " << endl;
     if (SubMenu) {
 #ifdef SOUND_ON
-#warning "LAME SOUND CODE ON"
       sound_play(names_to_nums["data/sounds/menu_forward_menu.raw"]);
 #endif
       Owner->ShowChild(SubMenu);
@@ -117,7 +116,6 @@ bool TReturnMenuItem::KeyboardHandler(unsigned char key) {
   if (key == 10 || key == 13 || key == 32) {
     // cout << "TReturnMenuItem wants to return " << endl;
 #ifdef SOUND_ON
-#warning "LAME SOUND CODE ON"
       sound_play(names_to_nums["data/sounds/menu_back_menu.raw"]);
 #endif
     Owner->ShowParent();
@@ -144,7 +142,6 @@ bool TActionMenuItem::KeyboardHandler(unsigned char key) {
   if (key == 10 || key == 13 || key == 32) {
     if (function) {
 #ifdef SOUND_ON
-#warning "LAME SOUND CODE ON"
       sound_play(names_to_nums["data/sounds/menu_select.raw"]);
 #endif
       function();
@@ -177,7 +174,6 @@ bool TValueMenuItem::KeyboardHandler(unsigned char key) {
       && (key == 13 || key == 10 || key == ' ')) {
     // cout << "  TValueMenuItem going into edit state" << endl;
 #ifdef SOUND_ON
-#warning "LAME SOUND CODE ON"
       sound_play(names_to_nums["data/sounds/menu_select.raw"]);
 #endif
     EnterEditState();
@@ -191,7 +187,6 @@ bool TValueMenuItem::KeyboardHandler(unsigned char key) {
     case 13:   /* Ctrl+M */
     case 10: { /* Ctrl+J */
 #ifdef SOUND_ON
-#warning "LAME SOUND CODE ON"
       sound_play(names_to_nums["data/sounds/menu_deselect.raw"]);
 #endif
       AcceptNewValue();
@@ -200,7 +195,6 @@ bool TValueMenuItem::KeyboardHandler(unsigned char key) {
     case 3:  /* Ctrl+C */
     case 27: { /* Esc */
 #ifdef SOUND_ON
-#warning "LAME SOUND CODE ON"
       sound_play(names_to_nums["data/sounds/menu_deselect.raw"]);
 #endif
       DiscardNewValue();
@@ -244,7 +238,6 @@ bool TListMenuItem::KeyboardHandler(unsigned char key) {
 	selected_value = (selected_value - 1 + values.size()) % values.size();
 	*storage = values[selected_value];
 #ifdef SOUND_ON
-#warning "LAME SOUND CODE ON"
   sound_play(names_to_nums["data/sounds/menu_move.raw"]);
 #endif    
 	return true;
@@ -253,7 +246,6 @@ bool TListMenuItem::KeyboardHandler(unsigned char key) {
 	selected_value = (selected_value + 1) % values.size();
 	*storage = values[selected_value];
 #ifdef SOUND_ON
-#warning "LAME SOUND CODE ON"
   sound_play(names_to_nums["data/sounds/menu_move.raw"]);
 #endif    
 	return true;

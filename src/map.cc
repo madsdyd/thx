@@ -504,24 +504,20 @@ bool TMap::CollisionDetect(TVector * old_location, TVector * new_location) {
   TVector P0, P1, P2;
 
   /* Find outher bounds of old and new locations */
-#warning "********************************************"
-#warning "MADS DO SOMETHING IN map.cc LINES 512 TO 524"
-#warning "********************************************"
-  // Should we use (int) to convert double to int ????
   if ( old_location->x < new_location->x ) {
-    xmin = floor(old_location->x);
-    xmax = floor(new_location->x) + 1;
+    xmin = (int) floor(old_location->x);
+    xmax = (int) floor(new_location->x) + 1;
   } else {
-    xmin = floor(new_location->x);
-    xmax = floor(old_location->x) + 1;
+    xmin = (int) floor(new_location->x);
+    xmax = (int) floor(old_location->x) + 1;
   }
 
   if ( old_location->y < new_location->y ) {
-    ymin = floor(old_location->y);
-    ymax = floor(new_location->y) + 1;
+    ymin = (int) floor(old_location->y);
+    ymax = (int) floor(new_location->y) + 1;
   } else {
-    ymin = floor(new_location->y);
-    ymax = floor(old_location->y) + 1;
+    ymin = (int) floor(new_location->y);
+    ymax = (int) floor(old_location->y) + 1;
   }
 
   /* Check all triangles between (xmin,ymin) and (xmax,ymax) */

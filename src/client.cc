@@ -607,7 +607,6 @@ TClient::~TClient() {
   /* Free the displays */
   delete Display; Display = NULL;
 #ifdef SOUND_ON
-#warning "LAME SOUND CODE ON"
   /* Shutdown the sound */
   sound_shutdown();
 #endif

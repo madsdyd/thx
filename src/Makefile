@@ -1,8 +1,8 @@
 # Define where to get our sounds
 SOUNDDIR=
 CC=g++
-LFLAGS=-lm -lglut -lGLU -lGL -pthread
-CFLAGS=-Wall -DREENTRANT -D_REENTRANT -g -DSOUND_ON # -pg -pedantic 
+LFLAGS=-lm -lglut -lGLU -lGL -lpthread
+CFLAGS=-Wall -D_REENTRANT -g -DSOUND_ON # -pg -pedantic 
 # -DSOUNDDIR=$(SOUNDDIR)
 
 SOURCES=console.cc \

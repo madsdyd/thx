@@ -9,7 +9,7 @@
  *************************/
 
 void lupSolver(float *A,float *b,float *x,int n) {
-  int i,j,k,kp,l,ktemp;
+  int i,j,k,kp,ktemp;
   int pi[n];
   float p;
   float y[n];

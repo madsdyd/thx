@@ -71,7 +71,6 @@ void TProjectile::OnCollision(TGame * game, system_time_t deltatime,
   // cout << "TProjectile impact detected" << endl;
   game->AddEntity(new TExplosion(owner, loc, radius, 6.0, strength));
 #ifdef SOUND_ON
-#warning "LAME SOUND CODE ON"
   sound_play(names_to_nums["data/sounds/explosion.raw"]);
 #endif
   keep = false;
@@ -171,7 +170,6 @@ void TSpawnProjectile::OnCollision(TGame * game, system_time_t deltatime,
   /* Add a minor explosion */
   game->AddEntity(new TExplosion(owner, loc, radius/4.0, 6.0, strength/4.0));
 #ifdef SOUND_ON
-#warning "LAME SOUND CODE ON"
   sound_play(names_to_nums["data/sounds/explosion.raw"]);
 #endif
 
@@ -209,7 +207,6 @@ void TMirvProjectile::OnPosUpdate(TGame * game, system_time_t deltatime) {
     game->AddEntity(new TExplosion(owner, location, 
 				   radius/4.0, 6.0, strength/4.0)); 
 #ifdef SOUND_ON
-#warning "LAME SOUND CODE ON"
   sound_play(names_to_nums["data/sounds/explosion.raw"]);
 #endif    
     keep = false;

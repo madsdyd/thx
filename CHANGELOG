@@ -1,3 +1,8 @@
+20000725
+  - Fixed a missing include from markers.cc that made markers disappear
+  - Removed the LAME SOUND warnings
+  - Fixed conversion warnings
+
 20000724
   - Cleaned up a bit
 

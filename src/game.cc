@@ -285,8 +285,7 @@ bool TGame::FireProjectile() {
   
   /* Insert projectile into the entities */
 #ifdef SOUND_ON
-#warning "LAME SOUND CODE ON"
-      sound_play(names_to_nums["data/sounds/fire.raw"]);
+  sound_play(names_to_nums["data/sounds/fire.raw"]);
 #endif
   AddEntity(current_player->inventory->FireSelected(&location, &velocity));
 

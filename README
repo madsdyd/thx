@@ -1,5 +1,5 @@
 This is the README for "Tank Hill eXtreme".
-Project is at http://www.sourceforge.net/projects/thx/
+Project is at http://www.sf.net/projects/thx/
 ----------------------------------------------------------------------
 * LICENSE
 
@@ -45,6 +45,9 @@ look of the game.
 
 To compile:
 $cd src && make && cd ..
+
+NB: The compile can take a looong time. You may even think something is
+wrong and the compiler has hung. But, eventually it will finish.
 
 You may have to fix some includes and stuff, especially for
 <GL/*>. Some compilers seems to be more strict about implicit type
@@ -148,7 +151,9 @@ test refresh rate : 0
 
 The program tries to keep the mouse in the window by warping the
 pointer. (Disable this by pressing 'a' at any time, look under
-controls below).
+controls below). It seems that for very fast computers the mouse
+warp may break in large windows. I have no idea why, but if you do, 
+please let me know.
 
 If you get a full screen window, that does not react to your input,
 you may be stuck with the mouse outside the window. This could

@@ -49,7 +49,7 @@ thx:	../thx
 # Automatic dependencies
 
 %.d:	%.cc
-	@$(SHELL) -ec '$(CC) -MM $(CPPFLAGS) $< \
+	@$(SHELL) -ec '$(CC) -MM $(CFLAGS) $< \
         | sed '\''s/\($*\)\.o[ :]*/\1.o $@ : /g'\'' > $@; \
           [ -s $@ ] || rm -f $@'
 

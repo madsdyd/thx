@@ -2,13 +2,6 @@ Version schedule.
 
 This is an overview of what features go where. This is subject to change.
 
-** 0.3.2 (Mostly input, but some cosmetic changes as well).
-  - explosions take place below the surface? Or is it only when they hit _exactly_
-    at the corner of a triangle?
-  - explosions above the map, does damage...
-  - Fix that we do not get our viewpoint rotation "stuck"...
-  - Still problem with repeat, when leaving the game through the menu?
-
 ** 0.3.3 (Mouseinput)
   - XGrabPointer?
   - The mouse input mappings need to be aware of the mode (not?)
@@ -101,6 +94,8 @@ This is an overview of what features go where. This is subject to change.
     way it is used, that is).
   - A vertical projectile sometimes never seem to hit anything!!!!
   - Projectiles hit to low on the landscape!!!
+  - explosions take place below the surface? Or is it only when they hit _exactly_
+    at the corner of a triangle?
   - The top 4 lines seems to have a wrong color?
   - The tanks are rather "dusty" - the lighting is probably fucked
   - There are quite a bit of dead code.
@@ -126,7 +121,7 @@ This is an overview of what features go where. This is subject to change.
 * Map and Physics
   - better/correct colision detection with ground - almost a bug right now.
   - make nice map slide stuff/max steepness.
-  - better colision detection with tanks
+  - better colision detection with tanks and map in general
   - projectiles should be checked against tanks as well as the ground
   - separate physics engine from code? How?
   - use bounding boxes for collision detection with tanks?

@@ -1,3 +1,9 @@
+20010408
+  - Added debug file
+  - Added more -W options to the compile
+  - Fixed the code, so that explosions _above_ the map does not do damage
+  - Releasing version 0.3.2
+
 20010407
   - Encapsulated width, lenght and has_changed in TMap.
   - Encapsulated the current player in TGame.

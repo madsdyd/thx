@@ -46,7 +46,7 @@ class  mouse_inputevent_event_t {
 public:
   mousebutton_action_t action;
   mousebutton_button_t button;
-  string AsString2() const; /* Return the current button going down as a string */
+  string AsString() const; /* Return the current button going down as a string */
 };
 
 /* Use this for comparing */

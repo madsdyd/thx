@@ -36,7 +36,7 @@ static bool centermode = false;
 /* **********************************************************************
  * Return a string description of the mouse event - actually button.
  * *********************************************************************/
-string mouse_inputevent_event_t::AsString2() const {
+string mouse_inputevent_event_t::AsString() const {
   Assert(button != mouse_none,
 	  "Can't return string description of no button pressed");
   switch (button) {
@@ -217,7 +217,7 @@ void MotionFunc(int x, int y) {
 void EntryFunc(int state) {
   /* If the mouse left us, quickly return it to the last known state. */
   if (Display->GrabbingPointer() && GLUT_LEFT == state) {
-    glutWarpPointer(oldx, oldy);
+    glutWarpPointer(oldx, Display->GetHeight() - oldy);
   }
 }
 

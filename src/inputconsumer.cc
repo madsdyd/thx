@@ -469,7 +469,7 @@ string TInputToCommand::GetMappingsForCommand(string command, string args,
     for (i = MouseCommandMap[mode].begin(); i != End; i++) {
       if ((*i).second.cmd == command && (*i).second.arg == args) {
 	/* Found a match - add to res */
-	res += pre + (*i).first.AsString2();
+	res += pre + (*i).first.AsString();
 	if ("" == pre) {
 	  pre = ", ";
 	}

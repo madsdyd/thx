@@ -3,6 +3,7 @@
   - Added more -W options to the compile
   - Fixed the code, so that explosions _above_ the map does not do damage
   - Releasing version 0.3.2
+  - Added inputmouse file - does not really do anything yet.
 
 20010407
   - Encapsulated width, lenght and has_changed in TMap.

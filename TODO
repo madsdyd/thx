@@ -93,7 +93,6 @@ This is an overview of what features go where. This is subject to change.
   - checkout if the ostrstream.str operator has memory leaking problems (the
     way it is used, that is).
   - A vertical projectile sometimes never seem to hit anything!!!!
-  - Projectiles hit to low on the landscape!!!
   - explosions take place below the surface? Or is it only when they hit _exactly_
     at the corner of a triangle?
   - The top 4 lines seems to have a wrong color?
@@ -101,6 +100,7 @@ This is an overview of what features go where. This is subject to change.
   - There are quite a bit of dead code.
   - TMap::LowerAll does not take into account explosions that take place in the
     air??? Or?
+  - Can we get stuck without beeing able to change turns?
 
 * Research
   - 3d collision detection
@@ -119,10 +119,10 @@ This is an overview of what features go where. This is subject to change.
   - support for moving the tank around
 
 * Map and Physics
-  - better/correct colision detection with ground - almost a bug right now.
-  - make nice map slide stuff/max steepness.
-  - better colision detection with tanks and map in general
-  - projectiles should be checked against tanks as well as the ground
+  - make nice map slide stuff/max steepness, wear out when distance to "changereason" 
+    increases
+  - better colision detection with tanks - projectiles should be checked against 
+    tanks as well as the ground
   - separate physics engine from code? How?
   - use bounding boxes for collision detection with tanks?
   - support more map sizes

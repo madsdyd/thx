@@ -557,7 +557,7 @@ void TMap::LowerAll(TVector * location, float radius) {
   int x_max = (int) floor(mymin(width-1, location->x+radius+1));
   int y_min  = (int) floor(mymax(0, location->y-radius));
   /* Higher goes a little longer */
-  int y_max = (int) floor(mymin(width-1, location->y+radius+1));
+  int y_max = (int) floor(mymin(length-1, location->y+radius+1));
   for(int i = x_min; i <= x_max; i++) {
     for(int j = y_min; j <= y_max; j++) {
       // cout << "Lowering " << i << ", " << j << endl;
@@ -576,7 +576,8 @@ void TMap::LowerAll(TVector * location, float radius) {
   /* Recalc point/lighting normals */
   lsNormals(0, width, 0, length);
 #else
-  lsNormals(x_min, x_max, y_min, y_max);
+  lsNormals(mymax(0, x_min-1), mymin(width-1, x_max+1), 
+	    mymax(0, y_min-1), mymin(length-1, y_max+1));
 #endif
 }
 
@@ -608,8 +609,9 @@ void TMap::LevelArea(TVector * location) {
   PointAt(xlow+1, ylow  )->z = location->z;
   PointAt(xlow+1, ylow+1)->z = location->z;
   PointAt(xlow,   ylow+1)->z = location->z;
-  /* Recalculate normals */
-  lsNormals(xlow, xlow+1, ylow, ylow+1);
+  /* Recalculate normals, the borders are safe, because the points
+     where generated with RandomSpot*/
+  lsNormals(xlow-1, xlow+2, ylow-1, ylow+2);
   /* Map was changed. Displays etc can use this. */
   Invalidate();
 }

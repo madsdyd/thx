@@ -79,8 +79,8 @@ TDisplay::TDisplay(int argc, char** argv) {
   textrender = new TTextRender;
 
   /* Default values */
-  width       = 320;
-  height      = 240;
+  width       = 640;
+  height      = 480;
   flymode     = true; 
   clipmode    = false;
   grabpointer = true;
@@ -90,10 +90,21 @@ TDisplay::TDisplay(int argc, char** argv) {
   viewpoint   = NULL;
   console     = new TConsole(1000); /* 1000 lines is stored */
 
+  /* Seek for a geometry argument, use default if not present */
+  bool geometry_arg = false;
+  for (int i = 0; i < argc; i++) {
+    if (0 == strncmp("-geometry", argv[i], 9)) {
+      geometry_arg = true;
+    }
+  }
   /* Let glut initialize a display and window */
   glutInit(&argc, argv);
   glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH);
-  glutInitWindowSize(width, height);
+  /* Set a default size, if not present */
+  if (!geometry_arg) {
+    glutInitWindowSize(width, height);
+  }
+
   glutInitWindowPosition(0, 0);
   glutCreateWindow("Tank Hill eXtreme");
   

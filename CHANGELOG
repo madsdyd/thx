@@ -1,6 +1,6 @@
 20010608
   - Added the first AI structure - fires when it gets a chance
-  - 
+  - Respects -geometry, uses default settings if not present
 
 20010607
   - Added displaying of team to "hud".

@@ -4,9 +4,7 @@ This is an overview of what features go where. This is subject to change.
 
 
 ** 0.3.5 (Input customization)
-  - Make a controls menu, that allow for in game configuration of keys and 	
-    mouse actions. (ALMOST DONE)
-  - Save and load bindings.
+  - Save and load bindings (DONE)
   - Loosen up on registering and unregistering commands - should not keep 
     a command, if failing to release another. (Maybe registering and release should
     always work?)

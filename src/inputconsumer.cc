@@ -21,7 +21,9 @@
 */
 /* The commands */
 #include <iostream>
+#include <fstream>
 #include <strstream>
+
 
 #include "inputconsumer.hh"
 #include "command.hh"
@@ -44,6 +46,35 @@ struct keymap_t {
   keyboard_inputevent_event_t kev;
   char * cmd;
   char * arg;
+  /* Never actually used */
+  ostream & Out(ostream & out) {
+    out << "bind-key " << (int) mode << " ";
+    kev.Out(out) << " " << cmd << " " << arg << endl;
+    return out;
+  }
+};
+
+/* Kids, don't look */
+struct keymap_t_in {
+  gamemode_t mode;
+  keyboard_inputevent_event_t kev;
+  string cmd;
+  string arg;
+  istream & In(istream & in) {
+    string check;
+    in >> check;
+    if ("bind-key" != check) {
+      cerr << "keymap_t - expected bind-key, got " << check << endl;
+      return in;
+    }
+    in >> (int) mode;
+    kev.In(in) >> cmd >> arg;
+    /* Strip cmd and arg */
+    cmd = cmd.substr(1, cmd.size()-2);
+    arg = arg.substr(1, arg.size()-2);
+    // cout << "READ: -" << cmd << "- -" << arg << "-" << endl;
+    return in;
+  }
 };
 
 keymap_t key_map_std[] =
@@ -201,18 +232,61 @@ mousemap_t mouse_map_std[] =
 TInputToCommand::TInputToCommand() {
   int i; 
   /* TODO: Nicer way to initialize - load and save, so on */
-  /* Map the standard keys */
-  i = 0;  
-  while(strcmp(key_map_std[i].cmd, "")) {
+  // TODO: This is a really hackish way to restore bindings.
+  // It _will_ go
+  char * home      = getenv("HOME");
+  bool use_std_map = true;
+  if (home) {
+    string mapfile = string(home) + "/.thx/mappings.cfg";
+    ifstream input(mapfile.c_str());
+    if (input) {
+      string version; 
+      input >> version;
+      if ("1" == version) {
+	while(!input.eof()) {
+	  /* Eat whitespace */
+	  char c;
+	  while(input.get(c)) {
+	    if (isspace(c) == 0) {
+	      input.putback(c);
+	      break;
+	    }
+	  }
+	  /* Check for a keybind */
+	  if(!input.eof()) {
+	    keymap_t_in tmp;
+	    tmp.In(input);
+	    KeyboardCommandMap[tmp.mode][tmp.kev]
+	      = TCmdArg(tmp.cmd, tmp.arg);
+	  }
+	} // While not eof
+	  use_std_map = false;
+      } else {
+	cerr << "Version of mappings.cfg wrong." << endl
+	     << " Got " << version << " expected 1" << endl
+	     << "Maybe you should delete the file " << mapfile << endl;
+      }
+    } else {
+      cerr << "Could not open "
+	   << mapfile << endl
+    }
+  }
+
+  if (use_std_map) {
+    /* Map the standard keys */
+    i = 0;  
+    while(strcmp(key_map_std[i].cmd, "")) {
 #if (INPUT_DEBUG)
-    cout << "Mapping key " << key_map_std[i].kev.key << " to ("
-	 << key_map_std[i].cmd << "," << key_map_std[i].arg << ")" << endl;
+      cout << "Mapping key " << key_map_std[i].kev.key << " to ("
+	   << key_map_std[i].cmd << "," << key_map_std[i].arg << ")" << endl;
 #endif
-    // TODO: Use proper method
-    KeyboardCommandMap[key_map_std[i].mode][key_map_std[i].kev]
+      // TODO: Use proper method
+      KeyboardCommandMap[key_map_std[i].mode][key_map_std[i].kev]
       = TCmdArg(string(key_map_std[i].cmd), string(key_map_std[i].arg));
-    i++;
-  }    
+      i++;
+    }    
+  }
+
   /* Map the standard mouse */
   i = 0;  
   while(strcmp(mouse_map_std[i].cmd, "")) {
@@ -226,6 +300,41 @@ TInputToCommand::TInputToCommand() {
     i++;
   }    
 }
+
+/* **********************************************************************
+ * Desctructor saves mappings to disk
+ * *********************************************************************/
+TInputToCommand::~TInputToCommand() {
+  char * home      = getenv("HOME");
+  if (home) {
+    string mapfile = string(home) + "/.thx/mappings.cfg";
+    ofstream output(mapfile.c_str());
+    if (output) {
+      /* Write the version */
+      output << "1" << endl;
+      for (int gi = 0; gi < gamemode_count; gi++) { 
+	TKeyboardCommandMapIterator End = KeyboardCommandMap[gi].end();
+	TKeyboardCommandMapIterator i;
+	for (i = KeyboardCommandMap[gi].begin(); i != End; i++) {
+	  output << "bind-key " << (int) gi << " ";
+	  /* Put the kev */
+	  keyboard_inputevent_event_t tmpkev = (*i).first;
+	  tmpkev.Out(output) 
+	    << " \"" << (*i).second.cmd 
+	    << "\" \"" << (*i).second.arg << "\" "
+	    << endl;
+	}
+      } 
+    } else {
+      cerr << "Could not open "
+	   << mapfile << endl
+	   << "If you wish for THX to store your key mappings between games" 
+	   << " then please create a directory called .thx in your home directory"
+	   << endl;
+    }
+  }
+}
+
 /* **********************************************************************
  * Init the keyboard and mouse, and others
  * *********************************************************************/

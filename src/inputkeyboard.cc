@@ -105,7 +105,18 @@ string keyboard_inputevent_event_t::AsString() const {
     return string(keys_to_names[key]);
   }
   else return string("??");
+};
+
+ostream & keyboard_inputevent_event_t::Out(ostream & out) {
+  out << (int) key << " " << (int) type;
+  return out;
 }
+
+istream & keyboard_inputevent_event_t::In(istream & in) {
+  in >> (int) key >> (int) type;
+  return in;
+}
+
 
 /* **********************************************************************
  * The TKeyboardInputEvent class (constructor) 

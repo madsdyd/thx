@@ -59,6 +59,8 @@ private:
 public: 
   /* The constructor sets up the initial mappings */
   TInputToCommand();
+  /* The descrutor saves mappings to disk */
+  ~TInputToCommand();
   /* This initializes the input "systems" */
   void Init();
   /* This shutdowns the input system */

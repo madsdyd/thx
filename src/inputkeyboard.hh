@@ -22,6 +22,7 @@
 #ifndef __INPUTKEYBOARD_HH__
 #define __INPUTKEYBOARD_HH__
 #include <string>
+#include <iostream>
 /* This is for input events generated from the keyboard */
 #include "inputevent.hh"
 /* Subtype of event */
@@ -75,6 +76,8 @@ public:
   unsigned int key;
   keypress_t type;
   string AsString() const; /* Return the current key as a string */
+  ostream & Out(ostream & out); /* Print the keyboard event to the out stream */
+  istream & In(istream & in);   /* Read the keyboard event from the in stream */
 };
 
 struct lt_kiet

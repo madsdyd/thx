@@ -5,6 +5,11 @@
   - Added remaining control selections to menu_controls (I hope).
   - Updated README to reflect the controls thingy.
   - Tagging 0.3.4.3
+  - Added support for using page up and down in menus to scroll scrollarea
+  - Fixed problem with mouse and positions when exiting the window in grab
+  - The bindings are now saved and loaded - the ugliest hack ever.
+    It will definitivly not stay like this.
+  - Tagging 0.3.4.4
 
 20010423
   - Finally figured out why we had a segfault. I hate implicit type conversion in 

@@ -143,17 +143,18 @@ void TPlayer::PerformCommandUpdate(system_time_t timenow) {
     // TODO: Lot of this scale_move is not consistent with 
     // low FPS...
     if (scale_move < 0) {
-      printf("TPlayer::PerformCommandUpdate - time is %f\n", timenow);
+      // printf("TPlayer::PerformCommandUpdate - time is %f\n", timenow);
       /* This means that the command was entered after the last update, 
 	 which is not so weird. */
-      printf("TPlayer::PerformCommandUpdate scale_move is negative :%f\n", scale_move);
+      // printf("TPlayer::PerformCommandUpdate scale_move is negative :%f\n", 
+      // scale_move);
     } else {
       /* I originally wrote the following code:
 	 Command.timestamp = timenow;
 	 But, this does not work (no wonder, but bugs can be hard to see 
 	 I kinda like the accelaration effect - So I will leave it in! */
       if (scale_move > 5.0) { scale_move = 5.0; };
-      printf("TPlayer::PerformCommandUpdate scale_move is :%f\n", scale_move);
+      // printf("TPlayer::PerformCommandUpdate scale_move is :%f\n", scale_move);
       if ("viewpoint-move" == Command.name) {
 	// TODO: Actually use the +/- part of the args ... 
 	if ("+forward" == Command.args) {
@@ -279,7 +280,7 @@ bool TPlayer::CommandConsume(TCommand * Command) {
 	/* No duplicates 
 	   This should use the copy constructor */
 	active_commands.insert(TActiveCommandsElement(cmd_key, Command));
-	cout << "CommandConsume - inserting " << cmd_key << " into active " << endl;
+	// cout << "CommandConsume - inserting " << cmd_key << " into active " << endl;
       }
       return true;
     }
@@ -291,7 +292,7 @@ bool TPlayer::CommandConsume(TCommand * Command) {
 	   First make sure that the time is current - that is, update all commands */
 	PerformCommandUpdate(Command->timestamp);
 	active_commands.erase(i);
-	cout << "CommandConsume - removing " << cmd_key << " from active " << endl;
+	// cout << "CommandConsume - removing " << cmd_key << " from active " << endl;
       }
       return true;
     }

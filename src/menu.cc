@@ -83,7 +83,7 @@ void TMenu::Show() {
   /* Force possible old focuseditem to focus. */
   menuitems[focuseditem]->Focus();
   /* This is a kind of testing of the command structure. */
-  cout << "TMenu::Show - " << Title << " - registering commands" << endl;
+  // cout << "TMenu::Show - " << Title << " - registering commands" << endl;
   CommandDispatcher.RegisterConsumer("focus-change", this);
 }
 
@@ -108,7 +108,7 @@ void TMenu::Hide() {
   }
   visible = false;
   /* This is a kind of testing of the command structure. */
-  cout << "TMenu::Hide - " << Title << " - unregistering commands" << endl;
+  // cout << "TMenu::Hide - " << Title << " - unregistering commands" << endl;
   CommandDispatcher.UnregisterConsumer("focus-change");
 }
 
@@ -202,8 +202,8 @@ void TMenu::Render(int xlow, int xhigh, int ylow, int yhigh) {
  * The command consumer handles commands destined for this menu instance 
  * *********************************************************************/
 bool TMenu::CommandConsume(TCommand * Command) {
-  cout  << "TMenu::CommandConsumer called for command (" 
-	<< Command->name << "," << Command->args << ")" << endl;
+  /* cout  << "TMenu::CommandConsumer called for command (" 
+     << Command->name << "," << Command->args << ")" << endl; */
   if (!visible) {
     cerr << "TMenu::CommandConsume on non-visible menu!" << endl;
     return false;

@@ -184,12 +184,12 @@ void TTank::Update(TGame * game, system_time_t deltatime) {
      NOTE; This is down _only_ */
   if (tankstate_alive == tankstate) {
     /* If we are above the ground, we could be faling. Update position and 
-       possible velocity */
+       possible velocidsfsdfw3rqty */
     if (location.z > game->GetMap()->HeightAt(location.x, location.y) + EPSILON) {
-      cout << "TTank::Update - falling" << endl;
+      /* cout << "TTank::Update - falling" << endl;
       cout << "TTank::Update - location.z ; " << location.z 
 	   << ", HeightAt ; " << game->GetMap()->HeightAt(location.x, location.y)
-	   << endl;
+	   << endl; */
       if (!affect_turn) {
 	game->AddAffectTurn(this);
       }
@@ -198,7 +198,7 @@ void TTank::Update(TGame * game, system_time_t deltatime) {
     }
     if (velocity.z != 0 && 
 	location.z <= game->GetMap()->HeightAt(location.x, location.y)) {
-      cout << "TTank::Update - damage from fall" << endl;
+      // cout << "TTank::Update - damage from fall" << endl;
       /* We are at or below the map && our velocity in the z direction is
 	 != 0 -- we should take damage - possible die... 
 	 The calculations here are a little uncorrect, but hey, such is life. */

@@ -256,9 +256,7 @@ void GameMenu_StartFunc() {
   }
   // TODO: Somehow this does not seem to fit here....
   inputkeyboard_disablerepeat();
-  cout << "Hiding GameMenu - this may not work at all..." << endl;
   GameMenu->GetCurrentMenu()->Hide();
-  cout << "TODO: Somewhere, show it again" << endl; 
   if (Client->game_running || Client->has) {
     cerr << "GameMenu_StartFunc() called with wrong state!" << endl;
   }
@@ -706,8 +704,8 @@ void TClient::Run() {
  * The Client command handler
  * *********************************************************************/
 bool TClient::CommandConsume(TCommand * Command) {
-  cout  << "TClient::CommandConsumer called for command (" 
-	<< Command->name << "," << Command->args << ")" << endl;
+  /*  cout  << "TClient::CommandConsumer called for command (" 
+      << Command->name << "," << Command->args << ")" << endl; */
   if ("quit" == Command->name) {
     // TODO: Is this the right way to leave the game?
     delete this;

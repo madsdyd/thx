@@ -24,7 +24,7 @@
 #include "commandconsumer.hh"
 
 /* Set to 0 to avoid messages about dispatching stuff */
-#define DISPATCH_DEBUG 1
+#define DISPATCH_DEBUG 0
 
 /* This is our CommandDispatcher */
 TCommandDispatcher CommandDispatcher;
@@ -93,10 +93,13 @@ int TCommandDispatcher::Dispatch() {
 #endif
       ((*loc).second)->CommandConsume(Command);
       count++;
-    } else {
+    } 
+#if (DISPATCH_DEBUG)
+    else {
       cout << "TCommandDispatcher::Dispatch - "
 	   << "No consumer for \"" << Command->name << "\"" << endl;
     }
+#endif
     /* Iterate - we free the command */
     CommandQueue.pop();
     delete Command;

@@ -1,0 +1,70 @@
+List of items and prices for stuff in SE
+
+Each round won is awarded with $5000. The prices for weapons are as follows:
+
+  400/10 - Baby Missile
+ 1875/5  - Missile
+10000/3  - Baby Nuke
+12000/1  - Nuke
+10000/2  - LeapFrog
+           Explodes, then continues, smaller explosion, continue,
+           minor explosion. 3 Explosions all in all. Continues through mountain.
+ 7000/2  - Funky Bomb
+           8(?) random war heads
+10000/3  - MIRV
+           5 headed, spawned at top of curve
+20000/1  - Death's Head
+           Mirv with 9 large heads
+10000/10 - Napalm
+20000/2  - Hot Napalm
+           Fills up surroundings with "liquid", then makes some flames.
+   10/20 - Tracer
+           Does no damage
+  500/10 - Smoke Tracer
+           Leaves smoke trail
+ 5000/10 - Baby Roller
+           Rolls to first level raise, then minor explosion.
+ 6000/5  - Roller
+ 6750/2  - Heavy Roller
+ 2000/10 - Riot Charge
+	   Removes sand in front of (on top of) you
+ 5000/5  - Riot Blast
+ 5000/5  - Riot Bomb
+           Removes sand on impact
+ 4750/2  - Heavy Riot Bomb
+ 3000/10 - Baby Digger
+           Digs holes in ground, earth collapses
+ 2500/5  - Digger
+ 6750/2  - Heavy Digger
+10000/10 - Baby Sandhog
+           As Digger, but with explosions abound (underground)
+16750/5  - Sandhog
+25000/2  - Heavy Sandhog
+ 5000/10 - Dirt Clod
+           Minor dirt ball at implosion place
+ 5000/5  - Dirt Ball
+ 6750/2  - Ton of Dirt
+ 5000/5  - Liquid Dirt
+           ?
+ 5000/10 - Dirt Charge
+ 9000/5  - Plasma Blast
+           ? Explodes rigth where you are. Does not seem to harm you.
+ 5000/5  - Laser
+
+The following is listed under Miscellanous
+
+10000/6  - Heat Guidance
+10000/2  - Bal Guidance
+15000/5  - Horz Guidance
+20000/5  - Vert Guidance
+20000/2  - Lazy Boy
+10000/5  - Parachute
+ 5000/10 - Battery
+10000/2  - Mag Deflector
+20000/3  - Shield
+25000/3  - Force Shield
+30000/2  - Heavy Shield
+40000/2  - Super Mag
+ 1500/1  - Auto Defense
+10000/10 - Fuel Tank
+ 1000/25 - Contact Trigger

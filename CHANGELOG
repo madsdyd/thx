@@ -11,6 +11,7 @@
   - Fixed problem with not beeing able to type 'q' and (now) 'a' in edits.
   - Stopped make from linking when no .o files had changed
   - Tagging version 0.3.3.2
+  - Added list of items from SE to DOCS
 
 20010409
   - Added code to generate mouse input events

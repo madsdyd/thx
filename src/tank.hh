@@ -28,9 +28,9 @@
 #include "color.hh"
 
 typedef struct {
-  int angle;
-  int rotation;
-  int force;
+  double angle;
+  double rotation;
+  double force;
 } cannon_t;
 
 typedef enum { tankstate_alive,    /* Alive and well - health > 0 */
@@ -60,11 +60,11 @@ public:
   /* Prepare a tank for a new round, updates location, health, etc */
   void PrepareRound(TGame * game, TVector * loc);
   /* Adjust the force of the cannon */
-  void AdjustForce(int adjust);
+  void AdjustForce(double adjust);
   /* Adjust the angle of the cannon */
-  void AdjustAngle(int adjust);
+  void AdjustAngle(double adjust);
   /* Adjust the rotation of the cannon */
-  void AdjustRotation(int adjust);
+  void AdjustRotation(double adjust);
   /* Update the tank. */
   virtual void Update(TGame * game, system_time_t deltatime);
   /* Render the tank */

@@ -425,7 +425,7 @@ void TDisplay::Render(void) {
     {
       /* Print selected projectile, rotation, angle and force */
       ostrstream tmp;
-      tmp.form("Rotation:%i Angle:%i Force:%i Weapon:", 
+      tmp.form("Rotation:%3.0f Angle:%3.0f Force:%3.0f Weapon:", 
 	       Game->GetCurrentPlayer()->tank->cannon.rotation,
 	       Game->GetCurrentPlayer()->tank->cannon.angle,
 	       Game->GetCurrentPlayer()->tank->cannon.force);

@@ -71,9 +71,9 @@ void TTank::PrepareRound(TGame * game, TVector * loc) {
   health          = 100.0;
   tankstate       = tankstate_alive;
   levitation      = 0; 
-  cannon.angle    = 45;
-  cannon.rotation = 0;
-  cannon.force    = 15;
+  cannon.angle    = 45.0;
+  cannon.rotation = 0.0;
+  cannon.force    = 15.0;
   default_tank(model, &color);
   abrams_barrel(barrel, &color);
 
@@ -84,39 +84,39 @@ void TTank::PrepareRound(TGame * game, TVector * loc) {
 /* **********************************************************************
  * Adjust the strength of the current tank, within 0-100
  * *********************************************************************/
-void TTank::AdjustForce(int adjust) {
+void TTank::AdjustForce(double adjust) {
   cannon.force+=adjust;
-  if (cannon.force < 0) {
-    cannon.force = 0;
+  if (cannon.force < 0.0) {
+    cannon.force = 0.0;
   }
-  if (cannon.force > 100) {
-    cannon.force = 100;
+  if (cannon.force > 100.0) {
+    cannon.force = 100.0;
   }
 }
 
 /* **********************************************************************
  * Set the angle of a tank within 0-90
  * *********************************************************************/
-void TTank::AdjustAngle(int adjust) {
+void TTank::AdjustAngle(double adjust) {
   cannon.angle+=adjust;
-  if (cannon.angle < 0) {
-    cannon.angle = 0;
+  if (cannon.angle < 0.0) {
+    cannon.angle = 0.0;
   }
-  if (cannon.angle > 90) {
-    cannon.angle = 90;
+  if (cannon.angle > 90.0) {
+    cannon.angle = 90.0;
   }
 }
 
 /* **********************************************************************
  * Set the angle of a tank within 0-360
  * *********************************************************************/
-void TTank::AdjustRotation(int adjust) {
+void TTank::AdjustRotation(double adjust) {
   cannon.rotation+=adjust;
-  while (cannon.rotation < 0) {
-    cannon.rotation += 360;
+  while (cannon.rotation < 0.0) {
+    cannon.rotation += 360.0;
   }
-  while (cannon.rotation >= 360) {
-    cannon.rotation -= 360;
+  while (cannon.rotation >= 360.0) {
+    cannon.rotation -= 360.0;
   }
 }
 

@@ -152,6 +152,7 @@ void TPlayer::PerformCommandUpdate(system_time_t timenow) {
 	 Command.timestamp = timenow;
 	 But, this does not work (no wonder, but bugs can be hard to see 
 	 I kinda like the accelaration effect - So I will leave it in! */
+      if (scale_move > 5.0) { scale_move = 5.0; };
       printf("TPlayer::PerformCommandUpdate scale_move is :%f\n", scale_move);
       if ("viewpoint-move" == Command.name) {
 	// TODO: Actually use the +/- part of the args ... 
@@ -222,22 +223,22 @@ void TPlayer::PerformCommandUpdate(system_time_t timenow) {
       } /* viewpoint-rotate */
       else if ("canon" == Command.name) {
 	if ("+rotate-left" == Command.args) {
-	  tank->AdjustRotation(1 + scale_move);
+	  tank->AdjustRotation(scale_move);
 	}
 	else if ("+rotate-right" == Command.args) {
-	  tank->AdjustRotation(-1-scale_move);
+	  tank->AdjustRotation(-scale_move);
 	}
 	else if ("+raise" == Command.args) {
-	  tank->AdjustAngle(1 + scale_move);
+	  tank->AdjustAngle(scale_move);
 	}
 	else if ("+lower" == Command.args) {
-	  tank->AdjustAngle(-1-scale_move);
+	  tank->AdjustAngle(-scale_move);
 	}
 	else if ("+force-increase" == Command.args) {
-	  tank->AdjustForce(1 + scale_move);
+	  tank->AdjustForce(scale_move);
 	}
 	else if ("+force-decrease" == Command.args) {
-	  tank->AdjustForce(-1-scale_move);
+	  tank->AdjustForce(-scale_move);
 	}
       } /* canon */
     } /* time_scale < 0 */

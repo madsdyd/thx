@@ -10,7 +10,6 @@
 #include "viewpoint.hh"
 #include "map.hh"
 #include "tank.hh"
-#include "inventory.hh"
 
 #include "render.hh"
 #include "viewpoint.hh"
@@ -65,16 +64,16 @@ TDisplay::TDisplay(int argc, char** argv) {
   GLfloat mat_shininess[] = { 10.0 };
 
   GLfloat light_position[] = { 16.0, 16.0, 10.0, 1.0 };
-  // GLfloat light1_position[] = { 16.0, 16.0, 9.0, 0.0 };
+  GLfloat light1_position[] = { 0.0, 56.0, 16.0, 0.0 };
 
-  //GLfloat black_light[] = { 0.1, 0.1, 0.1, 1.0 };
+  //  GLfloat black_light[] = { 0.0, 0.0, 0.0, 1.0 };
   GLfloat white_light[] = { 1.0, 1.0, 1.0, 1.0 };
   GLfloat white1_light[] = { 0.4, 0.4, 0.4, 0.4 };
 
-  GLfloat yellow_ambient[] = { 0.8, 0.8, 0.4, 1.0 };
-  //  GLfloat blue_ambient[] = { 0.1, 0.1, 0.2, 1.0 };
+  //  GLfloat yellow_ambient[] = { 0.1, 0.1, 0.1, 1.0 };
+  //  GLfloat yellow_light[] = { 0.15, 0.15, 0.3, 1.0 };
 
-  glClearColor(0.0, 0.0, 0.0, 0.0);
+  glClearColor(0.05, 0.05, 0.15, 0.0);
 
   glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular);
   glMaterialfv(GL_FRONT, GL_SHININESS, mat_shininess);
@@ -85,9 +84,12 @@ TDisplay::TDisplay(int argc, char** argv) {
   glLightfv(GL_LIGHT0, GL_SPECULAR, white_light);
   glLightfv(GL_LIGHT0, GL_AMBIENT, white_light);
 
-  glLightfv(GL_LIGHT1, GL_DIFFUSE, yellow_ambient);
-  glLightfv(GL_LIGHT1, GL_SPECULAR, yellow_ambient);
-  glLightfv(GL_LIGHT1, GL_AMBIENT, yellow_ambient);
+  /* Old lighting stuff
+  glLightfv(GL_LIGHT1, GL_POSITION, light1_position);
+  glLightfv(GL_LIGHT1, GL_DIFFUSE, yellow_light);
+  glLightfv(GL_LIGHT1, GL_SPECULAR, yellow_light);
+  glLightfv(GL_LIGHT1, GL_AMBIENT, black_light);
+  */
 
   glEnable(GL_LIGHTING);
   glEnable(GL_LIGHT0);
@@ -150,9 +152,13 @@ void TDisplay::FlatMode() {
   } 
   glDisable(GL_LIGHTING);
   glDisable(GL_DEPTH_TEST);
+
+  // Set parallelprojection mode to create "correct" menus
   glMatrixMode(GL_PROJECTION);
   glLoadIdentity();
   glOrtho( -0.5, width-0.5, -0.5, height-0.5, -1.0, 1.0 );
+
+  // Back to modifying objects
   glMatrixMode(GL_MODELVIEW);
   glLoadIdentity();
 }
@@ -171,7 +177,7 @@ void TDisplay::NormalMode() {
   glEnable(GL_DEPTH_TEST);
   glMatrixMode(GL_PROJECTION);
   glLoadIdentity();
-  gluPerspective(90.0, (GLfloat) width/(GLfloat) height, 0.8, 100.0);
+  gluPerspective(70.0, (GLfloat) width/(GLfloat) height, 0.8, 100.0);
   
   glMatrixMode(GL_MODELVIEW);
   glLoadIdentity();
@@ -322,9 +328,9 @@ void TDisplay::Render(void) {
     /* Argh, I can not make alpha blending work? Why not? */
     // glEnable(GL_BLEND);
     // glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); 
-    glColor4f(Game->current_player->tank->color.data[0],
-	      Game->current_player->tank->color.data[1],
-	      Game->current_player->tank->color.data[2],
+    glColor4f(Game->current_player->tank->color.red,
+	      Game->current_player->tank->color.green,
+	      Game->current_player->tank->color.blue,
 	      0.90);
     glBegin(GL_QUADS);
     glVertex2i(0,2*textrender.size);

@@ -1,7 +1,7 @@
 #ifndef __EXPLOSION_HH__
 #define __EXPLOSION_HH__
 #include "entities.hh"
-#include "vector.hh"
+
 /* This should probably be a parameter on an explosion/projectile */
 #define EXPLOSION_DAMAGE 50
 

@@ -2,11 +2,13 @@
 #define __VIEWPOINT_HH__
 #include "vector.hh"
 
-/* This module includes the various parameters that setup a clients viewpoint
-   Maybe the FOV should also go in here? and other parameters?  */
+/* This module includes the various parameters that set ups a clients viewpoint
+   Maybe the FOV should also go in here? and other parameters?
+ */
 
 /* Forward declare map */
 class TMap;
+
 class TViewpoint {
 public:
   TVector translation;

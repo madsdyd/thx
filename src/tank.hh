@@ -1,9 +1,13 @@
 #ifndef __TANK_H__
 #define __TANK_H__
 
+#include "types.hh"
 #include "entities.hh"
-#include "vector.hh"
-#include "color.hh"
+#include "explosion.hh"
+
+#include "map.hh"
+
+#include "object.hh"
 
 typedef struct {
   int angle;
@@ -17,16 +21,13 @@ typedef enum { tankstate_alive,    /* Alive and well - health > 0 */
 	       tankstate_rip       /* Done with animation */
 } tankstate_t;
 
-class TPlayer;
-class TGame;
-class TExplosion;
-class TMap;
 class TTank : public TEntity {
 protected:
   float levitation;               /* Used for death animation */
   tankstate_t tankstate;
 public:
-  TColor color;
+  TObject model;
+  color_t color;
   TVector location;
   cannon_t cannon;
   float health;
@@ -50,5 +51,6 @@ public:
   /* Register a hit by an explosion 
      TODO: Should use TakeDamage?*/
   void Explosion(TMap * map, TExplosion * Explosion);
+
 };
 #endif

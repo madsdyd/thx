@@ -1,3 +1,4 @@
 #include <stdlib.h>
 #include "entities.hh"
-/* This file is almost empty */
+
+/* This file is kinda empty */

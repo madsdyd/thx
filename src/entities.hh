@@ -4,11 +4,13 @@
    Entities can be updated, rendered, damaged by other entities, etc */
 #include <list>
 
+#include "vector.hh"
 #include "types.hh"
+#include "viewpoint.hh"
 
-class TPlayer;
+/* Forward declare TGame and TPlayer - used by entities */
 class TGame;
-class TViewpoint;
+class TPlayer;
 /* Entities are used for all elements in the game that needs to be
    dynamically updated. The base class can not be instiantiated due to
    the abstract methods */

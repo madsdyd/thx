@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <vector>
+#include <algorithm>
 
 #include "map.hh"
 #include "display.hh"
@@ -11,6 +12,8 @@
 
 #include "types.hh"
 #include "color.hh"
+
+#include "collision.hh"
 
 /* **********************************************************************
    Configuration stuff that is changable from the outside */
@@ -493,6 +496,78 @@ void TMap::Explosion(TExplosion * Explosion) {
    For now, we simply check if we are below the nearest corner, and in that
    case, return that corner as the point of collision */
 bool TMap::CollisionDetect(TVector * old_location, TVector * new_location) {
+
+  int xmin, xmax, ymin, ymax;
+  int i,j;
+  vector<float> times;
+  float t;
+  TVector P0, P1, P2;
+
+  /* Find outher bounds of old and new locations */
+#warning "********************************************"
+#warning "MADS DO SOMETHING IN map.cc LINES 512 TO 524"
+#warning "********************************************"
+  // Should we use (int) to convert double to int ????
+  if ( old_location->x < new_location->x ) {
+    xmin = floor(old_location->x);
+    xmax = floor(new_location->x) + 1;
+  } else {
+    xmin = floor(new_location->x);
+    xmax = floor(old_location->x) + 1;
+  }
+
+  if ( old_location->y < new_location->y ) {
+    ymin = floor(old_location->y);
+    ymax = floor(new_location->y) + 1;
+  } else {
+    ymin = floor(new_location->y);
+    ymax = floor(old_location->y) + 1;
+  }
+
+  /* Check all triangles between (xmin,ymin) and (xmax,ymax) */
+  for ( i = xmin ; i < xmax ; i++ ) {
+    for ( j = ymin ; j < ymax ; j++) {
+
+      /* Lower-left triangle */
+      P0 = TVector(i     , j    , PointAt(i     , j    )->z);
+      P1 = TVector(i + 1 , j    , PointAt(i + 1 , j    )->z);
+      P2 = TVector(i     , j + 1, PointAt(i     , j + 1)->z);
+
+      /* Store collision-time in a vector<int> */
+      t = checkPointPoly(old_location, new_location, &P0, &P1, &P2);
+      times.push_back(t);
+
+      /* Upper-right triangle */
+      P0 = TVector(i + 1 , j + 1, PointAt(i + 1 , j + 1)->z);
+      P1 = TVector(i     , j + 1, PointAt(i     , j + 1)->z);
+      P2 = TVector(i + 1 , j    , PointAt(i + 1 , j    )->z);
+
+      /* Store collision-time in a vector<int> */
+      t = checkPointPoly(old_location, new_location, &P0, &P1, &P2);
+      times.push_back(t);
+    }
+  }
+
+  /* Sort the found collision times
+   * Mental note: checkPointPoly returns 2.0 if no
+   * collision is found!
+   */
+  sort(times.begin(),times.end());
+
+  if ( (times.size() != 0) && (times[0] <= 1.0) ) {
+    /* The point of collision is: old + (new - old) * time */
+    (*new_location) = (*old_location) + 
+      ((*new_location) - (*old_location)) * t;
+    return true;
+
+  } else {
+    /* Well, duuuuh... */
+    return false;
+  }
+
+  /* Old stuff... really crappy... doesn't work as it should...
+     but errmmm... it might work better than what I'm gonna do next... ;-)
+     / Skjalm, 2000-07-15
   if (new_location->z <= PointAt(rint(new_location->x), 
 				 rint(new_location->y))->z) {
     new_location->x = rint(new_location->x);
@@ -503,6 +578,7 @@ bool TMap::CollisionDetect(TVector * old_location, TVector * new_location) {
   } else {
     return false;
   }
+  */
 }
 
 /* **********************************************************************

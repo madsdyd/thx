@@ -2,7 +2,6 @@
 #include "projectile.hh"
 #include "explosion.hh"
 #include "marker.hh"
-#include "map.hh"
 
 #include "display.hh"
 #include "console.hh"
@@ -96,6 +95,19 @@ void TProjectile::Update(TGame * game, system_time_t deltatime) {
     return;
   }
   
+  /*****************************************************
+   *****************************************************
+
+   This is probably a good place to make a kind of:
+    for (i = 0 ; i < numPlayers; i++) {
+      if (players[i].tank->model.CollisionDetect) {
+        players[i].explode();
+      }
+    }
+
+   *****************************************************/
+
+
   /* Impact checking is done by calling the map. */
   if (game->GetMap()->CollisionDetect(&(location), &new_location)) {
     /* IMPACT! - call OnImpact */

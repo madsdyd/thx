@@ -3,7 +3,12 @@
 #include <vector>
 
 /* Other includes */
+#include "types.hh"
+#include "map.hh"
+#include "player.hh"
+
 #include "entities.hh"
+#include "explosion.hh"
 /* This module provides the actual game and gamestate
    and includes procedure that allow clients to connect to it, 
    create a game (create a map), let other clients connect to it, 
@@ -47,7 +52,6 @@ typedef enum {roundstate_not_ready,    /* We can not begin the level */
 	      roundstate_done          /* Current level has ended */
 } roundstate_t;
 
-class TPlayer;
 class TPlayerInfo {
 public:
   int num_turn_fired;    /* The number of the last turn where the player fired */
@@ -61,8 +65,6 @@ public:
 typedef std::vector<TPlayerInfo *> TPlayerInfos;
 typedef TPlayerInfos::iterator TPlayerInfosIterator;
 
-class TMap;
-class TExplosion;
 class TGame {
 private:
   /* GAME related stuff */

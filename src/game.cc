@@ -641,12 +641,29 @@ bool TGame::OnSameTeam(TPlayer * a, TPlayer * b) {
  * *********************************************************************/
 TPlayer * TGame::NotMe(TPlayer * me) {
   TPlayerInfosIterator End = playerInfos.end();
-  for (TPlayerInfosIterator i = playerInfos.begin() ; i != End; i ++) {
+  /* Try to make it random */
+  int offset = 1+(int) (playerInfos.size()*rand()/(RAND_MAX+1.0));
+  // cout << "Offset " << offset << endl;
+  int coffset = offset;
+  bool stop = false;
+  for (TPlayerInfosIterator i = playerInfos.begin() ; false == stop ;) {
     if ((*i)->active && (*i)->player != me) {
-      return (*i)->player;
+      --offset;
+      if (0 == offset) {
+	return (*i)->player;
+      }
+    }
+    ++i;
+    if (i == End) {
+      if (coffset == offset) {
+	/* No candidates */
+	return NULL;
+      }
+      i = playerInfos.begin();
     }
   }
-  /* If we reach here, no living players were found, that was not me */
+  /* If we reach here, no living players were found, that was not me 
+     We never reach here though. */
   return NULL;
 }
 

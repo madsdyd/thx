@@ -86,6 +86,7 @@ void TAIPlayerCasper::BeginTurn() {
     // Display->console->AddLine("Casper locates a new target");
     
     Target = game->NotMe(this);
+    // Display->console->AddLine(name + " has target " + Target->name);
     Assert(Target != NULL, 
 	   "TAIPlayerCasper::BeginTurn - no other player found!");
   }

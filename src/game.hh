@@ -195,5 +195,9 @@ public:
   bool IsGameOver();
   /* The command handler */
   virtual bool CommandConsume(TCommand * Command);
+  /* Figure out if this is a team game */
+  bool GetTeamMode() {
+    return teammode;
+  }
 };
 #endif

@@ -475,8 +475,11 @@ void TDisplay::Render(void) {
     /* Print name money and health */
     {
       ostrstream tmp;
-      tmp << Game->GetCurrentPlayer()->name;
-      tmp.form("'s turn. Score:%i Health:%0.1f",
+      tmp << Game->GetCurrentPlayer()->name << "'s turn.";
+      if (Game->GetTeamMode()) {
+	tmp << " (" << Game->GetCurrentPlayer()->team << ")";
+      }
+      tmp.form(" Score:%i Health:%0.1f",
 	       Game->GetCurrentPlayer()->score,
 	       Game->GetCurrentPlayer()->tank->health);
       tmp << ends;

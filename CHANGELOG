@@ -1,3 +1,6 @@
+20010607
+  - Added displaying of team to "hud".
+
 20010605
   - Modified all entities to carry around a reference to the game they
     belong too.

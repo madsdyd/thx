@@ -7,6 +7,7 @@ This is an overview of what features go where. This is subject to change.
   to reflect this? Teammode, combi score of players on team?
   How are team scores to be calculated? How about hitting one from your
   own team? Etc????
+
 The text () is the focus of the "series". E.g. 0.4.0 (AI) means that
 everything starting with 0.4. is probably going to be related to AI. The 0.4.0 release
 however, is the final release of the previous series.

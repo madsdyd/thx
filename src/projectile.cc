@@ -11,6 +11,10 @@
 #ifdef SOUND_ON
 #include "sound.hh"
 #endif
+
+#define GRAVITY 9.82
+//#define GRAVITY 15
+
 /* **********************************************************************
    Configuration stuff, accessible from the outside */
 bool spawn_markers = false;

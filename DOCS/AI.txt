@@ -1,0 +1,54 @@
+This is a note about how to do the AI. 
+
+Nothing conclusive, just a bunch of thoughts.
+
+
+** Purpose of the AI
+
+The purpose of the AI is to provide players with an interessting
+enough opponent to actually enjoy playing the game. 
+
+
+** Goals of the AI player
+
+The goals of any AI player can be grouped and listed as below.
+
+* Game goal
+
+To win the game, the AI need the highest total score
+
+* Round goal
+
+- For any round, you wish to maximize the credit you obtain (hitting)
+- If you are very agressive, you may wish to kill the others (hitting
+  and doing holes, etc)
+- If you like to do revenge, you may remember who killed you from the 
+  previous round, and wish to kill them
+- If it is clear that you are not going to be able to win the game, 
+  you may wish to influence the order of the game, by trying to 
+  demote someone who have annoyed you.
+
+* Turn goal
+
+- Performing the round goal
+- Stay alive (protect yourself)
+- Revenge
+- Hit someone
+- Kill someone by hitting or other action. 
+
+** Workings of the AI player
+
+Depending on IA personality, the goals can be weighted
+differently. The actual doings of the AI should reflect these goals.
+
+At the start of the game, the goal is to win the game.  At the start
+of each round, a decision about the current rounds goal is taken. At
+the start of each turn, this decision is reevaluated, where the
+current decision weights a lot. Also at the start of each turn, the
+current turn goal is decided with the turn goal in mind, and carried
+out.
+
+Depending on cleverness, the AI player may adjust angles, cannon,
+etc. very finely or very coarse. A clever AI may take into
+consideration wind, etc. Feedback is given from the projectile,
+explosions, and other players. 

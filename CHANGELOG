@@ -1,3 +1,11 @@
+20010429
+  - Moved the in game menu return to game to the bottom of the menu
+  - Fixed it so that the mouse do not "jump", when showing the in game menu
+  - Changed the scroll menu item to use some strings. Need to override render.
+  - Fixed some problems with scrolling up and down, and focus changes
+  - Made round delays be 1 second (using TDelays).
+  - Tagging 0.3.4.5
+
 20010428
   - Made TScollMenuItem and made all menus potentially have such a beast.
   - Made the Control menu use the scroll stuff.

@@ -22,7 +22,7 @@
 #include "explosion.hh"
 #include <GL/glut.h>
 #include "game.hh"
-
+#include "marker.hh" /* For delays */
 
 /* **********************************************************************
    Initialize an explosion */
@@ -60,6 +60,8 @@ void TExplosion::Update(TGame * game, system_time_t deltatime) {
     radius = 0.0;
     /* We do not need further updates */
     keep = false;
+    /* Delay round changes for a second */
+    game->AddEntity(new TDelay(owner, 1));
   } 
 }
 

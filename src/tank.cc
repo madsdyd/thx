@@ -205,7 +205,7 @@ void TTank::Update(TGame * game, system_time_t deltatime) {
       }
       /* Make sure that we are not used for round, but add a sligth delay */
       game->RemoveAffectTurn(this);
-      game->AddEntity(new TDelay(owner, 2)); 
+      game->AddEntity(new TDelay(owner, 1)); 
     }
   }
 

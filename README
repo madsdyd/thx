@@ -29,6 +29,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 This program has only been tested under Linux. You need support for OpenGL
 (Mesa3D) and probably some sort of hardware support to run this program.
+Also, a sound card for effects (and a screen of some sort for display, and
+so on ;-)
 
 My development machine is a PPro 232 Mhz, 128 MB ram, with two V2 3dfx cards.
 I get about 40 fps on medium maps on this machine, which is good enough.
@@ -41,7 +43,8 @@ $cd src && make && cd ..
 
 You may have to fix some includes and stuff, especially for
 <GL/*>. Some compilers seems to be more strict about implict type
-conversions than others.
+conversions than others. Yes, I know about autoconf, but not about
+how to make it work. I will eventually. :-)
 
 You will get several warnings. Most should be safe to ignore for now.
 
@@ -57,21 +60,24 @@ If you get a coredump, there are 3 very likely causes:
 - you are running as root, but have not setup your display correctly.
 - you found a bug! (Please report this)
 
-If you have OSS sound, there should be some sound effects.
+If you have OSS sound, there should be some sound effects. THX will
+complaing at startup, if it can not open /dev/dsp, and you will hear
+no sound.
 
 ----------------------------------------------------------------------
 * GOTCHAS
 
-The program does not grab the mouse - make sure that you do not move
-the mouse outside the window you start the program in, or you may
-loose control.
+The program tries to keep the mouse in the window by warping the 
+pointer. (Disable this by pressing 'a' at any time, look under
+controls below).
 
-If you get a full screen window, that does not react to your input, 
-you may be stuck with the mouse outside the window. Also, if another
-application grabs global focus, you may no longer be able to control
-thx. (This happens for me, when I use my 3dfx card, and my mail box
-pops a message up. In this case, I blind switch to a virtual console,
-log in, and run "killall thx", which solves my problems).
+If you get a full screen window, that does not react to your input,
+you may be stuck with the mouse outside the window. This could
+possible happen if another application grabs global focus, and in this
+case you may no longer be able to control thx. (This happens for me,
+when I use my 3dfx card, and my mail box pops a message up. In this
+case, I blind switch to a virtual console, log in, and run "killall
+thx", which solves my problems). This may be fixed with the warping.
 
 ----------------------------------------------------------------------
 * CONTROLS DURING GAME
@@ -80,9 +86,12 @@ log in, and run "killall thx", which solves my problems).
 
 You can use the usual keys or the mouse to navigate the menus.
 
+Please note that 'a' is not the same as 'A' - and so on.
+
 * General
-quit thx          : q    (at any point, shuts thx down)
+quit thx          : q    (at almost any time, shuts thx down)
 in game menu      : esc
+toggle mouse warp : a
 
 * Controlling your viewpoint
 move view         : d,g,r,f,t,b

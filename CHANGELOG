@@ -6,6 +6,11 @@
   - Made the focused menu item "pulse"
   - Tagging version 0.3.3.1
   - Made many of the attributes in TDisplay private.
+  - Added new command - toggle-pointer-grab - which toggle pointer warp (sic).
+  - Updated README with toggle-pointer-grab info and some more.
+  - Fixed problem with not beeing able to type 'q' and (now) 'a' in edits.
+  - Stopped make from linking when no .o files had changed
+  - Tagging version 0.3.3.2
 
 20010409
   - Added code to generate mouse input events

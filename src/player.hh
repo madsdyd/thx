@@ -45,6 +45,7 @@ typedef pair <string, TCommand> TActiveCommandsElement;
 class TInventory;
 class TTank;
 class TGame;
+class TExplosion;
 class TPlayer : public TCommandConsumer {
 protected:
   /* These are the commands that are active for the 
@@ -67,8 +68,14 @@ public:
   TPlayer(TGame * ngame, string nname, string nteam);
   virtual ~TPlayer();
   virtual void PrepareRound(TVector * location);
-  virtual void BeginTurn();       /* Called, when this players turn is about to start */
+  virtual void BeginTurn();       /* Called, when this players turn is about to 
+				     start */
   virtual void EndTurn();         /* Called, when this players turn is about to end */
+  /* Called, when a players projectile explodes */
+  virtual void Explosion(TExplosion * Explosion) {}; 
+  /* Called from a tank, when a players projectile hits a tank */  
+  virtual void RegisterHit(TTank * Tank, TExplosion * Explosion, 
+			   float dist, float damage) {}; 
   virtual bool CommandConsume(TCommand * Command);
   /* The update command mostly handle the movement stuff */
   virtual void Update(system_time_t timenow);

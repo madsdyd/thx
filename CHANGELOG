@@ -1,3 +1,7 @@
+20010726
+  - Added the first part of a "feedback" framework for the AI players, 
+    so that they can figure out where their missiles hit.
+
 20010725
   - Moved the handling of the fire command from the TGame class to 
     the player class - otherwise it was possible to fire when an IA player

@@ -412,6 +412,10 @@ TMap * TGame::GetMap() {
  * *********************************************************************/
 void TGame::Explosion(TExplosion * Explosion) {
   int i;
+  /* Let owner know that something exploded */
+  if (Explosion->owner) {
+    Explosion->owner->Explosion(Explosion);
+  };
   /* Make impact on the map */
   map->Explosion(Explosion);
   /* Apply effect of explosion to each tank, then lower its position to 

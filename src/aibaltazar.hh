@@ -21,7 +21,7 @@
 */
 #ifndef __AIBALTAZAR_HH__
 #define __AIBALTAZAR_HH__
-/* This is an AI player - based on a normal player */
+/* This is Baltazar - totally random, modelled after my son age 4 months */
 
 #include "aiplayer.hh"
 

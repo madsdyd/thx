@@ -25,7 +25,10 @@
  * Constructors and destructors
  * *********************************************************************/
 TAIPlayerCasper::TAIPlayerCasper(TGame * ngame, string nname, string nteam) 
-  : TAIPlayer(ngame, nname, nteam) {};
+  : TAIPlayer(ngame, nname, nteam) {
+  Target = NULL;
+  
+};
 
 TAIPlayerCasper::~TAIPlayerCasper() {};
 

@@ -21,16 +21,28 @@
 */
 #ifndef __AICASPER_HH__
 #define __AICASPER_HH__
-/* This is an AI player - based on a normal player */
+/* This is Casper - slightly more sophisticated than Baltazar
+   He will 
+   - try to obtain a target in PrepareRound
+   - try to hit the target in each turn
+   - accept feedback and try to adjust to it 
+*/
 
 #include "aiplayer.hh"
 
 class TAIPlayerCasper : public TAIPlayer {
+protected:
+  /* Variables that tracks the "best" settings so far. */
+  TPlayer * Target;
+  TVector best_location; /* Used to keep track of current best location for hitting
+			    target - updated each turn */
+  float lowest_dist; /* Used to keep track of the impact that gave the most damage */
 public:
   TAIPlayerCasper(TGame * ngame, string nname, string nteam);
   virtual ~TAIPlayerCasper();
   void PrepareRound(TVector * location);
   void BeginTurn(); /* Called, when this players turn is about to start */
   void EndTurn();   /* Called, when this players turn is about to end */
+  
 };
 #endif

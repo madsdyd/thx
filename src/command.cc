@@ -27,7 +27,7 @@ TCommands CommandQueue;
  * Constructors for TCommand 
  * *********************************************************************/
 #include <stdio.h>
-TCommand::TCommand(system_time_t ntimestamp, string nname, string nargs = "") {
+TCommand::TCommand(system_time_t ntimestamp, string nname, string nargs) {
   timestamp = ntimestamp;
   name      = nname;
   args      = nargs;

@@ -7,7 +7,7 @@ CFLAGS=-Wall -D_REENTRANT -g -DSOUND_ON -DINPUTCMD# -pg -pedantic
 
 SOURCES=gamemode.cc command.cc commandconsumer.cc \
 	inputconsumer.cc inputkeyboard.cc inputevent.cc console.cc \
-	types.cc game.cc keyboard.cc sound.cc display.cc tank.cc map.cc \
+	types.cc game.cc sound.cc display.cc tank.cc map.cc \
 	main.cc player.cc render.cc viewpoint.cc framerate.cc server.cc \
 	entities.cc projectile.cc explosion.cc textures.cc \
 	marker.cc menu.cc menuitem.cc color.cc text.cc vector.cc \

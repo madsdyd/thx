@@ -131,7 +131,7 @@ void inputkeyboard_init() {
     i++;
   }
   /* Enable global keyrepeat - used in menus */
-  glutSetKeyRepeat(GLUT_KEY_REPEAT_ON);
+  inputkeyboard_enablerepeat();
   /* Set the keyboard functions */
   glutKeyboardFunc(KeyboardFunc);
   glutKeyboardUpFunc(KeyboardUpFunc);
@@ -146,20 +146,22 @@ void inputkeyboard_shutdown() {
   glutSpecialFunc(NULL);
   glutSpecialUpFunc(NULL);
   /* Reset global keyrepeat */
-  glutSetKeyRepeat(GLUT_KEY_REPEAT_DEFAULT);
+  inputkeyboard_restorerepeat();
 }
 
 void inputkeyboard_disablerepeat() {
   /* Disable global keyrepeat */
-  glutSetKeyRepeat(GLUT_KEY_REPEAT_OFF);
+  // glutSetKeyRepeat(GLUT_KEY_REPEAT_OFF);
+  glutIgnoreKeyRepeat(1);
 }
 
 void inputkeyboard_enablerepeat() {
-    /* Enable global keyrepeat */
-  glutSetKeyRepeat(GLUT_KEY_REPEAT_ON);
+  /* Enable global keyrepeat */
+  // glutSetKeyRepeat(GLUT_KEY_REPEAT_ON);
+  glutIgnoreKeyRepeat(0);
 }
 
 void inputkeyboard_restorerepeat() {
   /* Reset global keyrepeat */
-  glutSetKeyRepeat(GLUT_KEY_REPEAT_DEFAULT);
+  // glutSetKeyRepeat(GLUT_KEY_REPEAT_DEFAULT);
 }

@@ -69,14 +69,9 @@ void display_reshape(int w, int h) {
 TDisplay::TDisplay(int argc, char** argv) {
   textrender = new TTextRender;
 
-  /* Default assumed */
-#ifdef INPUTCMD
-  width  = 800;
-  height = 600;
-#else  
-  width  = 640;
-  height = 480;
-#endif
+  /* Default values */
+  width      = 800;
+  height     = 600;
   flymode    = true; 
   clipmode   = false;
   num_frames = 0;
@@ -149,6 +144,7 @@ TDisplay::TDisplay(int argc, char** argv) {
   glShadeModel(GL_SMOOTH);
 
   /* This is our display reshape function */
+  cerr << "TDisplay is registering a ReshapeFunc!" << endl;
   glutReshapeFunc(display_reshape);
   // glutDisplayFunc(display_display);
 
@@ -184,6 +180,7 @@ TDisplay::~TDisplay() {
     cerr << "TDisplay::~TDisplay - could not unregister (display) commands" << endl;
   }
   delete textrender;
+  delete console;
 }
 
 /* **********************************************************************

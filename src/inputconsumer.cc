@@ -110,7 +110,7 @@ keymap_t key_map_std_keys_down[] =
   {gamemode_game, {'h',           keyup},   "viewpoint-rotate", "-left"},
   {gamemode_game, {'k',           keydown}, "viewpoint-rotate", "+right"},
   {gamemode_game, {'k',           keyup},   "viewpoint-rotate", "-right"},
-  // keyboard.cc : e == viewpoint->Reset(..);
+  // TODO?: keyboard.cc : e == viewpoint->Reset(..);
   /* Tank manipulation stuff */
   {gamemode_game, {'n',           keydown}, "canon", "+rotate-left"},
   {gamemode_game, {'n',           keyup},   "canon", "-rotate-left"},

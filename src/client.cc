@@ -28,7 +28,6 @@
 
 #include "display.hh"
 #include "framerate.hh"
-#include "keyboard.hh"
 
 #include "menu.hh"
 #include "menu_game.hh"
@@ -82,12 +81,10 @@ void Client_Idle() {
   system_time_t delta_time = time_now - last_time;
   last_time                = time_now;
   /* Empty the command chain */
-#ifdef INPUTCMD
   InputToCommand.Consume();
   if (0 < CommandDispatcher.Dispatch()) {
     glutPostRedisplay();
   }
-#endif
   /* The display should always be updated */
   Display->Update(delta_time);
   /* Main switch on wheter or not a game is running */
@@ -223,85 +220,6 @@ void Client_Display() {
     /* Swap the buffers to show what we've just drawn */
     // cout << "Swapping buffers" << endl;
     glutSwapBuffers();
-  }
-}
-
-/* **********************************************************************
- * Keyboard also triggers the relevant keyboard handler
- * The keyboard stuff needs to be replaced by some kind of event handling
- * mechanism.
- * *********************************************************************/
-void Client_Keyboard(unsigned char key, int x, int y) {
-  if (Client->game_running) {
-    if (Client->has & CLIENT_HAS_GAME) {
-      /* Check for showing the in game menu */
-      if (Client->has & CLIENT_HAS_INGAMEMENU) {
-	/* Call menu handler */
-	InGameMenu->KeyboardHandler(key);
-      } else {
-	if (27 == key) { /* Escape displays in game menu */
-	  Client->has |= CLIENT_HAS_INGAMEMENU;
-	} else {
-	  /* Call game specific keyboard handler */
-	  keyboard_handler(key, x, y);
-	}
-      }
-    } else {
-      bool handled;
-      if (Client->has & CLIENT_HAS_ROUNDOVERMENU) {
-	handled = RoundOverMenu->KeyboardHandler(key);
-      } else {
-	if (Client->has & CLIENT_HAS_GAMEOVERMENU) {
-	  handled = GameOverMenu->KeyboardHandler(key);
-	} else {
-	  if (Client->has & CLIENT_HAS_BUYMENU) {
-	    handled = BuyMenu->KeyboardHandler(key);
-	  } else {
-	    if (Client->has & CLIENT_HAS_SCORE) {
-	      handled = ScoreMenu->KeyboardHandler(key);
-	    }
-	  }
-	}
-      }
-      if (!handled) {
-	keyboard_handler(key, x, y);
-      }
-      glutPostRedisplay();
-    }
-  } else { /* no game running */
-    if (GameMenu->KeyboardHandler(key)) {
-      /* The menu needs update if it handled the key */
-      glutPostRedisplay();
-    }
-  }
-  if ('q' == key) {
-    cout << "TODO: Clean up stuff" << endl;
-    exit(0);
-  }
-}
-
-/* This is a quick hack to make up, down, left, right work in the menus */
-void Client_Special(int key, int x, int y) {
-  /* If displaying any kind of menu, then stuff characters */
-  if (!Client->game_running 
-      || (Client->has & 
-	  (CLIENT_HAS_INGAMEMENU || CLIENT_HAS_ROUNDOVERMENU 
-	   || CLIENT_HAS_GAMEOVERMENU || CLIENT_HAS_BUYMENU 
-	   || CLIENT_HAS_SCORE))) {
-    switch(key) {
-    case GLUT_KEY_UP:
-      Client_Keyboard('a', x, y);
-      break;
-    case GLUT_KEY_DOWN:
-      Client_Keyboard('z', x, y);
-      break;
-    case GLUT_KEY_LEFT:
-      Client_Keyboard(2, x, y); /* Ctrl+B */
-      break;
-    case GLUT_KEY_RIGHT:
-      Client_Keyboard(6, x, y); /* Ctrl+F */
-      break;
-    }
   }
 }
 
@@ -474,7 +392,6 @@ void GameMenu_StartFunc() {
    is actually in the Client object, let us shut it down, then exit */
 void GameMenu_EndFunc() {
   delete Client;
-  cout << "GameMenu_EndFunc - need to clean up" << endl;
   exit(0);
 }
 
@@ -726,12 +643,8 @@ void MyNULL() {};
 TClient::~TClient() {
   /* Stop GLUT */
   glutDisplayFunc(MyNULL);
-  glutKeyboardFunc(NULL);
-  glutSpecialFunc(NULL);
   glutIdleFunc(NULL);
   glutReshapeFunc(NULL);
-  glutMouseFunc(NULL);
-  glutPassiveMotionFunc(NULL);
 
   /* Free the menus */
   delete InGameMenu; InGameMenu = NULL;
@@ -747,6 +660,12 @@ TClient::~TClient() {
   /* Shutdown the sound */
   sound_shutdown();
 #endif
+  /* Unregister commands */
+  CommandDispatcher.UnregisterConsumer("quit");
+  CommandDispatcher.UnregisterConsumer("in-game-menu-show");
+
+  /* Stop the input system */
+  inputkeyboard_shutdown();
 }
 
 /* **********************************************************************
@@ -766,17 +685,12 @@ void Client_Reshape(int w, int h) {
 void TClient::Run() {
   /* Set up glut */
   glutDisplayFunc(Client_Display);
-  glutKeyboardFunc(Client_Keyboard);
-  glutSpecialFunc(Client_Special);
   glutIdleFunc(Client_Idle);
   glutReshapeFunc(Client_Reshape);
 
-  /* Testing the input event functions */
-#ifdef INPUTCMD
+  /* Initializing the input event for the keyboard
+     TODO: Maybe we should not have to call the *keyboard*init*/
   inputkeyboard_init();
-#endif
-  //  glutMouseFunc(Client_Mouse);
-  //  glutPassiveMotionFunc(Client_PassiveMotion);
   
   /* Request fullscreen */
   // If fullscreen is enabled, my 3dfx breaks.
@@ -793,7 +707,8 @@ bool TClient::CommandConsume(TCommand * Command) {
   cout  << "TClient::CommandConsumer called for command (" 
 	<< Command->name << "," << Command->args << ")" << endl;
   if ("quit" == Command->name) {
-    cout << "TODO: Clean up stuff - restore keyrepeat, etc." << endl;
+    // TODO: Is this the right way to leave the game?
+    delete this;
     exit(0);
   } else if ("in-game-menu-show" == Command->name) {
     if (GameMode.SetMode(gamemode_menu)) {

@@ -1,4 +1,9 @@
-2002-01-06  Mads Bondo Dydensborg  <madsdyd@mother.mbd.dk>
+2005-07-09  Mads Bondo Dydensborg  <madsdyd@challenge.dk>
+
+        * Compile
+	Compile with newer g++, updated config checks.
+
+2002-01-06  Mads Bondo Dydensborg  <madsdyd@challenge.dk>
 
 	* AI
 	Made the game select more randomly in the "NotMe" call.

@@ -30,30 +30,6 @@ dnl Check for the math lib
 AC_CHECK_LIB(m, main)
 
 
-dnl This checks for opengl. 
-MDL_HAVE_OPENGL
-gl_error=no
-if test "x$have_GL" != "xyes" ; then
-  gl_error="yes"
-fi
-if test "x$have_GLU" != "xyes" ; then
-  gl_error="yes"
-fi
-if test "x$have_glut" != "xyes" ; then
-  gl_error="yes"
-fi
-if test "x$gl_error" != "xno" ; then
-    AC_MSG_ERROR([
-*** One or more of GL, GLU and glut could not be found
-*** You need a working OpenGL/Mesa3D installation to
-*** compile and use $PACKAGE
-])
-fi
-
-dnl AC_MSG_RESULT([$PACKAGE is using the following for compiling and linking OpenGL programs: 
-dnl   GL_CFLAGS: $GL_CFLAGS
-dnl    GL_LIBS: $GL_LIBS])                                                
-
 dnl ------------------------------------------------------------
 dnl Checks for header files.
 AC_HEADER_STDC
@@ -74,16 +50,36 @@ dnl AC_PROG_GCC_TRADITIONAL
 dnl Check if the system have gettimeofday
 AC_CHECK_FUNCS(gettimeofday)
 
+dnl This checks for opengl. 
+dnl MDL_HAVE_OPENGL()
+AC_PATH_X
+AC_PATH_XTRA
+gl_error=no
+AC_CHECK_HEADERS(GL/gl.h GL/glu.h GL/glut.h,,gl_error=yes)
+AC_CHECK_LIB(GL, glBegin,,gl_error=yes, [$X_CFLAGS $X_LIBS])
+AC_CHECK_LIB(GLU, gluBuild2DMipmaps,,gl_error=yes, [$X_CFLAGS $X_LIBS])
+AC_CHECK_LIB(glut, glutEntryFunc,,gl_error=yes, [$X_CFLAGS $X_LIBS])
+if test "x$gl_error" != "xno" ; then
+    AC_MSG_ERROR([
+*** One or more of GL, GLU and glut could not be found
+*** You need a working OpenGL/Mesa3D installation to
+*** compile and use $PACKAGE
+])
+fi
+dnl AC_MSG_RESULT([$PACKAGE is using the following for compiling and linking OpenGL programs: 
+dnl   GL_CFLAGS: $GL_CFLAGS
+dnl    GL_LIBS: $GL_LIBS])                                                
+
 dnl --------------------------------------------------------------------------
 dnl General options
 dnl Shamelessly stolen from TuxRacer
 dnl --------------------------------------------------------------------------
 TR_CPPFLAGS=""
-TR_CFLAGS="-Wall -Wtraditional -Wpointer-arith -Wconversion -Wstrict-prototypes -Wmissing-prototypes -Wmissing-declarations -Wnested-externs -Woverloaded-virtual $GL_CFLAGS"
-TR_CXXFLAGS="-Wall -Wtraditional -Wpointer-arith -Wconversion -Wstrict-prototypes -Wmissing-prototypes -Wmissing-declarations -Wnested-externs -Woverloaded-virtual $GL_CFLAGS"
+TR_CFLAGS="-Wall -Wtraditional -Wpointer-arith -Wconversion -Wstrict-prototypes -Wmissing-prototypes -Wmissing-declarations -Wnested-externs -Woverloaded-virtual $X_CFLAGS"
+TR_CXXFLAGS="-Wall -Wpointer-arith -Wconversion -Woverloaded-virtual $X_CFLAGS"
 TR_OP_CFLAGS="-O2 -fomit-frame-pointer -ffast-math -fexpensive-optimizations"
 TR_OP_CXXFLAGS="-O2 -fomit-frame-pointer -ffast-math -fexpensive-optimizations"
-TR_LIBS="$GL_LIBS"
+TR_LIBS="$X_LIBS"
 
 case "$host" in
 i*86-*-*) TR_OP_CFLAGS="$TR_OP_CFLAGS -malign-loops=2 -malign-jumps=2 -malign-functions=2";
@@ -95,7 +91,7 @@ AC_ARG_ENABLE(sound,     [  --disable-sound         Produce an executable withou
  			 [disable_sound=yes], [disable_sound=no; AC_DEFINE(SOUND_ON, 1, Includes simple OSS support)])
 
 if test "x$disable_sound" == "xno"; then
-  AC_CHECK_LIB(pthread, main, 
+  AC_CHECK_HEADER(pthread.h, 
     [TR_LIBS="$TR_LIBS -lpthread"; TR_CFLAGS="$TR_CFLAGS -D_REENTRANT"; TR_CXXFLAGS="$TR_CXXFLAGS -D_REENTRANT"],
     [AC_MSG_ERROR([
 *** Sound support currently requires the pthreads library

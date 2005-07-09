@@ -24,6 +24,8 @@
 #include "config.h"
 #endif
 #include <sstream>
+#include <istream>
+#include <iostream>
 using std::ostringstream;
 using std::istringstream;
 using std::ends;
@@ -105,9 +107,15 @@ TMouseInputEvent::TMouseInputEvent(string value)
     // I think it may loop forever. 
     // I need to get a book on C++
   } while (magic != "|+|");
-  tmpstream >> (int) mouse_inputevent_event.action 
-	    >> (int) mouse_inputevent_event.button
-	    >> x >> y >> oldx >> oldy;
+  int a, b;
+    tmpstream >> a >> b 
+	      >> x >> y >> oldx >> oldy;
+    mouse_inputevent_event.action = ( mousebutton_action_t ) a;
+    mouse_inputevent_event.button = ( mousebutton_button_t ) b;
+    
+    /*  tmpstream >> ((int) mouse_inputevent_event.action)
+	    >> ((int) mouse_inputevent_event.button)
+	    >> x >> y >> oldx >> oldy; */
 }
 
 /* **********************************************************************

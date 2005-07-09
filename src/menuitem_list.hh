@@ -26,6 +26,7 @@
 using std::cout;
 using std::endl;
 
+#include "menu.hh"
 #include "menuitem.hh"
 
 

@@ -79,7 +79,10 @@ struct keymap_t_in {
       cerr << "keymap_t - expected bind-key, got " << check << endl;
       return in;
     }
-    in >> (int) mode;
+    int tmp;
+    in >> tmp;
+    mode = (gamemode_t) tmp;
+    // in >> (int) mode;
     kev.In(in) >> cmd >> arg;
     /* Strip cmd and arg */
     cmd = cmd.substr(1, cmd.size()-2);

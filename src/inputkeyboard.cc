@@ -124,7 +124,11 @@ ostream & keyboard_inputevent_event_t::Out(ostream & out) {
 }
 
 istream & keyboard_inputevent_event_t::In(istream & in) {
-  in >> (int) key >> (int) type;
+  int k, t;
+  in >> k >> t;
+  key = k; 
+  type = (keypress_t) t;
+  // in >> (int) key >> (int) type;
   return in;
 }
 

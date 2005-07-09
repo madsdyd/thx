@@ -63,7 +63,7 @@ dnl
 dnl @version 0.01 $Id$
 dnl @author Matthew D. Langston <langston@SLAC.Stanford.EDU>
 
-AC_DEFUN(MDL_HAVE_OPENGL,
+AC_DEFUN([MDL_HAVE_OPENGL],
 [
   AC_REQUIRE([AC_PROG_CC])
   AC_REQUIRE([AC_PATH_X])

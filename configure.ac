@@ -1,7 +1,8 @@
 dnl ------------------------------------------------------------
 dnl Setup initial stuff
-AC_INIT(src/client.cc)
-AM_INIT_AUTOMAKE(thx, "0.3.6")
+AC_INIT([thx], [0.3.6])
+AC_CONFIG_SRCDIR([src/client.cc])
+AM_INIT_AUTOMAKE
 dnl Enable --maintainer-mode
 AM_MAINTAINER_MODE
 dnl We want a config header

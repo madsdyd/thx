@@ -161,7 +161,7 @@ void TGame::DoUpdateRoundRunning(system_time_t deltatime) {
 
   /* Remove or update entities */
   TEntitiesIterator End = entities.end();
-  TEntitiesIterator tmp = NULL;
+  TEntitiesIterator tmp = entities.end();
   for (TEntitiesIterator i = entities.begin(); i != End;) {
     /* If we keep it, update it, otherwise remove it */
     if ((*i)->keep) {
@@ -272,7 +272,7 @@ void TGame::AddEntity(TEntity * Entity) {
  * *********************************************************************/
 void TGame::ClearEntities() {
   TEntitiesIterator End = entities.end();
-  TEntitiesIterator tmp = NULL;
+  TEntitiesIterator tmp = entities.end();
   for (TEntitiesIterator i = entities.begin(); i != End;) {
     tmp = i;
     i++;

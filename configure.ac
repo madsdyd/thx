@@ -122,8 +122,10 @@ dnl --------------------------------------------------------------------------
 
 dnl Specify data directory - stolen from tuxkart
 
-MY_EXPAND_DIR(thx_datadir, "$datadir/games/$PACKAGE")
-AC_DEFINE_UNQUOTED(THX_DATADIR, "$thx_datadir", Defines the location of the data directory)
+dnl MUST FIX: Double expansion, something. This sucks. And is wrong
+MY_EXPAND_DIR([thx_datadir], [$prefix/share/games/$PACKAGE])
+#AC_DEFINE_UNQUOTED([THX_DATADIR], [$thx_datadir], Defines the location of the data directory)
+AC_DEFINE_UNQUOTED([THX_DATADIR], "$thx_datadir", Defines the location of the data directory)
 
 dnl AC_ARG_WITH(data-dir, [  --with-data-dir=PATH    Default thx data directory], 
 dnl                      TR_CPPFLAGS="$TR_CPPFLAGS -DDATA_DIR=\\\"$withval\\\"")

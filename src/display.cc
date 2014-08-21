@@ -23,6 +23,8 @@
 #include "config.h"
 #endif
 
+#include <string.h>
+
 #include <GL/glut.h>
 #include <stdio.h>
 #include <stdlib.h>

@@ -23,6 +23,8 @@
 #include "config.h"
 #endif
 
+#include <assert.h>
+
 #include <iostream>
 using std::cerr;
 using std::cout;

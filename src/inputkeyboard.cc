@@ -41,7 +41,7 @@ using std::map;
 /* Define a static array of mappings. */
 static struct {
   unsigned int key;
-  char * name;
+  const char * name;
 } keynames[] = {
   {1, "^A"},
   {2, "^B"},
